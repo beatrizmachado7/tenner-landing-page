@@ -1,0 +1,27 @@
+{
+  "name": "TENNER",
+  "suffix": "",
+  "price": "50€",
+  "price_note": "por mês",
+  "season_discount": true,
+  "featured": false,
+  "features": [
+    {
+      "text": "Pre match semanais (estático)",
+      "offer": "",
+      "detail": ""
+    },
+    {
+      "text": "",
+      "offer": "1 reels dos melhores momentos do mês (até 1 min)",
+      "detail": ""
+    },
+    {
+      "text": "Comunicação",
+      "offer": "",
+      "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press"
+    }
+  ],
+  "ordem": 10,
+  "visivel": true
+}

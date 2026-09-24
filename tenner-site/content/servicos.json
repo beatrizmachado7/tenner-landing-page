@@ -1,9 +1,21 @@
 {
   "intro": "Centralizamos a produção de conteúdo desportivo numa solução simples e eficiente. Após cada evento, jogo ou competição, identificamos os momentos mais relevantes, produzimos, editamos e entregamos peças prontas a publicar.",
   "items": [
-    { "title": "Vídeos para Shorts e Stories", "text": "Os melhores momentos em vídeos curtos e dinâmicos, adaptados às principais plataformas." },
-    { "title": "Designs e conteúdo para feed", "text": "Conteúdos visuais que reforçam identidade e presença digital." },
-    { "title": "Fotografia e imagens de eventos", "text": "Os momentos que definem cada competição, transformados em conteúdo com valor." },
-    { "title": "Storytelling e marca pessoal", "text": "Narrativas que vão além do resultado, construindo identidades que permanecem." }
+    {
+      "title": "Vídeos para Shorts e Stories",
+      "text": "Os melhores momentos em vídeos curtos e dinâmicos, adaptados às principais plataformas."
+    },
+    {
+      "title": "Designs e conteúdo para feed",
+      "text": "Conteúdos visuais que reforçam identidade e presença digital."
+    },
+    {
+      "title": "Fotografia e imagens de eventos",
+      "text": "Os momentos que definem cada competição, transformados em conteúdo com valor."
+    },
+    {
+      "title": "Storytelling e marca pessoal",
+      "text": "Narrativas que vão além do resultado, construindo identidades que permanecem."
+    }
   ]
 }

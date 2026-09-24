@@ -1,21 +1,15 @@
 # TENNER. — Landing page
 
-Site estático (HTML + CSS + JS) com painel de administração Decap CMS.
+Site estático (HTML + CSS + JS) com painel de administração Decap CMS em `/admin`.
 
+## Como está organizado
 - `index.html`, `css/`, `js/`: a página
-- `content/*.json`: todos os textos, preços e o arquivo (é isto que o painel edita)
-- `images/`: imagens; o que for enviado pelo painel vai para `images/uploads/`
-- `admin/`: painel em `/admin` (login por Netlify Identity)
+- `content/site.json`: textos gerais (início, sobre, contacto, introduções, desconto à época)
+- `content/arquivo/`, `content/planos/`, `content/servicos/`, `content/extras/`: **uma entrada por ficheiro** — é isto que o painel cria e apaga
+- `build.js`: junta essas pastas em `content/arquivo.json`, `planos.json`, etc. (gerados; não editar à mão). O Netlify corre-o sozinho a cada publicação.
+- `admin/`: painel (config, tema `admin.css`)
+- `images/uploads/`: imagens enviadas pelo painel
 
-## Publicar no Netlify
-1. Netlify → Add new site → Import from GitHub → escolher este repositório (sem build command, publish directory `.`).
-2. Site configuration → Identity → Enable Identity.
-3. Identity → Registration → **Invite only**; depois Invite users (o email de quem vai gerir).
-4. Identity → Services → **Enable Git Gateway**.
-5. Abrir `https://<site>/admin/`, aceitar o convite e definir a password.
-
-## Testar no computador
-```
-npx decap-server        # num terminal
-npx serve .             # noutro terminal, depois abrir /admin/
-```
+## Netlify
+- Base directory: `tenner-site` · Build command: vem do `netlify.toml` (`node build.js`) · Publish: `.`
+- Identity ativo (Invite only) + Git Gateway ativo.

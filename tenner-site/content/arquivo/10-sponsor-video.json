@@ -1,0 +1,10 @@
+{
+  "title": "Sponsor video",
+  "category": "video",
+  "tag": "Vídeo",
+  "image": "/images/sponsor.jpg",
+  "video": "",
+  "format": "vertical",
+  "ordem": 100,
+  "visivel": true
+}

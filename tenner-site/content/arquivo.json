@@ -1,19 +1,124 @@
 {
   "items": [
-    { "title": "Pre match estático", "category": "prematch", "tag": "Design", "image": "/images/prematch.jpg", "video": "", "format": "vertical" },
-    { "title": "Match highlight", "category": "video", "tag": "Vídeo", "image": "/images/highlight.jpg", "video": "", "format": "vertical" },
-    { "title": "Equipamento 24/25", "category": "social", "tag": "Social", "image": "/images/equipamento.jpg", "video": "", "format": "quadrado" },
-    { "title": "Pre match motion", "category": "prematch", "tag": "Motion", "image": "/images/estadio.jpg", "video": "", "format": "vertical" },
-    { "title": "Campanha New Balance", "category": "social", "tag": "Social", "image": "/images/nb-atleta.jpg", "video": "", "format": "retrato" },
-    { "title": "Off season", "category": "video", "tag": "Vídeo", "image": "/images/offseason.jpg", "video": "", "format": "vertical" },
-    { "title": "Plantel", "category": "social", "tag": "Social", "image": "/images/plantel.jpg", "video": "", "format": "quadrado" },
-    { "title": "Dia de jogo", "category": "prematch", "tag": "Motion", "image": "/images/adeptos.jpg", "video": "", "format": "vertical" },
-    { "title": "Chuteira", "category": "social", "tag": "Social", "image": "/images/chuteira.jpg", "video": "", "format": "retrato" },
-    { "title": "Sponsor video", "category": "video", "tag": "Vídeo", "image": "/images/sponsor.jpg", "video": "", "format": "vertical" },
-    { "title": "Equipa", "category": "social", "tag": "Social", "image": "/images/equipa.jpg", "video": "", "format": "quadrado" },
-    { "title": "Lifestyle", "category": "social", "tag": "Social", "image": "/images/lifestyle.jpg", "video": "", "format": "retrato" },
-    { "title": "Jogador", "category": "social", "tag": "Social", "image": "/images/jogador.jpg", "video": "", "format": "quadrado" },
-    { "title": "Campanha", "category": "social", "tag": "Social", "image": "/images/campanha.jpg", "video": "", "format": "retrato" },
-    { "title": "Nova época", "category": "social", "tag": "Social", "image": "/images/apresentacao.jpg", "video": "", "format": "quadrado" }
+    {
+      "title": "Pre match estático",
+      "category": "prematch",
+      "tag": "Design",
+      "image": "/images/prematch.jpg",
+      "video": "",
+      "format": "vertical"
+    },
+    {
+      "title": "Match highlight",
+      "category": "video",
+      "tag": "Vídeo",
+      "image": "/images/highlight.jpg",
+      "video": "",
+      "format": "vertical"
+    },
+    {
+      "title": "Equipamento 24/25",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/equipamento.jpg",
+      "video": "",
+      "format": "quadrado"
+    },
+    {
+      "title": "Pre match motion",
+      "category": "prematch",
+      "tag": "Motion",
+      "image": "/images/estadio.jpg",
+      "video": "",
+      "format": "vertical"
+    },
+    {
+      "title": "Campanha New Balance",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/nb-atleta.jpg",
+      "video": "",
+      "format": "retrato"
+    },
+    {
+      "title": "Off season",
+      "category": "video",
+      "tag": "Vídeo",
+      "image": "/images/offseason.jpg",
+      "video": "",
+      "format": "vertical"
+    },
+    {
+      "title": "Plantel",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/plantel.jpg",
+      "video": "",
+      "format": "quadrado"
+    },
+    {
+      "title": "Dia de jogo",
+      "category": "prematch",
+      "tag": "Motion",
+      "image": "/images/adeptos.jpg",
+      "video": "",
+      "format": "vertical"
+    },
+    {
+      "title": "Chuteira",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/chuteira.jpg",
+      "video": "",
+      "format": "retrato"
+    },
+    {
+      "title": "Sponsor video",
+      "category": "video",
+      "tag": "Vídeo",
+      "image": "/images/sponsor.jpg",
+      "video": "",
+      "format": "vertical"
+    },
+    {
+      "title": "Equipa",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/equipa.jpg",
+      "video": "",
+      "format": "quadrado"
+    },
+    {
+      "title": "Lifestyle",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/lifestyle.jpg",
+      "video": "",
+      "format": "retrato"
+    },
+    {
+      "title": "Jogador",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/jogador.jpg",
+      "video": "",
+      "format": "quadrado"
+    },
+    {
+      "title": "Campanha",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/campanha.jpg",
+      "video": "",
+      "format": "retrato"
+    },
+    {
+      "title": "Nova época",
+      "category": "social",
+      "tag": "Social",
+      "image": "/images/apresentacao.jpg",
+      "video": "",
+      "format": "quadrado"
+    }
   ]
 }

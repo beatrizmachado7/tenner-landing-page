@@ -1,0 +1,10 @@
+{
+  "title": "Pre match estático",
+  "category": "prematch",
+  "tag": "Design",
+  "image": "/images/prematch.jpg",
+  "video": "",
+  "format": "vertical",
+  "ordem": 10,
+  "visivel": true
+}

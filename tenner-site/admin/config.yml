@@ -1,15 +1,15 @@
 # Painel de administração TENNER. (Decap CMS)
-# Login com Netlify Identity; cada gravação faz um commit no GitHub e o Netlify publica sozinho.
+# Login com Netlify Identity; cada publicação faz um commit no GitHub e o Netlify reconstrói o site.
+# Os ficheiros estão dentro da pasta tenner-site/ do repositório.
 backend:
   name: git-gateway
   branch: main
   commit_messages:
-    update: "Atualiza {{collection}} “{{slug}}”"
-    uploadMedia: "Envia imagem “{{path}}”"
-    deleteMedia: "Apaga imagem “{{path}}”"
-
-# Para testar no computador: `npx decap-server` e abrir http://localhost:8080/admin/
-local_backend: true
+    create: "Novo em {{collection}}: “{{slug}}”"
+    update: "Atualiza {{collection}}: “{{slug}}”"
+    delete: "Apaga de {{collection}}: “{{slug}}”"
+    uploadMedia: "Envia “{{path}}”"
+    deleteMedia: "Apaga “{{path}}”"
 
 locale: pt
 site_url: https://tenner10.netlify.app
@@ -19,13 +19,137 @@ logo_url: /images/logo-admin.svg
 media_folder: tenner-site/images/uploads
 public_folder: /images/uploads
 
+slug:
+  encoding: ascii
+  clean_accents: true
+
 collections:
-  - name: pagina
-    label: Conteúdos da página
+  # ---------------- ARQUIVO ----------------
+  - name: arquivo
+    label: Arquivo
+    label_singular: trabalho
+    description: "Os trabalhos da galeria. Carrega em “Novo trabalho” para adicionar; abre um e usa “Apagar entrada” para remover."
+    folder: tenner-site/content/arquivo
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{year}}{{month}}{{day}}-{{slug}}"
+    summary: "{{title}} · {{tag}}"
+    thumbnail: image
+    editor: { preview: false }
+    sortable_fields: [ordem, title, category]
+    view_filters:
+      - { label: Pre match, field: category, pattern: prematch }
+      - { label: Vídeo, field: category, pattern: video }
+      - { label: Social media, field: category, pattern: social }
+    fields:
+      - { label: Título, name: title, widget: string }
+      - label: Categoria (filtro no site)
+        name: category
+        widget: select
+        options:
+          - { label: Pre match, value: prematch }
+          - { label: Vídeo, value: video }
+          - { label: Social media, value: social }
+      - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
+      - { label: Imagem, name: image, widget: image }
+      - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
+      - label: Formato
+        name: format
+        widget: select
+        default: quadrado
+        options:
+          - { label: "Vertical (9:16)", value: vertical }
+          - { label: "Retrato (4:5)", value: retrato }
+          - { label: "Quadrado (1:1)", value: quadrado }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100, hint: "Números mais baixos aparecem primeiro (10, 20, 30…)." }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true, hint: "Desliga para esconder sem apagar." }
+
+  # ---------------- PLANOS ----------------
+  - name: planos
+    label: Planos e preços
+    label_singular: plano
+    description: "Cada plano é uma entrada. O desconto à época e a nota por baixo dos planos estão em Definições gerais."
+    folder: tenner-site/content/planos
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: name
+    slug: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}-{{slug}}"
+    summary: "{{name}} {{suffix}} — {{price}}"
+    editor: { preview: false }
+    sortable_fields: [ordem, name]
+    fields:
+      - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER ou TENNER+" }
+      - { label: Sufixo em itálico, name: suffix, widget: string, required: false, hint: "Ex.: PRO (deixa vazio nos outros)" }
+      - { label: Preço, name: price, widget: string, hint: "Ex.: 50€ ou Sob consulta" }
+      - { label: Texto por baixo do preço, name: price_note, widget: string, required: false, hint: "Ex.: por mês" }
+      - { label: "Tem desconto à época?", name: season_discount, widget: boolean, default: false }
+      - { label: "Destacar como “Mais completo”", name: featured, widget: boolean, default: false }
+      - label: O que inclui
+        name: features
+        widget: list
+        label_singular: linha
+        summary: "{{fields.text}} {{fields.offer}}"
+        fields:
+          - { label: Texto, name: text, widget: string, required: false }
+          - { label: "Oferta (aparece a amarelo com “+ OFERTA”)", name: offer, widget: string, required: false }
+          - { label: Detalhe (texto pequeno por baixo), name: detail, widget: string, required: false }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100, hint: "Números mais baixos aparecem primeiro (10, 20, 30…)." }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
+
+  # ---------------- O QUE FAZEMOS ----------------
+  - name: servicos
+    label: O que fazemos
+    label_singular: serviço
+    folder: tenner-site/content/servicos
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{year}}{{month}}{{day}}-{{slug}}"
+    summary: "{{title}}"
+    editor: { preview: false }
+    sortable_fields: [ordem, title]
+    fields:
+      - { label: Título, name: title, widget: string }
+      - { label: Descrição, name: text, widget: text }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100 }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
+
+  # ---------------- SERVIÇOS EXTRA ----------------
+  - name: extras
+    label: Serviços extra
+    label_singular: serviço extra
+    folder: tenner-site/content/extras
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{year}}{{month}}{{day}}-{{slug}}"
+    summary: "{{title}}"
+    editor: { preview: false }
+    sortable_fields: [ordem, title]
+    fields:
+      - { label: Título, name: title, widget: string }
+      - { label: Subtítulo, name: subtitle, widget: string }
+      - { label: Texto ao abrir, name: text, widget: text, required: false }
+      - { label: Destacar a amarelo, name: highlight, widget: boolean, default: false }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100 }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
+
+  # ---------------- DEFINIÇÕES ----------------
+  - name: definicoes
+    label: Definições gerais
     editor: { preview: false }
     files:
       - name: geral
-        label: "Início, Sobre nós e Contacto"
+        label: "Início, Sobre nós, Contacto e textos das secções"
         file: tenner-site/content/site.json
         fields:
           - label: Início (hero)
@@ -37,8 +161,8 @@ collections:
               - { label: Slogan, name: tagline, widget: string }
               - { label: Texto de apresentação, name: intro, widget: text }
               - { label: "Imagem 1 (vertical, com moldura amarela)", name: image1, widget: image }
-              - { label: Imagem 2 (vertical 9:16), name: image2, widget: image }
-              - { label: Imagem 3 (quadrada), name: image3, widget: image }
+              - { label: "Imagem 2 (vertical 9:16)", name: image2, widget: image }
+              - { label: "Imagem 3 (quadrada)", name: image3, widget: image }
           - label: Faixa amarela (palavras em movimento)
             name: marquee
             widget: list
@@ -54,6 +178,14 @@ collections:
                 name: audience
                 widget: list
                 field: { label: Etiqueta, name: label, widget: string }
+          - { label: "Texto de introdução — O que fazemos", name: servicos_intro, widget: text }
+          - { label: "Texto de introdução — Serviços extra", name: extras_intro, widget: text }
+          - label: Planos
+            name: planos
+            widget: object
+            fields:
+              - { label: "Desconto no pagamento à época (%)", name: season_discount, widget: number, value_type: int, min: 0, max: 100 }
+              - { label: Nota por baixo dos planos, name: footnote, widget: string }
           - label: Contacto
             name: contact
             widget: object
@@ -62,87 +194,3 @@ collections:
               - { label: Subtítulo, name: subtitle, widget: string }
               - { label: Email, name: email, widget: string }
               - { label: Instagram (sem @), name: instagram, widget: string }
-
-      - name: servicos
-        label: O que fazemos
-        file: tenner-site/content/servicos.json
-        fields:
-          - { label: Texto de introdução, name: intro, widget: text }
-          - label: Serviços
-            name: items
-            widget: list
-            summary: "{{fields.title}}"
-            fields:
-              - { label: Título, name: title, widget: string }
-              - { label: Descrição, name: text, widget: text }
-
-      - name: planos
-        label: Planos e preços
-        file: tenner-site/content/planos.json
-        fields:
-          - { label: Desconto no pagamento à época (%), name: season_discount, widget: number, value_type: int, min: 0, max: 100 }
-          - { label: Nota por baixo dos planos, name: footnote, widget: string }
-          - label: Planos
-            name: plans
-            widget: list
-            summary: "{{fields.name}} {{fields.suffix}} — {{fields.price}}"
-            fields:
-              - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER ou TENNER+" }
-              - { label: Sufixo em itálico, name: suffix, widget: string, required: false, hint: "Ex.: PRO (fica vazio nos outros)" }
-              - { label: Preço, name: price, widget: string, hint: "Ex.: 50€ ou Sob consulta" }
-              - { label: Texto por baixo do preço, name: price_note, widget: string, hint: "Ex.: por mês" }
-              - { label: "Tem desconto à época?", name: season_discount, widget: boolean, default: false }
-              - { label: Destacar como “Mais completo”, name: featured, widget: boolean, default: false }
-              - label: O que inclui
-                name: features
-                widget: list
-                summary: "{{fields.text}} {{fields.offer}}"
-                fields:
-                  - { label: Texto, name: text, widget: string, required: false }
-                  - { label: Oferta (aparece a amarelo com “+ OFERTA”), name: offer, widget: string, required: false }
-                  - { label: Detalhe (texto pequeno por baixo), name: detail, widget: string, required: false }
-
-      - name: extras
-        label: Serviços extra
-        file: tenner-site/content/extras.json
-        fields:
-          - { label: Texto de introdução, name: intro, widget: text }
-          - label: Serviços extra
-            name: items
-            widget: list
-            summary: "{{fields.title}}"
-            fields:
-              - { label: Título, name: title, widget: string }
-              - { label: Subtítulo, name: subtitle, widget: string }
-              - { label: Texto ao abrir, name: text, widget: text, required: false }
-              - { label: Destacar a amarelo, name: highlight, widget: boolean, default: false }
-
-      - name: arquivo
-        label: Arquivo (portefólio)
-        file: tenner-site/content/arquivo.json
-        fields:
-          - label: Trabalhos
-            name: items
-            widget: list
-            summary: "{{fields.title}} · {{fields.category}}"
-            hint: "Arrasta para mudar a ordem. O primeiro aparece primeiro na galeria."
-            fields:
-              - { label: Título, name: title, widget: string }
-              - label: Categoria (filtro)
-                name: category
-                widget: select
-                options:
-                  - { label: Pre match, value: prematch }
-                  - { label: Vídeo, value: video }
-                  - { label: Social media, value: social }
-              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
-              - { label: Imagem, name: image, widget: image }
-              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
-              - label: Formato
-                name: format
-                widget: select
-                default: quadrado
-                options:
-                  - { label: "Vertical (9:16)", value: vertical }
-                  - { label: "Retrato (4:5)", value: retrato }
-                  - { label: "Quadrado (1:1)", value: quadrado }
