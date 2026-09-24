@@ -12,8 +12,8 @@ backend:
 local_backend: true
 
 locale: pt
-site_url: https://tenner.netlify.app
-display_url: https://tenner.netlify.app
+site_url: https://tenner10.netlify.app
+display_url: https://tenner10.netlify.app
 logo_url: /images/favicon.svg
 
 media_folder: images/uploads
