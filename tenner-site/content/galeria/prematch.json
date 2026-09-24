@@ -1,0 +1,26 @@
+{
+  "label": "Pre match",
+  "items": [
+    {
+      "title": "Pre match estático",
+      "image": "/images/prematch.jpg",
+      "video": "",
+      "format": "vertical",
+      "tag": "Design"
+    },
+    {
+      "title": "Pre match motion",
+      "image": "/images/estadio.jpg",
+      "video": "",
+      "format": "vertical",
+      "tag": "Motion"
+    },
+    {
+      "title": "Dia de jogo",
+      "image": "/images/adeptos.jpg",
+      "video": "",
+      "format": "vertical",
+      "tag": "Motion"
+    }
+  ]
+}

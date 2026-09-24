@@ -2,123 +2,123 @@
   "items": [
     {
       "title": "Pre match estático",
-      "category": "prematch",
-      "tag": "Design",
       "image": "/images/prematch.jpg",
       "video": "",
-      "format": "vertical"
+      "format": "vertical",
+      "tag": "Design",
+      "category": "prematch"
     },
     {
       "title": "Match highlight",
-      "category": "video",
-      "tag": "Vídeo",
       "image": "/images/highlight.jpg",
       "video": "",
-      "format": "vertical"
+      "format": "vertical",
+      "tag": "Vídeo",
+      "category": "video"
     },
     {
       "title": "Equipamento 24/25",
-      "category": "social",
-      "tag": "Social",
       "image": "/images/equipamento.jpg",
       "video": "",
-      "format": "quadrado"
+      "format": "quadrado",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Pre match motion",
-      "category": "prematch",
-      "tag": "Motion",
       "image": "/images/estadio.jpg",
       "video": "",
-      "format": "vertical"
-    },
-    {
-      "title": "Campanha New Balance",
-      "category": "social",
-      "tag": "Social",
-      "image": "/images/nb-atleta.jpg",
-      "video": "",
-      "format": "retrato"
+      "format": "vertical",
+      "tag": "Motion",
+      "category": "prematch"
     },
     {
       "title": "Off season",
-      "category": "video",
-      "tag": "Vídeo",
       "image": "/images/offseason.jpg",
       "video": "",
-      "format": "vertical"
+      "format": "vertical",
+      "tag": "Vídeo",
+      "category": "video"
     },
     {
-      "title": "Plantel",
-      "category": "social",
-      "tag": "Social",
-      "image": "/images/plantel.jpg",
+      "title": "Campanha New Balance",
+      "image": "/images/nb-atleta.jpg",
       "video": "",
-      "format": "quadrado"
+      "format": "retrato",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Dia de jogo",
-      "category": "prematch",
-      "tag": "Motion",
       "image": "/images/adeptos.jpg",
       "video": "",
-      "format": "vertical"
-    },
-    {
-      "title": "Chuteira",
-      "category": "social",
-      "tag": "Social",
-      "image": "/images/chuteira.jpg",
-      "video": "",
-      "format": "retrato"
+      "format": "vertical",
+      "tag": "Motion",
+      "category": "prematch"
     },
     {
       "title": "Sponsor video",
-      "category": "video",
-      "tag": "Vídeo",
       "image": "/images/sponsor.jpg",
       "video": "",
-      "format": "vertical"
+      "format": "vertical",
+      "tag": "Vídeo",
+      "category": "video"
+    },
+    {
+      "title": "Plantel",
+      "image": "/images/plantel.jpg",
+      "video": "",
+      "format": "quadrado",
+      "tag": "Social",
+      "category": "social"
+    },
+    {
+      "title": "Chuteira",
+      "image": "/images/chuteira.jpg",
+      "video": "",
+      "format": "retrato",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Equipa",
-      "category": "social",
-      "tag": "Social",
       "image": "/images/equipa.jpg",
       "video": "",
-      "format": "quadrado"
+      "format": "quadrado",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Lifestyle",
-      "category": "social",
-      "tag": "Social",
       "image": "/images/lifestyle.jpg",
       "video": "",
-      "format": "retrato"
+      "format": "retrato",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Jogador",
-      "category": "social",
-      "tag": "Social",
       "image": "/images/jogador.jpg",
       "video": "",
-      "format": "quadrado"
+      "format": "quadrado",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Campanha",
-      "category": "social",
-      "tag": "Social",
       "image": "/images/campanha.jpg",
       "video": "",
-      "format": "retrato"
+      "format": "retrato",
+      "tag": "Social",
+      "category": "social"
     },
     {
       "title": "Nova época",
-      "category": "social",
-      "tag": "Social",
       "image": "/images/apresentacao.jpg",
       "video": "",
-      "format": "quadrado"
+      "format": "quadrado",
+      "tag": "Social",
+      "category": "social"
     }
   ]
 }

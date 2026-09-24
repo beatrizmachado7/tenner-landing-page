@@ -1,0 +1,26 @@
+{
+  "label": "Vídeo",
+  "items": [
+    {
+      "title": "Match highlight",
+      "image": "/images/highlight.jpg",
+      "video": "",
+      "format": "vertical",
+      "tag": "Vídeo"
+    },
+    {
+      "title": "Off season",
+      "image": "/images/offseason.jpg",
+      "video": "",
+      "format": "vertical",
+      "tag": "Vídeo"
+    },
+    {
+      "title": "Sponsor video",
+      "image": "/images/sponsor.jpg",
+      "video": "",
+      "format": "vertical",
+      "tag": "Vídeo"
+    }
+  ]
+}

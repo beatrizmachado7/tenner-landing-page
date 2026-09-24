@@ -27,8 +27,26 @@ const out = {
   'planos.json': {
     plans: folder('planos').map(({ price, price_note, season_discount, ...p }) => ({ ...p, features: p.features || [] }))
   },
-  'arquivo.json': { items: folder('arquivo') }
+  'arquivo.json': { items: galeria() }
 };
+
+// Arquivo: 3 categorias (content/galeria/<categoria>.json), cada uma com a sua lista de imagens.
+// No site ("Todos") as categorias aparecem intercaladas para a galeria ficar variada.
+function galeria() {
+  const cats = ['prematch', 'video', 'social'];
+  const lists = cats.map((cat) => {
+    const f = path.join(dir, 'galeria', cat + '.json');
+    if (!fs.existsSync(f)) return [];
+    let data;
+    try { data = read(f); } catch (e) { console.warn('[build] ignorado (JSON inválido): galeria/' + cat); return []; }
+    return (data.items || []).filter((i) => i && i.image).map((i) => ({ ...i, category: cat }));
+  });
+  const out = [];
+  for (let n = 0; lists.some((l) => n < l.length); n++) {
+    lists.forEach((l) => { if (n < l.length) out.push(l[n]); });
+  }
+  return out;
+}
 
 for (const [file, data] of Object.entries(out)) {
   fs.writeFileSync(path.join(dir, file), JSON.stringify(data, null, 2) + '\n');

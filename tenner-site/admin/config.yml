@@ -27,45 +27,87 @@ collections:
   # ---------------- ARQUIVO ----------------
   - name: arquivo
     label: Arquivo
-    label_singular: trabalho
-    description: "Os trabalhos da galeria. Carrega em “Novo trabalho” para adicionar; abre um e usa “Apagar entrada” para remover."
-    folder: tenner-site/content/arquivo
-    extension: json
-    format: json
-    create: true
-    delete: true
-    identifier_field: title
-    slug: "{{year}}{{month}}{{day}}-{{slug}}"
-    summary: "{{title}} · {{tag}}"
-    thumbnail: image
+    description: "Escolhe a categoria e adiciona ou apaga imagens. No site, “Todos” mostra as três categorias juntas."
     editor: { preview: false }
-    sortable_fields: [ordem, title, category]
-    view_filters:
-      - { label: Pre match, field: category, pattern: prematch }
-      - { label: Vídeo, field: category, pattern: video }
-      - { label: Social media, field: category, pattern: social }
-    fields:
-      - { label: Título, name: title, widget: string }
-      - label: Categoria (filtro no site)
-        name: category
-        widget: select
-        options:
-          - { label: Pre match, value: prematch }
-          - { label: Vídeo, value: video }
-          - { label: Social media, value: social }
-      - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
-      - { label: Imagem, name: image, widget: image }
-      - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
-      - label: Formato
-        name: format
-        widget: select
-        default: quadrado
-        options:
-          - { label: "Vertical (9:16)", value: vertical }
-          - { label: "Retrato (4:5)", value: retrato }
-          - { label: "Quadrado (1:1)", value: quadrado }
-      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100, hint: "Números mais baixos aparecem primeiro (10, 20, 30…)." }
-      - { label: Mostrar no site, name: visivel, widget: boolean, default: true, hint: "Desliga para esconder sem apagar." }
+    files:
+      - name: prematch
+        label: Pre match
+        file: tenner-site/content/galeria/prematch.json
+        fields:
+          - { label: Nome da categoria, name: label, widget: hidden, default: "Pre match" }
+          - label: Imagens
+            name: items
+            widget: list
+            label_singular: imagem
+            add_to_top: true
+            collapsed: false
+            summary: "{{fields.title}}"
+            hint: "Carrega em “Adicionar imagem” para pôr uma nova. Arrasta para mudar a ordem; o X apaga."
+            fields:
+              - { label: Imagem, name: image, widget: image }
+              - { label: Título, name: title, widget: string, required: false, hint: "Aparece por cima da imagem no site." }
+              - label: Formato
+                name: format
+                widget: select
+                default: quadrado
+                options:
+                  - { label: "Vertical (9:16)", value: vertical }
+                  - { label: "Retrato (4:5)", value: retrato }
+                  - { label: "Quadrado (1:1)", value: quadrado }
+              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
+              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
+      - name: video
+        label: Vídeo
+        file: tenner-site/content/galeria/video.json
+        fields:
+          - { label: Nome da categoria, name: label, widget: hidden, default: "Vídeo" }
+          - label: Imagens
+            name: items
+            widget: list
+            label_singular: imagem
+            add_to_top: true
+            collapsed: false
+            summary: "{{fields.title}}"
+            hint: "Carrega em “Adicionar imagem” para pôr uma nova. Arrasta para mudar a ordem; o X apaga."
+            fields:
+              - { label: Imagem, name: image, widget: image }
+              - { label: Título, name: title, widget: string, required: false, hint: "Aparece por cima da imagem no site." }
+              - label: Formato
+                name: format
+                widget: select
+                default: quadrado
+                options:
+                  - { label: "Vertical (9:16)", value: vertical }
+                  - { label: "Retrato (4:5)", value: retrato }
+                  - { label: "Quadrado (1:1)", value: quadrado }
+              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
+              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
+      - name: social
+        label: Social media
+        file: tenner-site/content/galeria/social.json
+        fields:
+          - { label: Nome da categoria, name: label, widget: hidden, default: "Social media" }
+          - label: Imagens
+            name: items
+            widget: list
+            label_singular: imagem
+            add_to_top: true
+            collapsed: false
+            summary: "{{fields.title}}"
+            hint: "Carrega em “Adicionar imagem” para pôr uma nova. Arrasta para mudar a ordem; o X apaga."
+            fields:
+              - { label: Imagem, name: image, widget: image }
+              - { label: Título, name: title, widget: string, required: false, hint: "Aparece por cima da imagem no site." }
+              - label: Formato
+                name: format
+                widget: select
+                default: quadrado
+                options:
+                  - { label: "Vertical (9:16)", value: vertical }
+                  - { label: "Retrato (4:5)", value: retrato }
+                  - { label: "Quadrado (1:1)", value: quadrado }
+              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
+              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
 
   # ---------------- PLANOS ----------------
   - name: planos
