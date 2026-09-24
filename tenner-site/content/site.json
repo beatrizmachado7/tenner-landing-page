@@ -1,0 +1,23 @@
+{
+  "hero": {
+    "eyebrow": "Conteúdo · Storytelling · Desporto",
+    "tagline": "Your image — Your story — Your game",
+    "intro": "Transformamos momentos em histórias e histórias em marcas. Conteúdo pronto a publicar para atletas, treinadores, clubes e marcas do desporto.",
+    "image1": "/images/prematch.jpg",
+    "image2": "/images/offseason.jpg",
+    "image3": "/images/equipa.jpg"
+  },
+  "marquee": ["Pre match", "Match highlight", "Off season", "New club", "Sponsor video", "Assessoria de imprensa"],
+  "about": {
+    "title": "Cada percurso tem uma história para contar",
+    "paragraph1": "Na TENNER., transformamos momentos em histórias e histórias em marcas. Somos uma plataforma de conteúdo, storytelling e comunicação dedicada ao universo do desporto, criada para acompanhar atletas, treinadores, clubes, marcas e empresas na construção de uma presença digital forte, autêntica e relevante.",
+    "paragraph2": "Combinamos criatividade, tecnologia e narrativa para transformar desempenho, personalidade e momentos únicos em conteúdos que geram impacto e criam ligações com comunidades, fãs e parceiros.",
+    "audience": ["Atletas", "Treinadores", "Clubes", "Marcas", "Empresas"]
+  },
+  "contact": {
+    "title": "Entra em contacto",
+    "subtitle": "Eleva a tua performance digital",
+    "email": "tennergeral@gmail.com",
+    "instagram": "tenner10_"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "season_discount": 10,
+  "footnote": "Valores apresentados são pagos mensalmente ou pagos por época",
+  "plans": [
+    {
+      "name": "TENNER",
+      "suffix": "",
+      "price": "50€",
+      "price_note": "por mês",
+      "season_discount": true,
+      "featured": false,
+      "features": [
+        { "text": "Pre match semanais (estático)", "offer": "", "detail": "" },
+        { "text": "", "offer": "1 reels dos melhores momentos do mês (até 1 min)", "detail": "" },
+        { "text": "Comunicação", "offer": "", "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press" }
+      ]
+    },
+    {
+      "name": "TENNER+",
+      "suffix": "",
+      "price": "150€",
+      "price_note": "por mês",
+      "season_discount": false,
+      "featured": false,
+      "features": [
+        { "text": "Pre match semanais (estático)", "offer": "1 motion", "detail": "" },
+        { "text": "Reels melhores momentos da semana", "offer": "1 reels melhores momentos do mês (até 1 min)", "detail": "" },
+        { "text": "Comunicação", "offer": "", "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press" }
+      ]
+    },
+    {
+      "name": "TENNER",
+      "suffix": "PRO",
+      "price": "Sob consulta",
+      "price_note": "Plano à medida",
+      "season_discount": true,
+      "featured": true,
+      "features": [
+        { "text": "Pre match semanais (estáticos e motion)", "offer": "", "detail": "" },
+        { "text": "Vídeos reels", "offer": "", "detail": "Skills destaque / Best of da semana e mês" },
+        { "text": "Assessoria de imprensa", "offer": "", "detail": "" },
+        { "text": "Registo fotográfico e vídeo", "offer": "", "detail": "Em jogos solicitados · Pre-season / Off season · Lifestyle (férias, aniversário, jantares…) · Transferências e renovações" },
+        { "text": "Comunicação", "offer": "", "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press" },
+        { "text": "Captação de patrocínios", "offer": "", "detail": "" },
+        { "text": "Conteúdos exclusivos social media", "offer": "", "detail": "" }
+      ]
+    }
+  ]
+}

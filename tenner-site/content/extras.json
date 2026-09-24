@@ -1,0 +1,9 @@
+{
+  "intro": "Complementa qualquer plano com presença nos jogos e assessoria de imprensa. Toca num serviço para ver os detalhes.",
+  "items": [
+    { "title": "Fotografia", "subtitle": "Presença nos jogos para registo fotográfico exclusivo", "text": "Estamos no jogo para captar os momentos que definem cada competição, transformados em imagens com valor para redes sociais, imprensa e patrocinadores.", "highlight": false },
+    { "title": "Vídeo", "subtitle": "Presença nos jogos para registo de vídeo exclusivo", "text": "Registo em vídeo no local, com edição dos melhores momentos em formatos curtos e dinâmicos para Shorts, Reels e Stories.", "highlight": false },
+    { "title": "Combo", "subtitle": "Presença nos jogos para registo fotográfico e vídeo exclusivo", "text": "Fotografia e vídeo na mesma presença: cobertura completa do jogo, pronta a publicar.", "highlight": false },
+    { "title": "Assessoria de imprensa", "subtitle": "Geramos o mediatismo que mereces nos mídia (TV, rádio, jornais)", "text": "Levamos a tua história aos meios de comunicação: TV, rádio e jornais.", "highlight": true }
+  ]
+}
