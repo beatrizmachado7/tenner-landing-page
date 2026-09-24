@@ -1,0 +1,158 @@
+/* TENNER. — tema do painel Decap CMS
+   O Decap usa classes geradas com o nome do componente (ex.: css-xxxx-AppHeader),
+   por isso os seletores usam [class*="-Nome"]. */
+:root{
+  --t-bg:#0a0a0a;--t-panel:#141414;--t-panel2:#1b1b1b;--t-line:#2a2a2a;--t-line2:#3a3a3a;
+  --t-y:#efe3a0;--t-y2:#fff6c4;--t-ink:#f4f1e8;--t-soft:#d9d4c4;--t-muted:#a8a395;
+  --t-disp:'Anton',Impact,sans-serif;--t-body:'Barlow',system-ui,sans-serif;
+}
+html,body{background:var(--t-bg)!important;color:var(--t-ink)!important;font-family:var(--t-body)!important}
+body{background-image:linear-gradient(90deg,transparent 0 7%,#111 7% 17%,transparent 17% 57%,#111 57% 67%,transparent 67%)!important;background-attachment:fixed!important}
+body *{font-family:var(--t-body)}
+::selection{background:var(--t-y);color:#0a0a0a}
+*{scrollbar-color:#333 transparent}
+
+/* ---------- login ---------- */
+[class*="-StyledAuthenticationPage"]{background:transparent!important;gap:0!important}
+[class*="-StyledAuthenticationPage"]::before{content:"TENNER.";font-family:var(--t-disp);font-size:clamp(64px,10vw,120px);line-height:1;color:var(--t-ink);letter-spacing:.01em;margin-bottom:6px}
+[class*="-StyledAuthenticationPage"]::after{content:"Painel de administração";font-size:13px;letter-spacing:.4em;text-transform:uppercase;color:var(--t-y);margin:-8px 0 40px;order:1}
+[class*="-CustomIconWrapper"],[class*="-PageLogoIcon"],[class*="-DecapLogoIcon"],[class*="-NetlifyCreditIcon"]{display:none!important}
+[class*="-LoginButton"]{order:2;background:var(--t-y)!important;color:#0a0a0a!important;border-radius:0!important;border:0!important;min-height:52px!important;padding:0 32px!important;font-family:var(--t-disp)!important;font-size:18px!important;letter-spacing:.06em!important;text-transform:uppercase!important;box-shadow:none!important;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:background .2s,transform .2s!important}
+[class*="-LoginButton"]:hover{background:var(--t-y2)!important;transform:translateY(-2px)}
+[class*="-LoginButton"] *{color:#0a0a0a!important;font-family:var(--t-disp)!important}
+[class*="-GoBackButtonStyle"]{order:3;color:var(--t-muted)!important;margin-top:24px!important}
+[class*="-GoBackButtonStyle"] *{color:var(--t-muted)!important}
+
+/* ---------- header ---------- */
+[class*="-AppHeader"]:not([class*="-AppHeaderContent"]):not([class*="-AppHeaderNav"]):not([class*="-AppHeaderButton"]):not([class*="-AppHeaderActions"]):not([class*="-AppHeaderQuick"]):not([class*="-AppHeaderLogo"]):not([class*="-AppHeaderSiteLink"]):not([class*="-AppHeaderTest"]){background:rgba(10,10,10,.9)!important;backdrop-filter:blur(10px);border-bottom:1px solid var(--t-line)!important;box-shadow:none!important}
+header[class*="css-"]{background:rgba(10,10,10,.92)!important;backdrop-filter:blur(10px);border-bottom:1px solid var(--t-line)!important;box-shadow:none!important}
+[class*="-AppHeaderContent"]{background:transparent!important}
+[class*="-AppHeaderLogo"] img{filter:none;max-height:34px!important}
+[class*="-AppHeaderButton"],[class*="-AppHeaderNavLink"]{color:var(--t-soft)!important;font-family:var(--t-disp)!important;text-transform:uppercase;letter-spacing:.08em;font-size:15px!important;background:transparent!important}
+[class*="-AppHeaderButton"]:hover,[class*="-AppHeaderNavLink"]:hover,[class*="-AppHeaderNavLink"].header-link-active,[class*="-AppHeaderNavLink"][aria-current="page"]{color:var(--t-y)!important}
+[class*="-AppHeaderButton"] svg,[class*="-AppHeaderNavLink"] svg{color:inherit!important}
+[class*="-AppHeaderSiteLink"]{color:var(--t-muted)!important}
+[class*="-AppHeaderSiteLink"]:hover{color:var(--t-y)!important}
+[class*="-AppHeaderQuickNewButton"],[class*="-StyledDropdownButton"]{background:var(--t-y)!important;color:#0a0a0a!important;border-radius:0!important}
+[class*="-AvatarDropdownButton"],[class*="-AvatarPlaceholderIcon"]{background:var(--t-panel2)!important;color:var(--t-y)!important;border:1px solid var(--t-line2)!important}
+
+/* dropdowns */
+[class*="-DropdownList"]{background:var(--t-panel2)!important;border:1px solid var(--t-line2)!important;border-radius:0!important;box-shadow:0 20px 40px -10px #000!important}
+[class*="-StyledMenuItem"],[class*="-DropdownList"] [role="menuitem"]{color:var(--t-ink)!important;background:transparent!important}
+[class*="-StyledMenuItem"]:hover,[class*="-DropdownList"] [role="menuitem"]:hover{background:#262626!important;color:var(--t-y)!important}
+[class*="-MenuItemIconContainer"]{color:var(--t-y)!important}
+
+/* ---------- sidebar ---------- */
+[class*="-SidebarContainer"]{background:var(--t-panel)!important;border:1px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important;border-top:3px solid var(--t-y)!important}
+[class*="-SidebarHeading"]{font-family:var(--t-disp)!important;font-weight:400!important;font-size:28px!important;text-transform:uppercase;letter-spacing:.02em;color:var(--t-ink)!important}
+[class*="-SidebarNavLink"]{color:var(--t-soft)!important;border-left:3px solid transparent!important;font-weight:500!important;text-transform:uppercase;letter-spacing:.06em;font-size:14px!important}
+[class*="-SidebarNavLink"]:hover{color:var(--t-y)!important;background:#1a1a1a!important}
+[class*="-SidebarNavLink"].sidebar-active,[class*="-SidebarNavLink"][aria-current="page"]{color:var(--t-y)!important;background:#1d1c16!important;border-left-color:var(--t-y)!important}
+[class*="-SidebarNavLink"] svg{color:var(--t-y)!important}
+[class*="-SearchContainer"]{background:var(--t-panel2)!important;border-radius:0!important}
+[class*="-SearchInput"]{background:var(--t-panel2)!important;color:var(--t-ink)!important;border:1px solid var(--t-line2)!important;border-radius:0!important}
+[class*="-SearchInput"]:focus{border-color:var(--t-y)!important;box-shadow:none!important}
+[class*="-SearchIcon"]{color:var(--t-muted)!important}
+
+/* ---------- collection list ---------- */
+[class*="-CollectionTopContainer"]{background:var(--t-panel)!important;border:1px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important}
+[class*="-CollectionTopHeading"]{font-family:var(--t-disp)!important;font-weight:400!important;font-size:40px!important;text-transform:uppercase;color:var(--t-ink)!important;letter-spacing:.01em}
+[class*="-CollectionTopDescription"]{color:var(--t-muted)!important}
+[class*="-CollectionTopNewButton"]{background:var(--t-y)!important;color:#0a0a0a!important;border-radius:0!important;font-family:var(--t-disp)!important;text-transform:uppercase;letter-spacing:.06em}
+[class*="-ViewControlsSection"],[class*="-ViewControlsButton"]{color:var(--t-muted)!important}
+[class*="-ListCard"]:not([class*="-ListCardLink"]):not([class*="-ListCardTitle"]){background:var(--t-panel)!important;border:1px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important;transition:border-color .25s,transform .25s}
+[class*="-ListCard"]:not([class*="-ListCardLink"]):not([class*="-ListCardTitle"]):hover{border-color:var(--t-y)!important;transform:translateX(6px)}
+[class*="-ListCardLink"],[class*="-ListCardLink"]:hover{color:var(--t-ink)!important;background:transparent!important}
+[class*="-ListCardTitle"]{font-family:var(--t-disp)!important;font-weight:400!important;font-size:24px!important;text-transform:uppercase;color:var(--t-ink)!important;letter-spacing:.02em}
+[class*="-ListCardLink"]:hover [class*="-ListCardTitle"]{color:var(--t-y)!important}
+[class*="-GridCard"]{background:var(--t-panel)!important;border:1px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important}
+[class*="-CardHeading"]{color:var(--t-ink)!important;font-family:var(--t-disp)!important;font-weight:400!important;text-transform:uppercase}
+[class*="-CardBody"]{color:var(--t-muted)!important}
+[class*="-CollectionLabel"]{color:var(--t-y)!important}
+
+/* ---------- editor ---------- */
+[class*="-EditorContainer"],[class*="-Editor"]:not([class*="-EditorToggle"]):not([class*="-EditorControlBar"]),[class*="-ControlPaneContainer"],[class*="-StyledSplitPane"],[class*="-NoPreviewContainer"]{background:transparent!important;color:var(--t-ink)!important}
+[class*="-ToolbarContainer"]{background:rgba(10,10,10,.95)!important;border-bottom:1px solid var(--t-line)!important;box-shadow:none!important}
+[class*="-ToolbarSectionBackLink"]{border-right:1px solid var(--t-line)!important}
+[class*="-ToolbarSectionBackLink"]:hover{background:#151515!important}
+[class*="-BackArrow"]{color:var(--t-y)!important}
+[class*="-BackCollection"]{color:var(--t-ink)!important;font-family:var(--t-disp)!important;text-transform:uppercase;letter-spacing:.04em;font-size:15px!important}
+[class*="-BackStatusUnchanged"]{color:#86c29a!important}
+[class*="-BackStatusChanged"]{color:var(--t-y)!important}
+[class*="-ToolbarSectionMeta"]{border-left:1px solid var(--t-line)!important}
+[class*="-ToolbarButton"],[class*="-SaveButton"],[class*="-StatusButton"],[class*="-PublishedToolbarButton"]{border-radius:0!important;font-family:var(--t-disp)!important;text-transform:uppercase;letter-spacing:.06em;font-weight:400!important}
+[class*="-SaveButton"]{background:transparent!important;color:var(--t-y)!important;border:2px solid var(--t-y)!important}
+[class*="-SaveButton"]:disabled{opacity:.35}
+[class*="-ToolbarDropdown"] [class*="-StyledDropdownButton"],[class*="-PublishedToolbarButton"],[class*="-PublishedButton"]{background:var(--t-y)!important;color:#0a0a0a!important}
+[class*="-ToolbarDropdown"] [class*="-StyledDropdownButton"]:disabled{background:#3a3a3a!important;color:#888!important}
+[class*="-DeleteButton"]{background:transparent!important;color:#ff8f8f!important;border:1px solid #6b2b2b!important;border-radius:0!important}
+
+/* field labels + controls */
+[class*="-FieldLabel"]{background:var(--t-line)!important;color:var(--t-soft)!important;border:0!important;border-radius:0!important;font-family:var(--t-body)!important;font-weight:600!important;letter-spacing:.12em!important;text-transform:uppercase;font-size:11px!important;padding:5px 12px!important}
+[class*="-ControlContainer"]:focus-within > [class*="-ControlTopbar"] [class*="-FieldLabel"]{background:var(--t-y)!important;color:#0a0a0a!important}
+[class*="-ControlHint"]{color:var(--t-muted)!important;font-style:italic}
+[class*="-ControlErrorsList"]{color:#ff8f8f!important}
+[class*="-ControlContainer"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),[class*="-ControlContainer"] textarea,[class*="-ControlContainer"] [class*="-control"]:not([class*="-ControlContainer"]):not([class*="-ControlTopbar"]):not([class*="-ControlHint"]):not([class*="-ControlErrors"]):not([class*="-ControlPane"]){background:var(--t-panel)!important;color:var(--t-ink)!important;border:2px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important;transition:border-color .2s!important}
+[class*="-ControlContainer"] input:focus,[class*="-ControlContainer"] textarea:focus{border-color:var(--t-y)!important;outline:none!important}
+[class*="-ControlContainer"] [class*="-singleValue"],[class*="-ControlContainer"] [class*="-input"] input{color:var(--t-ink)!important}
+[class*="-menu"]{background:var(--t-panel2)!important;border:1px solid var(--t-line2)!important;border-radius:0!important}
+[class*="-option"]{background:transparent!important;color:var(--t-ink)!important}
+[class*="-option"]:hover{background:#262626!important;color:var(--t-y)!important}
+[class*="-indicatorSeparator"]{background:var(--t-line2)!important}
+
+/* list / object widgets */
+[class*="-TopBar"]:not([class*="-TopBarButton"]):not([class*="-TopBarContainer"]){background:var(--t-panel2)!important;border-radius:0!important;border:0!important}
+[class*="-TopBarContainer"]{border-radius:0!important}
+[class*="-StyledListItemTopBar"]{background:var(--t-panel2)!important;border-radius:0!important;border-left:3px solid var(--t-y)!important}
+[class*="-TopBarButton"],[class*="-ExpandButton"],[class*="-DragIconContainer"]{color:var(--t-soft)!important;background:transparent!important}
+[class*="-TopBarButton"]:hover,[class*="-ExpandButton"]:hover{color:var(--t-y)!important}
+[class*="-NestedObjectLabel"]{background:var(--t-panel)!important;color:var(--t-muted)!important;border:0!important}
+[class*="-ListItem"]{border-radius:0!important}
+[class*="-ObjectControl"],[class*="-ListControl"]{border-color:var(--t-line)!important}
+[class*="-AddButton"],[class*="-ButtonRound"]{background:var(--t-y)!important;color:#0a0a0a!important;border-radius:0!important;font-weight:600!important}
+
+/* toggles */
+[class*="-ToggleBackground"]{background:#333!important}
+[class*="-StyledToggle"][aria-checked="true"] [class*="-ToggleBackground"],[class*="-ToggleBackground"][class*="active"]{background:var(--t-y)!important}
+[class*="-ToggleHandle"]{background:var(--t-ink)!important}
+
+/* image / file widgets */
+[class*="-FileWidgetButton"]{background:var(--t-panel2)!important;color:var(--t-y)!important;border:1px solid var(--t-line2)!important;border-radius:0!important}
+[class*="-FileWidgetButtonRemove"]{color:#ff8f8f!important}
+[class*="-ImageWrapper"]{background:#111!important;border:1px solid var(--t-line)!important;border-radius:0!important}
+
+/* media library + modals */
+[class*="-StyledModal"]{background:var(--t-panel)!important;color:var(--t-ink)!important;border-radius:0!important;border:1px solid var(--t-line2)!important}
+[class*="-LibraryTitle"]{font-family:var(--t-disp)!important;font-weight:400!important;text-transform:uppercase;color:var(--t-ink)!important}
+[class*="-Card"][class*="css-"]:not([class*="-CardImage"]):not([class*="-CardText"]):not([class*="-CardGrid"]):not([class*="-CardHeading"]):not([class*="-CardBody"]){background:var(--t-panel2)!important;border-color:var(--t-line)!important;border-radius:0!important}
+[class*="-CardText"]{color:var(--t-soft)!important}
+[class*="-UploadButton"],[class*="-InsertButton"],[class*="-ActionButton"]{border-radius:0!important;font-family:var(--t-disp)!important;text-transform:uppercase;letter-spacing:.06em}
+[class*="-UploadButton"],[class*="-InsertButton"]{background:var(--t-y)!important;color:#0a0a0a!important}
+
+/* misc */
+[class*="-LoaderText"],[class*="-StyledLoader"]{color:var(--t-y)!important}
+[class*="-NotFoundContainer"],[class*="-ErrorContainer"]{color:var(--t-ink)!important}
+a{color:var(--t-y)}
+.ReactModal__Overlay{background:rgba(0,0,0,.8)!important}
+.notif__container .notification,[class*="-toast"]{border-radius:0!important}
+
+/* ---------- ajustes verificados no teste ---------- */
+[class*="-FieldLabel"]::after,[class*="-FieldLabel"]::before{display:none!important}
+[class*="-ControlContainer"] > div:not([class*="-ControlTopbar"]):not([class*="-ControlHint"]):not([class*="-ControlErrors"]){background:var(--t-panel)!important;border-color:var(--t-line)!important;border-radius:0!important}
+[class*="-TopBarContainer"]{background:var(--t-panel2)!important;border-radius:0!important;color:var(--t-soft)!important}
+[class*="-TopBarContainer"] [class*="-AddButton"]{background:var(--t-y)!important;color:#0a0a0a!important;border-radius:0!important;font-weight:600!important}
+[class*="-TopBarContainer"] [class*="-ExpandButton"]{background:transparent!important;color:var(--t-y)!important}
+[class*="-ListItem"]{border:1px solid var(--t-line)!important;background:#101010!important}
+[class*="-ListItem"] > div:not([class*="-StyledListItemTopBar"]):not([class*="-TopBar"]){background:#101010!important}
+[class*="-NestedObjectLabel"]{background:#101010!important;color:var(--t-soft)!important;font-weight:500}
+[class*="-PreviewLink"],[class*="-PreviewLink"] *{color:var(--t-y)!important}
+[class*="-StyledToggle"][aria-checked="true"] [class*="-ToggleBackground"]{background:var(--t-y)!important}
+[class*="-StyledToggle"][aria-checked="true"] [class*="-ToggleHandle"]{background:#0a0a0a!important}
+[class*="-ToggleHandle"]{box-shadow:none!important}
+div[class$="-control"],div[class*="-control "]{background:var(--t-panel)!important;border:2px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important;color:var(--t-ink)!important}
+div[class$="-control"]:focus-within{border-color:var(--t-y)!important}
+div[class*="-singleValue"],div[class*="-placeholder"]{color:var(--t-ink)!important}
+div[class*="-option"][aria-selected="true"]{background:#262626!important;color:var(--t-y)!important}
+[class*="-FileWidgetButton"]{background:transparent!important;color:var(--t-y)!important;border:1px solid var(--t-y)!important;border-radius:0!important;font-weight:600!important}
+[class*="-FileWidgetButton"]:hover{background:var(--t-y)!important;color:#0a0a0a!important}
+[class*="-FileWidgetButtonRemove"]{color:#ff8f8f!important;border-color:#6b2b2b!important}
