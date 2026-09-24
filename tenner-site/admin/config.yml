@@ -71,7 +71,7 @@ collections:
   - name: planos
     label: Planos e preços
     label_singular: plano
-    description: "Cada plano é uma entrada. O desconto à época e a nota por baixo dos planos estão em Definições gerais."
+    description: "Cada plano é uma entrada: nome e o que inclui."
     folder: tenner-site/content/planos
     extension: json
     format: json
@@ -79,15 +79,12 @@ collections:
     delete: true
     identifier_field: name
     slug: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}-{{slug}}"
-    summary: "{{name}} {{suffix}} — {{price}}"
+    summary: "{{name}} {{suffix}}"
     editor: { preview: false }
     sortable_fields: [ordem, name]
     fields:
       - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER ou TENNER+" }
       - { label: Sufixo em itálico, name: suffix, widget: string, required: false, hint: "Ex.: PRO (deixa vazio nos outros)" }
-      - { label: Preço, name: price, widget: string, hint: "Ex.: 50€ ou Sob consulta" }
-      - { label: Texto por baixo do preço, name: price_note, widget: string, required: false, hint: "Ex.: por mês" }
-      - { label: "Tem desconto à época?", name: season_discount, widget: boolean, default: false }
       - { label: "Destacar como “Mais completo”", name: featured, widget: boolean, default: false }
       - label: O que inclui
         name: features
@@ -180,12 +177,6 @@ collections:
                 field: { label: Etiqueta, name: label, widget: string }
           - { label: "Texto de introdução — O que fazemos", name: servicos_intro, widget: text }
           - { label: "Texto de introdução — Serviços extra", name: extras_intro, widget: text }
-          - label: Planos
-            name: planos
-            widget: object
-            fields:
-              - { label: "Desconto no pagamento à época (%)", name: season_discount, widget: number, value_type: int, min: 0, max: 100 }
-              - { label: Nota por baixo dos planos, name: footnote, widget: string }
           - label: Contacto
             name: contact
             widget: object

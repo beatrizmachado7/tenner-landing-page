@@ -21,14 +21,11 @@ function folder(name) {
 }
 
 const site = read(path.join(dir, 'site.json'));
-const planos = site.planos || {};
 const out = {
   'servicos.json': { intro: site.servicos_intro || '', items: folder('servicos') },
   'extras.json': { intro: site.extras_intro || '', items: folder('extras') },
   'planos.json': {
-    season_discount: planos.season_discount || 0,
-    footnote: planos.footnote || '',
-    plans: folder('planos').map((p) => ({ ...p, features: p.features || [] }))
+    plans: folder('planos').map(({ price, price_note, season_discount, ...p }) => ({ ...p, features: p.features || [] }))
   },
   'arquivo.json': { items: folder('arquivo') }
 };

@@ -1,9 +1,6 @@
 {
   "name": "TENNER",
   "suffix": "PRO",
-  "price": "Sob consulta",
-  "price_note": "Plano à medida",
-  "season_discount": true,
   "featured": true,
   "features": [
     {

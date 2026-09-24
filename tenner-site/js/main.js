@@ -58,20 +58,10 @@
   }
 
   /* ---------- planos.json ---------- */
-  var plansData = null, billing = 'mensal';
+  var plansData = null;
   function renderPlans() {
     var d = plansData; if (!d) return;
-    var pct = d.season_discount || 0;
-    var season = billing === 'epoca';
-    var eligible = (d.plans || []).filter(function (p) { return p.season_discount; })
-      .map(function (p) { return p.name + (p.suffix ? ' ' + p.suffix : ''); });
-    $('#season-btn').textContent = 'À época' + (pct ? ' −' + pct + '%' : '');
-    $('#season-note').textContent = pct && eligible.length
-      ? 'Desconto de ' + pct + '% à época exclusivo ' + eligible.join(' e ') : '';
-    $('#plans-foot').textContent = d.footnote || '';
     $('#plans').innerHTML = (d.plans || []).map(function (p) {
-      var note = p.price_note || '';
-      if (season) note = p.season_discount ? '−' + pct + '% no pagamento à época' : 'Desconto à época não aplicável';
       var full = p.name + (p.suffix ? ' ' + p.suffix : '');
       var feats = (p.features || []).map(function (f) {
         var main = esc(f.text || '');
@@ -83,19 +73,10 @@
         (p.featured ? '<div class="badge disp">Mais completo</div>' : '') +
         '<div class="disp plan-name">' + esc(p.name) + (p.suffix ? '<span class="ital">' + esc(p.suffix) + '</span>' : '') + '</div>' +
         '<ul class="feats">' + feats + '</ul>' +
-        '<div class="price"><div class="disp v' + (/\d/.test(p.price || '') ? '' : ' long') + '">' + esc(p.price) + '</div><div class="note">' + esc(note) + '</div></div>' +
         '<a class="btn ' + (p.featured ? 'btn-y' : 'btn-o') + '" href="#contacto" data-plan="' + esc(full) + '">Quero o ' + esc(full) + '</a>' +
         '</article>';
     }).join('');
   }
-  $$('[data-billing]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      billing = b.getAttribute('data-billing');
-      $$('[data-billing]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-      renderPlans();
-      $$('.price .v').forEach(function (v) { v.classList.add('bump'); setTimeout(function () { v.classList.remove('bump'); }, 300); });
-    });
-  });
 
   /* ---------- extras.json ---------- */
   function renderExtras(data) {

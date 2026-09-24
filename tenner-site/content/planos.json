@@ -1,13 +1,8 @@
 {
-  "season_discount": 10,
-  "footnote": "Valores apresentados são pagos mensalmente ou pagos por época",
   "plans": [
     {
       "name": "TENNER",
       "suffix": "",
-      "price": "50€",
-      "price_note": "por mês",
-      "season_discount": true,
       "featured": false,
       "features": [
         {
@@ -30,9 +25,6 @@
     {
       "name": "TENNER+",
       "suffix": "",
-      "price": "150€",
-      "price_note": "por mês",
-      "season_discount": false,
       "featured": false,
       "features": [
         {
@@ -55,9 +47,6 @@
     {
       "name": "TENNER",
       "suffix": "PRO",
-      "price": "Sob consulta",
-      "price_note": "Plano à medida",
-      "season_discount": true,
       "featured": true,
       "features": [
         {

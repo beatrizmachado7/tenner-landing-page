@@ -1,9 +1,6 @@
 {
   "name": "TENNER",
   "suffix": "",
-  "price": "50€",
-  "price_note": "por mês",
-  "season_discount": true,
   "featured": false,
   "features": [
     {
