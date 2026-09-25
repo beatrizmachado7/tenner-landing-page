@@ -3,15 +3,30 @@
   "items": [
     {
       "title": "Carrossel 1",
-      "images": ["/images/equipamento.jpg", "/images/plantel.jpg", "/images/equipa.jpg"]
+      "images": [
+        "/images/equipamento.jpg",
+        "/images/plantel.jpg",
+        "/images/equipa.jpg"
+      ],
+      "ativo": true
     },
     {
       "title": "Carrossel 2",
-      "images": ["/images/nb-atleta.jpg", "/images/chuteira.jpg", "/images/lifestyle.jpg"]
+      "images": [
+        "/images/nb-atleta.jpg",
+        "/images/chuteira.jpg",
+        "/images/lifestyle.jpg"
+      ],
+      "ativo": true
     },
     {
       "title": "Carrossel 3",
-      "images": ["/images/jogador.jpg", "/images/apresentacao.jpg", "/images/campanha.jpg"]
+      "images": [
+        "/images/jogador.jpg",
+        "/images/apresentacao.jpg",
+        "/images/campanha.jpg"
+      ],
+      "ativo": true
     }
   ]
 }

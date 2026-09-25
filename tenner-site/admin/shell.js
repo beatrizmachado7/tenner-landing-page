@@ -26,11 +26,16 @@
     var h = location.hash || '#/dashboard';
     var dash = h === '#/' || h.indexOf('#/dashboard') === 0;
     body.classList.toggle('tn-on-dash', dash);
+    var m = h.match(/^#\/collections\/([^/?]+)/);
+    if (m) body.setAttribute('data-col', m[1]); else body.removeAttribute('data-col');
     $$('.tn-link[data-match]').forEach(function (a) {
       a.classList.toggle('on', new RegExp(a.getAttribute('data-match')).test(h));
     });
     body.classList.remove('tn-menu-open');
     if (dash) loadStats();
+    if (!/\/entries\//.test(h)) svcCache = {};
+    setTimeout(decorateSvc, 50);
+    setTimeout(decorateArq, 50);
   }
   window.addEventListener('hashchange', onRoute);
 
@@ -43,13 +48,6 @@
   });
   $('#tn-burger').addEventListener('click', function () { body.classList.toggle('tn-menu-open'); });
   $('#tn-scrim').addEventListener('click', function () { body.classList.remove('tn-menu-open'); });
-
-  // "Imagens e vídeos" abre a biblioteca de media do Decap (o botão original fica escondido no topo do Decap)
-  $('#tn-media').addEventListener('click', function () {
-    var btn = $$('#nc-root header button').filter(function (b) { return /m[eé]dia|multim/i.test(b.textContent); })[0];
-    if (btn) btn.click();
-    body.classList.remove('tn-menu-open');
-  });
 
   /* ---------- pesquisa ---------- */
   $('#tn-search').addEventListener('submit', function (e) {
@@ -106,6 +104,82 @@
       set('q-serv', plural(serv, 'serviço', 'serviços') + ' · ' + plural(extras, 'extra', 'extras'));
     });
   }
+
+
+  /* ---------- "O que fazemos" e "Serviços extra": cartões verticais com nome, descrição e detalhes ---------- */
+  var CARD_COLS = { servicos: 1, extras: 1 };
+  var svcCache = {}, svcLoading = {};
+  function loadSvc(col, cb) {
+    if (svcCache[col]) return cb(svcCache[col]);
+    if (svcLoading[col]) return;
+    svcLoading[col] = true;
+    get(col).then(function (d) {
+      svcLoading[col] = false;
+      var map = {};
+      ((d && d.items) || []).forEach(function (it) { map[String(it.title || '').trim().toLowerCase()] = it; });
+      svcCache[col] = map;
+      cb(map);
+    });
+  }
+  var escH = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var arrow = '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  function decorateSvc() {
+    var col = body.getAttribute('data-col');
+    if (!CARD_COLS[col] || /\/entries\//.test(location.hash) || /\/new/.test(location.hash)) return;
+    var cards = $$('#nc-root li[class*="-ListCard"]:not([data-tn])');
+    if (!cards.length) return;
+    loadSvc(col, function (map) {
+      cards.forEach(function (li) {
+        if (li.getAttribute('data-tn')) return;
+        var link = $('a', li), h = $('h2', li);
+        if (!link || !h) return;
+        var name = h.textContent.trim();
+        var it = map[name.toLowerCase()];
+        li.setAttribute('data-tn', '1');
+        li.classList.add('tn-svc');
+        link.innerHTML =
+          '<span class="tn-svc-name">' + escH(name) + '</span>' +
+          '<span class="tn-svc-desc">' + escH((it && (it.text || it.subtitle)) || 'Carrega para adicionar a descrição.') + '</span>' +
+          '<span class="tn-svc-rows">' +
+            '<span class="tn-svc-row"><i></i>No site<b class="' + (it ? 'ok' : 'off') + '">' + (it ? 'Visível' : 'Oculto') + '</b></span>' +
+          '</span>' +
+          '<span class="tn-svc-foot">Editar' + arrow + '</span>';
+      });
+    });
+  }
+  var mo = new MutationObserver(function () { if (CARD_COLS[body.getAttribute('data-col')]) decorateSvc(); });
+  mo.observe(document.getElementById('nc-root'), { childList: true, subtree: true });
+
+
+  /* ---------- Arquivo: estado Ativo/Inativo de cada cartão + pré-visualização dos vídeos ---------- */
+  function decorateArq() {
+    if (body.getAttribute('data-col') !== 'arquivo') return;
+    $$('#nc-root [class*="-ListItem"]').forEach(function (li) {
+      var own = $$('[role="switch"]', li).filter(function (t) {
+        var p = t.parentNode; while (p && p !== li && !(p.className && String(p.className).indexOf('-ListItem') > -1)) p = p.parentNode;
+        return p === li;
+      })[0];
+      if (own) {
+        var st = own.getAttribute('aria-checked') === 'true' ? 'on' : 'off';
+        if (li.getAttribute('data-tn-state') !== st) li.setAttribute('data-tn-state', st);
+        var cc = own.closest('[class*="-ControlContainer"]');
+        if (cc && !cc.hasAttribute('data-tn-toggle')) cc.setAttribute('data-tn-toggle', '1');
+      }
+    });
+    $$('#nc-root [class*="-ListItem"] a').forEach(function (a) {
+      var src = a.getAttribute('href') || '';
+      if (!/\.(mp4|webm|mov)(\?|$)/i.test(src + ' ' + a.textContent) || a.getAttribute('data-tn-v') === src) return;
+      a.setAttribute('data-tn-v', src);
+      var box = a.parentNode, old = box.querySelector('video.tn-vprev');
+      if (old) old.remove();
+      var v = document.createElement('video');
+      v.className = 'tn-vprev'; v.src = src; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.setAttribute('playsinline', '');
+      box.insertBefore(v, box.firstChild);
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    });
+  }
+  var moArq = new MutationObserver(function () { if (body.getAttribute('data-col') === 'arquivo') decorateArq(); });
+  moArq.observe(document.getElementById('nc-root'), { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-checked', 'href'] });
 
   /* ---------- arranque ---------- */
   if (id) {

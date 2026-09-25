@@ -81,7 +81,7 @@
           (f.detail ? '<div class="feat-s">' + esc(f.detail) + '</div>' : '') + '</div></li>';
       }).join('');
       return '<article class="plan reveal in' + (p.featured ? ' featured' : '') + '">' +
-        (p.featured ? '<div class="badge disp">Mais completo</div>' : '') +
+        (p.featured ? '<div class="badge disp">O mais pedido</div>' : '') +
         '<div class="disp plan-name">' + esc(p.name) + (p.suffix ? '<span class="ital">' + esc(p.suffix) + '</span>' : '') + '</div>' +
         '<ul class="feats">' + feats + '</ul>' +
         (function () {
