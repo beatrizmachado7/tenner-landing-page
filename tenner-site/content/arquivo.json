@@ -29,13 +29,27 @@
     "title": "Conteúdos Social Media",
     "items": [
       {
-        "title": "Carrossel Instagram",
+        "title": "Carrossel 1",
         "images": [
           "/images/equipamento.jpg",
-          "/images/nb-atleta.jpg",
           "/images/plantel.jpg",
-          "/images/chuteira.jpg",
           "/images/equipa.jpg"
+        ]
+      },
+      {
+        "title": "Carrossel 2",
+        "images": [
+          "/images/nb-atleta.jpg",
+          "/images/chuteira.jpg",
+          "/images/lifestyle.jpg"
+        ]
+      },
+      {
+        "title": "Carrossel 3",
+        "images": [
+          "/images/jogador.jpg",
+          "/images/apresentacao.jpg",
+          "/images/campanha.jpg"
         ]
       }
     ]
