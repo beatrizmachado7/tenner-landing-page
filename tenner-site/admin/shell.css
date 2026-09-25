@@ -89,7 +89,7 @@ a.tn-card:hover{border-color:rgba(239,227,160,.45);background:var(--s-card2);tra
 .tn-prog-h a{display:inline-flex;align-items:center;gap:6px;color:var(--s-y);font-weight:500;font-size:15px;text-decoration:none}
 .tn-prog-h a svg{width:15px;height:15px;transition:transform .2s}
 .tn-prog-h a:hover svg{transform:translateX(3px)}
-.tn-prog-v{flex-wrap:wrap;display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+.tn-prog-v{flex-wrap:wrap;display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:0}
 .tn-prog-v b{white-space:nowrap;font:700 32px/1 var(--t-body)}
 .tn-prog-v span{color:var(--s-muted);font-size:16px}
 .tn-bar{height:10px;border-radius:99px;background:#2a2819;overflow:hidden}

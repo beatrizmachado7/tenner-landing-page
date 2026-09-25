@@ -15,3 +15,8 @@ Site estático (HTML + CSS + JS) com painel de administração Decap CMS em `/ad
 ## Netlify
 - Base directory: `tenner-site` · Build command: vem do `netlify.toml` (`node build.js`) · Publish: `.`
 - Identity ativo (Invite only) + Git Gateway ativo.
+
+## Dashboard de gestão (painel → Dashboard)
+- Seguidores do Instagram, aprovações, entregas, projetos e jogos são editados no próprio Dashboard.
+- Ficam guardados em `painel-dados/*.json` na raiz do repositório (fora de `tenner-site/`, por isso não são publicados no site), através do Git Gateway do Netlify. Cada gravação é um commit com `[skip ci]` (não gera nova publicação).
+- Visitas: o Dashboard lê `/.netlify/functions/visitas` (`{"dias":[{"data":"AAAA-MM-DD","visitas":N}]}`). Sem essa fonte mostra "Dados ainda não disponíveis".
