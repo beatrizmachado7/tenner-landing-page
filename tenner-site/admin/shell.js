@@ -37,6 +37,22 @@
     setTimeout(decorateSvc, 50);
     setTimeout(decorateArq, 50);
   }
+  // O Decap só carrega os dados de uma entrada quando o editor abre. Ao saltar de uma entrada
+  // diretamente para outra (ex.: Pre Match Estático -> Motion Videos) ficava com os dados antigos.
+  // Por isso passamos primeiro pela lista da coleção, para o editor fechar e abrir de novo.
+  var lastHash = location.hash, bouncing = false;
+  var editorRe = /^#\/collections\/([^/]+)\/(entries\/[^/?]+|new)/;
+  window.addEventListener('hashchange', function () {
+    var h = location.hash;
+    if (!bouncing && editorRe.test(lastHash) && editorRe.test(h) && h !== lastHash) {
+      bouncing = true;
+      var target = h, col = h.match(editorRe)[1];
+      location.replace('#/collections/' + col);
+      setTimeout(function () { bouncing = false; location.hash = target; }, 150);
+      return;
+    }
+    lastHash = h;
+  });
   window.addEventListener('hashchange', onRoute);
 
   /* ---------- menu ---------- */
