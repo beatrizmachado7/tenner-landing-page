@@ -1,0 +1,8 @@
+{
+  "title": "Pre Match Estático",
+  "items": [
+    { "image": "/images/prematch.jpg", "title": "" },
+    { "image": "/images/estadio.jpg", "title": "" },
+    { "image": "/images/adeptos.jpg", "title": "" }
+  ]
+}

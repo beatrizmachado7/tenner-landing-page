@@ -27,87 +27,62 @@ collections:
   # ---------------- ARQUIVO ----------------
   - name: arquivo
     label: Arquivo
-    description: "Escolhe a categoria e adiciona ou apaga imagens. No site, “Todos” mostra as três categorias juntas."
+    description: "O Arquivo tem 3 colunas lado a lado: Pre Match Estático (fotos), Pre Match Motion Videos (vídeos) e Conteúdos Social Media (carrosséis)."
     editor: { preview: false }
     files:
-      - name: prematch
-        label: Pre match
-        file: tenner-site/content/galeria/prematch.json
+      - name: estatico
+        label: "1. Pre Match Estático (fotos)"
+        file: tenner-site/content/galeria/estatico.json
         fields:
-          - { label: Nome da categoria, name: label, widget: hidden, default: "Pre match" }
-          - label: Imagens
+          - { label: Título da coluna, name: title, widget: string, default: "Pre Match Estático" }
+          - label: Fotos
             name: items
             widget: list
-            label_singular: imagem
+            label_singular: foto
             add_to_top: true
             collapsed: false
             summary: "{{fields.title}}"
-            hint: "Carrega em “Adicionar imagem” para pôr uma nova. Arrasta para mudar a ordem; o X apaga."
+            hint: "As fotos aparecem inteiras, no formato original, sem cortes. Arrasta para mudar a ordem; o X apaga."
             fields:
-              - { label: Imagem, name: image, widget: image }
-              - { label: Título, name: title, widget: string, required: false, hint: "Aparece por cima da imagem no site." }
-              - label: Formato
-                name: format
-                widget: select
-                default: quadrado
-                options:
-                  - { label: "Vertical (9:16)", value: vertical }
-                  - { label: "Retrato (4:5)", value: retrato }
-                  - { label: "Quadrado (1:1)", value: quadrado }
-              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
-              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
-      - name: video
-        label: Vídeo
-        file: tenner-site/content/galeria/video.json
+              - { label: Foto, name: image, widget: image, choose_url: false }
+              - { label: "Descrição (opcional)", name: title, widget: string, required: false, hint: "Não aparece por cima da foto; só serve para identificar e para acessibilidade." }
+      - name: motion
+        label: "2. Pre Match Motion Videos (vídeos)"
+        file: tenner-site/content/galeria/motion.json
         fields:
-          - { label: Nome da categoria, name: label, widget: hidden, default: "Vídeo" }
-          - label: Imagens
+          - { label: Título da coluna, name: title, widget: string, default: "Pre Match Motion Videos" }
+          - label: Vídeos
             name: items
             widget: list
-            label_singular: imagem
+            label_singular: vídeo
             add_to_top: true
             collapsed: false
             summary: "{{fields.title}}"
-            hint: "Carrega em “Adicionar imagem” para pôr uma nova. Arrasta para mudar a ordem; o X apaga."
+            hint: "Os vídeos tocam sozinhos quando se abre o site (sem som e em loop). Usa ficheiros .mp4, de preferência com menos de 20 MB."
             fields:
-              - { label: Imagem, name: image, widget: image }
-              - { label: Título, name: title, widget: string, required: false, hint: "Aparece por cima da imagem no site." }
-              - label: Formato
-                name: format
-                widget: select
-                default: quadrado
-                options:
-                  - { label: "Vertical (9:16)", value: vertical }
-                  - { label: "Retrato (4:5)", value: retrato }
-                  - { label: "Quadrado (1:1)", value: quadrado }
-              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
-              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
+              - { label: "Vídeo (.mp4)", name: video, widget: file, choose_url: false }
+              - { label: "Descrição (opcional)", name: title, widget: string, required: false, hint: "Só serve para identificar o vídeo no painel." }
       - name: social
-        label: Social media
-        file: tenner-site/content/galeria/social.json
+        label: "3. Conteúdos Social Media (carrosséis)"
+        file: tenner-site/content/galeria/carrosseis.json
         fields:
-          - { label: Nome da categoria, name: label, widget: hidden, default: "Social media" }
-          - label: Imagens
+          - { label: Título da coluna, name: title, widget: string, default: "Conteúdos Social Media" }
+          - label: Carrosséis Instagram
             name: items
             widget: list
-            label_singular: imagem
+            label_singular: carrossel
             add_to_top: true
-            collapsed: false
+            collapsed: true
             summary: "{{fields.title}}"
-            hint: "Carrega em “Adicionar imagem” para pôr uma nova. Arrasta para mudar a ordem; o X apaga."
+            hint: "Cada carrossel mostra as suas fotos com setas para andar para a frente e para trás. Usa fotos todas do mesmo formato (ex.: 4:5)."
             fields:
-              - { label: Imagem, name: image, widget: image }
-              - { label: Título, name: title, widget: string, required: false, hint: "Aparece por cima da imagem no site." }
-              - label: Formato
-                name: format
-                widget: select
-                default: quadrado
-                options:
-                  - { label: "Vertical (9:16)", value: vertical }
-                  - { label: "Retrato (4:5)", value: retrato }
-                  - { label: "Quadrado (1:1)", value: quadrado }
-              - { label: Etiqueta, name: tag, widget: string, required: false, hint: "Ex.: Design, Motion, Vídeo, Social" }
-              - { label: "Vídeo em .mp4", name: video, widget: file, required: false, hint: "Se puseres um vídeo, a imagem serve de capa e aparece o botão play." }
+              - { label: "Nome do carrossel", name: title, widget: string, required: false, hint: "Ex.: Apresentação reforço. Só aparece no painel e para acessibilidade." }
+              - label: Fotos do carrossel (pela ordem em que aparecem)
+                name: images
+                widget: list
+                label_singular: foto
+                collapsed: false
+                field: { label: Foto, name: image, widget: image, choose_url: false }
 
   # ---------------- PLANOS ----------------
   - name: planos
@@ -128,6 +103,7 @@ collections:
       - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER ou TENNER+" }
       - { label: Sufixo em itálico, name: suffix, widget: string, required: false, hint: "Ex.: PRO (deixa vazio nos outros)" }
       - { label: "Destacar como “Mais completo”", name: featured, widget: boolean, default: false }
+      - { label: "Mensagem do WhatsApp (botão “Quero”)", name: whatsapp_message, widget: string, required: false, hint: "Texto que já aparece escrito no WhatsApp quando o cliente carrega no botão deste plano. Se deixares vazio, usa a mensagem padrão das Definições gerais. O número/link do WhatsApp está em Definições gerais → WhatsApp." }
       - label: O que inclui
         name: features
         widget: list
@@ -217,6 +193,13 @@ collections:
                 name: audience
                 widget: list
                 field: { label: Etiqueta, name: label, widget: string }
+          - label: WhatsApp (botões dos planos)
+            name: whatsapp
+            widget: object
+            collapsed: false
+            fields:
+              - { label: "Link do WhatsApp", name: link, widget: string, required: false, hint: "Ex.: https://wa.me/351912345678 (indicativo 351 + número, sem espaços nem +). Também podes pôr só o número. Se ficar vazio, os botões dos planos levam à secção de Contacto." }
+              - { label: "Mensagem padrão", name: message, widget: string, required: false, default: "Olá! Tenho interesse no plano {plano} da TENNER.", hint: "Usada nos planos que não têm mensagem própria. {plano} é trocado pelo nome do plano." }
           - { label: "Texto de introdução — O que fazemos", name: servicos_intro, widget: text }
           - { label: "Texto de introdução — Serviços extra", name: extras_intro, widget: text }
           - label: Contacto

@@ -1,124 +1,43 @@
 {
-  "items": [
-    {
-      "title": "Pre match estático",
-      "image": "/images/prematch.jpg",
-      "video": "",
-      "format": "vertical",
-      "tag": "Design",
-      "category": "prematch"
-    },
-    {
-      "title": "Match highlight",
-      "image": "/images/highlight.jpg",
-      "video": "",
-      "format": "vertical",
-      "tag": "Vídeo",
-      "category": "video"
-    },
-    {
-      "title": "Equipamento 24/25",
-      "image": "/images/equipamento.jpg",
-      "video": "",
-      "format": "quadrado",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Pre match motion",
-      "image": "/images/estadio.jpg",
-      "video": "",
-      "format": "vertical",
-      "tag": "Motion",
-      "category": "prematch"
-    },
-    {
-      "title": "Off season",
-      "image": "/images/offseason.jpg",
-      "video": "",
-      "format": "vertical",
-      "tag": "Vídeo",
-      "category": "video"
-    },
-    {
-      "title": "Campanha New Balance",
-      "image": "/images/nb-atleta.jpg",
-      "video": "",
-      "format": "retrato",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Dia de jogo",
-      "image": "/images/adeptos.jpg",
-      "video": "",
-      "format": "vertical",
-      "tag": "Motion",
-      "category": "prematch"
-    },
-    {
-      "title": "Sponsor video",
-      "image": "/images/sponsor.jpg",
-      "video": "",
-      "format": "vertical",
-      "tag": "Vídeo",
-      "category": "video"
-    },
-    {
-      "title": "Plantel",
-      "image": "/images/plantel.jpg",
-      "video": "",
-      "format": "quadrado",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Chuteira",
-      "image": "/images/chuteira.jpg",
-      "video": "",
-      "format": "retrato",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Equipa",
-      "image": "/images/equipa.jpg",
-      "video": "",
-      "format": "quadrado",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Lifestyle",
-      "image": "/images/lifestyle.jpg",
-      "video": "",
-      "format": "retrato",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Jogador",
-      "image": "/images/jogador.jpg",
-      "video": "",
-      "format": "quadrado",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Campanha",
-      "image": "/images/campanha.jpg",
-      "video": "",
-      "format": "retrato",
-      "tag": "Social",
-      "category": "social"
-    },
-    {
-      "title": "Nova época",
-      "image": "/images/apresentacao.jpg",
-      "video": "",
-      "format": "quadrado",
-      "tag": "Social",
-      "category": "social"
-    }
-  ]
+  "estatico": {
+    "title": "Pre Match Estático",
+    "items": [
+      {
+        "image": "/images/prematch.jpg",
+        "title": ""
+      },
+      {
+        "image": "/images/estadio.jpg",
+        "title": ""
+      },
+      {
+        "image": "/images/adeptos.jpg",
+        "title": ""
+      }
+    ]
+  },
+  "motion": {
+    "title": "Pre Match Motion Videos",
+    "items": [
+      {
+        "video": "/images/uploads/da-rio-miranda.mp4",
+        "title": ""
+      }
+    ]
+  },
+  "social": {
+    "title": "Conteúdos Social Media",
+    "items": [
+      {
+        "title": "Carrossel Instagram",
+        "images": [
+          "/images/equipamento.jpg",
+          "/images/nb-atleta.jpg",
+          "/images/plantel.jpg",
+          "/images/chuteira.jpg",
+          "/images/equipa.jpg"
+        ]
+      }
+    ]
+  }
 }

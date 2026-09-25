@@ -27,29 +27,35 @@ const out = {
   'planos.json': {
     plans: folder('planos').map(({ price, price_note, season_discount, ...p }) => ({ ...p, features: p.features || [] }))
   },
-  'arquivo.json': { items: galeria() }
+  'arquivo.json': galeria()
 };
 
-// Arquivo: 3 categorias (content/galeria/<categoria>.json), cada uma com a sua lista de imagens.
-// No site ("Todos") as categorias aparecem intercaladas para a galeria ficar variada.
+// Arquivo: 3 colunas (content/galeria/estatico.json, motion.json, carrosseis.json).
 function galeria() {
-  const cats = ['prematch', 'video', 'social'];
-  const lists = cats.map((cat) => {
-    const f = path.join(dir, 'galeria', cat + '.json');
-    if (!fs.existsSync(f)) return [];
-    let data;
-    try { data = read(f); } catch (e) { console.warn('[build] ignorado (JSON inválido): galeria/' + cat); return []; }
-    return (data.items || []).filter((i) => i && i.image).map((i) => ({ ...i, category: cat }));
-  });
-  const out = [];
-  for (let n = 0; lists.some((l) => n < l.length); n++) {
-    lists.forEach((l) => { if (n < l.length) out.push(l[n]); });
-  }
-  return out;
+  const col = (name, fallback, keep) => {
+    const f = path.join(dir, 'galeria', name + '.json');
+    let data = {};
+    if (fs.existsSync(f)) {
+      try { data = read(f); } catch (e) { console.warn('[build] ignorado (JSON inválido): galeria/' + name); }
+    }
+    return { title: data.title || fallback, items: (data.items || []).filter((i) => i && keep(i)) };
+  };
+  const social = col('carrosseis', 'Conteúdos Social Media', (i) => Array.isArray(i.images));
+  social.items = social.items
+    .map((c) => ({ ...c, images: c.images.map((x) => (x && typeof x === 'object' ? x.image : x)).filter(Boolean) }))
+    .filter((c) => c.images.length);
+  const cols = {
+    estatico: col('estatico', 'Pre Match Estático', (i) => i.image),
+    motion: col('motion', 'Pre Match Motion Videos', (i) => i.video),
+    social
+  };
+  return cols;
 }
 
 for (const [file, data] of Object.entries(out)) {
   fs.writeFileSync(path.join(dir, file), JSON.stringify(data, null, 2) + '\n');
-  const n = (data.items || data.plans || []).length;
+  const n = data.estatico
+    ? data.estatico.items.length + data.motion.items.length + data.social.items.length
+    : (data.items || data.plans || []).length;
   console.log('[build]', file, '→', n, 'itens');
 }

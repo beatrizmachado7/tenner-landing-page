@@ -4,6 +4,7 @@
       "name": "TENNER",
       "suffix": "",
       "featured": false,
+      "whatsapp_message": "Olá! Tenho interesse no plano TENNER da TENNER. Podem dar-me mais informações?",
       "features": [
         {
           "text": "Pre match semanais (estático)",
@@ -26,6 +27,7 @@
       "name": "TENNER+",
       "suffix": "",
       "featured": false,
+      "whatsapp_message": "Olá! Tenho interesse no plano TENNER+ da TENNER. Podem dar-me mais informações?",
       "features": [
         {
           "text": "Pre match semanais (estático)",
@@ -48,6 +50,7 @@
       "name": "TENNER",
       "suffix": "PRO",
       "featured": true,
+      "whatsapp_message": "Olá! Tenho interesse no plano TENNER PRO da TENNER. Podem dar-me mais informações?",
       "features": [
         {
           "text": "Pre match semanais (estáticos e motion)",
