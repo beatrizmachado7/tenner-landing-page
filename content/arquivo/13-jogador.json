@@ -1,0 +1,10 @@
+{
+  "title": "Jogador",
+  "category": "social",
+  "tag": "Social",
+  "image": "/images/jogador.jpg",
+  "video": "",
+  "format": "quadrado",
+  "ordem": 130,
+  "visivel": true
+}

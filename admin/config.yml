@@ -1,0 +1,212 @@
+# Painel de administração TENNER. (Decap CMS)
+# Login com Netlify Identity; cada publicação faz um commit no GitHub e o Netlify reconstrói o site.
+# Os ficheiros estão dentro da pasta tenner-site/ do repositório.
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: "Novo em {{collection}}: “{{slug}}”"
+    update: "Atualiza {{collection}}: “{{slug}}”"
+    delete: "Apaga de {{collection}}: “{{slug}}”"
+    uploadMedia: "Envia “{{path}}”"
+    deleteMedia: "Apaga “{{path}}”"
+
+locale: pt
+site_url: https://tenner10.netlify.app
+display_url: https://tenner10.netlify.app
+logo_url: /images/logo-admin.svg
+
+media_folder: tenner-site/images/uploads
+public_folder: /images/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  # ---------------- ARQUIVO ----------------
+  - name: arquivo
+    label: Arquivo
+    description: "O Arquivo tem 3 colunas lado a lado: Pre Match Estático (fotos), Pre Match Motion Videos (vídeos) e Conteúdos Social Media (carrosséis)."
+    editor: { preview: false }
+    files:
+      - name: estatico
+        label: "1. Pre Match Estático (fotos)"
+        file: tenner-site/content/galeria/estatico.json
+        fields:
+          - { label: Título da coluna, name: title, widget: string, default: "Pre Match Estático" }
+          - label: Fotos
+            name: items
+            widget: list
+            label_singular: foto
+            add_to_top: true
+            collapsed: false
+            summary: "{{fields.title}}"
+            hint: "As fotos aparecem inteiras, no formato original, sem cortes. Arrasta para mudar a ordem; o X apaga."
+            fields:
+              - { label: Foto, name: image, widget: image, choose_url: false }
+              - { label: "Descrição (opcional)", name: title, widget: string, required: false, hint: "Não aparece por cima da foto; só serve para identificar e para acessibilidade." }
+      - name: motion
+        label: "2. Pre Match Motion Videos (vídeos)"
+        file: tenner-site/content/galeria/motion.json
+        fields:
+          - { label: Título da coluna, name: title, widget: string, default: "Pre Match Motion Videos" }
+          - label: Vídeos
+            name: items
+            widget: list
+            label_singular: vídeo
+            add_to_top: true
+            collapsed: false
+            summary: "{{fields.title}}"
+            hint: "Os vídeos tocam sozinhos quando se abre o site (sem som e em loop). Usa ficheiros .mp4, de preferência com menos de 20 MB."
+            fields:
+              - { label: "Vídeo (.mp4)", name: video, widget: file, choose_url: false }
+              - { label: "Descrição (opcional)", name: title, widget: string, required: false, hint: "Só serve para identificar o vídeo no painel." }
+      - name: social
+        label: "3. Conteúdos Social Media (carrosséis)"
+        file: tenner-site/content/galeria/carrosseis.json
+        fields:
+          - { label: Título da coluna, name: title, widget: string, default: "Conteúdos Social Media" }
+          - label: Carrosséis Instagram
+            name: items
+            widget: list
+            label_singular: carrossel
+            add_to_top: true
+            collapsed: true
+            summary: "{{fields.title}}"
+            hint: "Cada carrossel mostra as suas fotos com setas para andar para a frente e para trás. Usa fotos todas do mesmo formato (ex.: 4:5)."
+            fields:
+              - { label: "Nome do carrossel", name: title, widget: string, required: false, hint: "Ex.: Apresentação reforço. Só aparece no painel e para acessibilidade." }
+              - label: Fotos do carrossel (pela ordem em que aparecem)
+                name: images
+                widget: list
+                label_singular: foto
+                collapsed: false
+                field: { label: Foto, name: image, widget: image, choose_url: false }
+
+  # ---------------- PLANOS ----------------
+  - name: planos
+    label: Planos e preços
+    label_singular: plano
+    description: "Cada plano é uma entrada: nome e o que inclui."
+    folder: tenner-site/content/planos
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: name
+    slug: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}-{{slug}}"
+    summary: "{{name}} {{suffix}}"
+    editor: { preview: false }
+    sortable_fields: [ordem, name]
+    fields:
+      - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER ou TENNER+" }
+      - { label: Sufixo em itálico, name: suffix, widget: string, required: false, hint: "Ex.: PRO (deixa vazio nos outros)" }
+      - { label: "Destacar como “Mais completo”", name: featured, widget: boolean, default: false }
+      - { label: "Mensagem do WhatsApp (botão “Quero”)", name: whatsapp_message, widget: string, required: false, hint: "Texto que já aparece escrito no WhatsApp quando o cliente carrega no botão deste plano. Se deixares vazio, usa a mensagem padrão das Definições gerais. O número/link do WhatsApp está em Definições gerais → WhatsApp." }
+      - label: O que inclui
+        name: features
+        widget: list
+        label_singular: linha
+        summary: "{{fields.text}} {{fields.offer}}"
+        fields:
+          - { label: Texto, name: text, widget: string, required: false }
+          - { label: "Oferta (aparece a amarelo com “+ OFERTA”)", name: offer, widget: string, required: false }
+          - { label: Detalhe (texto pequeno por baixo), name: detail, widget: string, required: false }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100, hint: "Números mais baixos aparecem primeiro (10, 20, 30…)." }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
+
+  # ---------------- O QUE FAZEMOS ----------------
+  - name: servicos
+    label: O que fazemos
+    label_singular: serviço
+    folder: tenner-site/content/servicos
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{year}}{{month}}{{day}}-{{slug}}"
+    summary: "{{title}}"
+    editor: { preview: false }
+    sortable_fields: [ordem, title]
+    fields:
+      - { label: Título, name: title, widget: string }
+      - { label: Descrição, name: text, widget: text }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100 }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
+
+  # ---------------- SERVIÇOS EXTRA ----------------
+  - name: extras
+    label: Serviços extra
+    label_singular: serviço extra
+    folder: tenner-site/content/extras
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{year}}{{month}}{{day}}-{{slug}}"
+    summary: "{{title}}"
+    editor: { preview: false }
+    sortable_fields: [ordem, title]
+    fields:
+      - { label: Título, name: title, widget: string }
+      - { label: Subtítulo, name: subtitle, widget: string }
+      - { label: Texto ao abrir, name: text, widget: text, required: false }
+      - { label: Destacar a amarelo, name: highlight, widget: boolean, default: false }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100 }
+      - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
+
+  # ---------------- DEFINIÇÕES ----------------
+  - name: definicoes
+    label: Definições gerais
+    editor: { preview: false }
+    files:
+      - name: geral
+        label: "Início, Sobre nós, Contacto e textos das secções"
+        file: tenner-site/content/site.json
+        fields:
+          - label: Início (hero)
+            name: hero
+            widget: object
+            collapsed: false
+            fields:
+              - { label: Linha acima do título, name: eyebrow, widget: string }
+              - { label: Slogan, name: tagline, widget: string }
+              - { label: Texto de apresentação, name: intro, widget: text }
+              - { label: "Imagem 1 (vertical, com moldura amarela)", name: image1, widget: image }
+              - { label: "Imagem 2 (vertical 9:16)", name: image2, widget: image }
+              - { label: "Imagem 3 (quadrada)", name: image3, widget: image }
+          - label: Faixa amarela (palavras em movimento)
+            name: marquee
+            widget: list
+            field: { label: Palavra, name: word, widget: string }
+          - label: Sobre nós
+            name: about
+            widget: object
+            fields:
+              - { label: Título, name: title, widget: string }
+              - { label: Parágrafo 1, name: paragraph1, widget: text }
+              - { label: Parágrafo 2, name: paragraph2, widget: text }
+              - label: Para quem (etiquetas)
+                name: audience
+                widget: list
+                field: { label: Etiqueta, name: label, widget: string }
+          - label: WhatsApp (botões dos planos)
+            name: whatsapp
+            widget: object
+            collapsed: false
+            fields:
+              - { label: "Link do WhatsApp", name: link, widget: string, required: false, hint: "Ex.: https://wa.me/351912345678 (indicativo 351 + número, sem espaços nem +). Também podes pôr só o número. Se ficar vazio, os botões dos planos levam à secção de Contacto." }
+              - { label: "Mensagem padrão", name: message, widget: string, required: false, default: "Olá! Tenho interesse no plano {plano} da TENNER.", hint: "Usada nos planos que não têm mensagem própria. {plano} é trocado pelo nome do plano." }
+          - { label: "Texto de introdução — O que fazemos", name: servicos_intro, widget: text }
+          - { label: "Texto de introdução — Serviços extra", name: extras_intro, widget: text }
+          - label: Contacto
+            name: contact
+            widget: object
+            fields:
+              - { label: Título, name: title, widget: string }
+              - { label: Subtítulo, name: subtitle, widget: string }
+              - { label: Email, name: email, widget: string }
+              - { label: Instagram (sem @), name: instagram, widget: string }

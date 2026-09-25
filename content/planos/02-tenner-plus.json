@@ -1,0 +1,25 @@
+{
+  "name": "TENNER+",
+  "suffix": "",
+  "featured": false,
+  "whatsapp_message": "Olá! Tenho interesse no plano TENNER+ da TENNER. Podem dar-me mais informações?",
+  "features": [
+    {
+      "text": "Pre match semanais (estático)",
+      "offer": "1 motion",
+      "detail": ""
+    },
+    {
+      "text": "Reels melhores momentos da semana",
+      "offer": "1 reels melhores momentos do mês (até 1 min)",
+      "detail": ""
+    },
+    {
+      "text": "Comunicação",
+      "offer": "",
+      "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press"
+    }
+  ],
+  "ordem": 20,
+  "visivel": true
+}

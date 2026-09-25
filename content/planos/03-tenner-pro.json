@@ -1,0 +1,45 @@
+{
+  "name": "TENNER",
+  "suffix": "PRO",
+  "featured": true,
+  "whatsapp_message": "Olá! Tenho interesse no plano TENNER PRO da TENNER. Podem dar-me mais informações?",
+  "features": [
+    {
+      "text": "Pre match semanais (estáticos e motion)",
+      "offer": "",
+      "detail": ""
+    },
+    {
+      "text": "Vídeos reels",
+      "offer": "",
+      "detail": "Skills destaque / Best of da semana e mês"
+    },
+    {
+      "text": "Assessoria de imprensa",
+      "offer": "",
+      "detail": ""
+    },
+    {
+      "text": "Registo fotográfico e vídeo",
+      "offer": "",
+      "detail": "Em jogos solicitados · Pre-season / Off season · Lifestyle (férias, aniversário, jantares…) · Transferências e renovações"
+    },
+    {
+      "text": "Comunicação",
+      "offer": "",
+      "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press"
+    },
+    {
+      "text": "Captação de patrocínios",
+      "offer": "",
+      "detail": ""
+    },
+    {
+      "text": "Conteúdos exclusivos social media",
+      "offer": "",
+      "detail": ""
+    }
+  ],
+  "ordem": 30,
+  "visivel": true
+}

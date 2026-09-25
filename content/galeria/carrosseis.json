@@ -1,0 +1,15 @@
+{
+  "title": "Conteúdos Social Media",
+  "items": [
+    {
+      "title": "Carrossel Instagram",
+      "images": [
+        "/images/equipamento.jpg",
+        "/images/nb-atleta.jpg",
+        "/images/plantel.jpg",
+        "/images/chuteira.jpg",
+        "/images/equipa.jpg"
+      ]
+    }
+  ]
+}

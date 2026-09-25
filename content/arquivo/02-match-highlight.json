@@ -1,0 +1,10 @@
+{
+  "title": "Match highlight",
+  "category": "video",
+  "tag": "Vídeo",
+  "image": "/images/highlight.jpg",
+  "video": "",
+  "format": "vertical",
+  "ordem": 20,
+  "visivel": true
+}

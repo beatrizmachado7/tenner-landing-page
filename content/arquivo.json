@@ -1,0 +1,43 @@
+{
+  "estatico": {
+    "title": "Pre Match Estático",
+    "items": [
+      {
+        "image": "/images/prematch.jpg",
+        "title": ""
+      },
+      {
+        "image": "/images/estadio.jpg",
+        "title": ""
+      },
+      {
+        "image": "/images/adeptos.jpg",
+        "title": ""
+      }
+    ]
+  },
+  "motion": {
+    "title": "Pre Match Motion Videos",
+    "items": [
+      {
+        "video": "/images/uploads/da-rio-miranda.mp4",
+        "title": ""
+      }
+    ]
+  },
+  "social": {
+    "title": "Conteúdos Social Media",
+    "items": [
+      {
+        "title": "Carrossel Instagram",
+        "images": [
+          "/images/equipamento.jpg",
+          "/images/nb-atleta.jpg",
+          "/images/plantel.jpg",
+          "/images/chuteira.jpg",
+          "/images/equipa.jpg"
+        ]
+      }
+    ]
+  }
+}
