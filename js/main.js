@@ -175,8 +175,7 @@
     var prev = $('.prev', car), next = $('.next', car);
     var i = 0, n = slides.length;
     function fit() {
-      var img = $('img', slides[i]);
-      if (img && img.offsetHeight) view.style.height = img.offsetHeight + 'px';
+      /* tamanho fixo (4:5) definido no CSS */
     }
     function go(k) {
       i = Math.max(0, Math.min(n - 1, k));
