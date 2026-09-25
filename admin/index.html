@@ -9,11 +9,121 @@
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
   <link rel="stylesheet" href="/admin/admin.css">
+  <link rel="stylesheet" href="/admin/shell.css">
+  <script>
+    // Abre o painel sempre no Dashboard
+    if (!location.hash || location.hash === '#/' || location.hash === '#') location.hash = '#/dashboard';
+  </script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <aside class="tn-side" id="tn-side" aria-label="Menu do painel">
+    <a class="tn-brand" href="#/dashboard">
+      <span class="tn-logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="4"><path d="M16 12v20M22 9v26M28 12v20" stroke-linecap="round"/></svg></span>
+      <span class="tn-brand-t">TENNER<span>.</span></span>
+    </a>
+    <a class="tn-add" href="#/collections/planos/new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo plano</a>
+
+    <nav class="tn-nav">
+      <a class="tn-link" href="#/dashboard" data-match="^#/dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+
+      <div class="tn-group" data-open="true">
+        <button type="button" class="tn-group-h">Conteúdo<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="tn-group-b">
+          <a class="tn-link" href="#/collections/planos" data-match="^#/collections/planos"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Plano</a>
+          <a class="tn-link" href="#/collections/servicos" data-match="^#/collections/servicos"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>O que fazemos</a>
+          <a class="tn-link" href="#/collections/extras" data-match="^#/collections/extras"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></svg>Serviços extra</a>
+        </div>
+      </div>
+
+      <div class="tn-group" data-open="true">
+        <button type="button" class="tn-group-h">Arquivo<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="tn-group-b">
+          <a class="tn-link" href="#/collections/arquivo/entries/estatico" data-match="^#/collections/arquivo/entries/estatico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>Pre Match Estático</a>
+          <a class="tn-link" href="#/collections/arquivo/entries/motion" data-match="^#/collections/arquivo/entries/motion"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg>Motion Videos</a>
+          <a class="tn-link" href="#/collections/arquivo/entries/social" data-match="^#/collections/arquivo/entries/social"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M3 7v10M21 7v10"/></svg>Social Media</a>
+        </div>
+      </div>
+
+      <div class="tn-group" data-open="true">
+        <button type="button" class="tn-group-h">Definições<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="tn-group-b">
+          <a class="tn-link" href="#/collections/definicoes/entries/geral" data-match="^#/collections/definicoes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Definições gerais</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="tn-side-foot">
+      <a class="tn-link" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>Ver o site</a>
+      <div class="tn-user">
+        <span class="tn-avatar" id="tn-avatar">T</span>
+        <span class="tn-user-t"><b id="tn-user-name">TENNER.</b><small id="tn-user-mail"></small></span>
+        <button type="button" class="tn-icon-btn" id="tn-logout" aria-label="Terminar sessão" title="Terminar sessão"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+      </div>
+    </div>
+  </aside>
+  <div class="tn-scrim" id="tn-scrim"></div>
+
+  <header class="tn-top">
+    <button type="button" class="tn-icon-btn tn-burger" id="tn-burger" aria-label="Abrir menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <form class="tn-search" id="tn-search" role="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="tn-search-in" placeholder="Pesquisar no painel…" aria-label="Pesquisar">
+      <kbd>⌘K</kbd>
+    </form>
+    <div class="tn-top-r">
+      <span class="tn-lang"><small>PT</small> PT</span>
+      <a class="tn-icon-btn" href="/" target="_blank" rel="noopener" aria-label="Ver o site" title="Ver o site"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></a>
+    </div>
+  </header>
+
+  <main class="tn-main">
+    <section class="tn-dash" id="tn-dash" aria-label="Dashboard">
+      <div class="tn-dash-h">
+        <span class="tn-chip lg"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
+        <div><h1>Dashboard TENNER<span>.</span></h1><p>O teu site num relance</p></div>
+      </div>
+
+      <div class="tn-stats">
+        <a class="tn-card tn-stat" href="#/collections/planos"><div class="tn-stat-h"><span>Planos</span><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span></div><b data-k="planos">–</b></a>
+        <a class="tn-card tn-stat" href="#/collections/arquivo/entries/estatico"><div class="tn-stat-h"><span>Fotos</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span></div><b data-k="fotos">–</b></a>
+        <a class="tn-card tn-stat" href="#/collections/arquivo/entries/motion"><div class="tn-stat-h"><span>Vídeos</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg></span></div><b data-k="videos">–</b></a>
+        <a class="tn-card tn-stat" href="#/collections/arquivo/entries/social"><div class="tn-stat-h"><span>Carrosséis</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M3 7v10M21 7v10"/></svg></span></div><b data-k="carrosseis">–</b></a>
+      </div>
+
+      <div class="tn-wide">
+        <div class="tn-card tn-prog">
+          <div class="tn-prog-h"><span>WhatsApp dos planos</span><a href="#/collections/definicoes/entries/geral">Ver <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+          <div class="tn-prog-v"><b data-k="wa">–</b><span data-k="wa-msgs"></span></div>
+          <div class="tn-bar"><i data-k="wa-bar"></i></div>
+          <small data-k="wa-note"></small>
+        </div>
+        <div class="tn-card tn-prog">
+          <div class="tn-prog-h"><span>Arquivo</span><a href="#/collections/arquivo">Ver <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+          <div class="tn-prog-v"><b data-k="arq">–</b><span data-k="arq-rows"></span></div>
+          <div class="tn-bar"><i data-k="arq-bar"></i></div>
+          <small data-k="arq-note"></small>
+        </div>
+      </div>
+
+      <h2 class="tn-sub">Acesso rápido</h2>
+      <div class="tn-quick">
+        <a class="tn-card tn-q" href="#/collections/planos"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><span><b>Plano</b><small data-k="q-planos">–</small></span></a>
+        <a class="tn-card tn-q" href="#/collections/arquivo/entries/estatico"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>Pre Match Estático</b><small data-k="q-fotos">–</small></span></a>
+        <a class="tn-card tn-q" href="#/collections/arquivo/entries/motion"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg></span><span><b>Motion Videos</b><small data-k="q-videos">–</small></span></a>
+        <a class="tn-card tn-q" href="#/collections/arquivo/entries/social"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M3 7v10M21 7v10"/></svg></span><span><b>Social Media</b><small data-k="q-car">–</small></span></a>
+        <a class="tn-card tn-q" href="#/collections/servicos"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span><span><b>Serviços</b><small data-k="q-serv">–</small></span></a>
+        <a class="tn-card tn-q" href="#/collections/definicoes/entries/geral"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12z"/></svg></span><span><b>Definições e WhatsApp</b><small>Início, sobre nós, contacto</small></span></a>
+      </div>
+      <p class="tn-foot-note">Os números mostram a última versão publicada do site.</p>
+    </section>
+
+    <div id="nc-root"></div>
+  </main>
+
+  <script src="/admin/shell.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.1.0/dist/decap-cms.js"></script>
 </body>
 </html>

@@ -38,7 +38,7 @@ function galeria() {
     if (fs.existsSync(f)) {
       try { data = read(f); } catch (e) { console.warn('[build] ignorado (JSON inválido): galeria/' + name); }
     }
-    return { title: data.title || fallback, items: (data.items || []).filter((i) => i && keep(i)) };
+    return { title: data.title || fallback, items: (data.items || []).filter((i) => i && i.ativo !== false && keep(i)).map(({ ativo, ...i }) => i) };
   };
   const social = col('carrosseis', 'Conteúdos Social Media', (i) => Array.isArray(i.images));
   social.items = social.items

@@ -9,7 +9,7 @@ Site estático (HTML + CSS + JS) com painel de administração Decap CMS em `/ad
 - `content/site.json` → `whatsapp`: link do WhatsApp dos botões dos planos (cada plano tem a sua mensagem em `whatsapp_message`)
 - `content/planos/`, `content/servicos/`, `content/extras/`: **uma entrada por ficheiro** — é isto que o painel cria e apaga
 - `build.js`: junta essas pastas em `content/arquivo.json`, `planos.json`, etc. (gerados; não editar à mão). O Netlify corre-o sozinho a cada publicação.
-- `admin/`: painel (config, tema `admin.css`)
+- `admin/`: painel (config, tema `admin.css`, layout com menu lateral e Dashboard em `shell.css` / `shell.js`)
 - `images/uploads/`: imagens enviadas pelo painel
 
 ## Netlify
