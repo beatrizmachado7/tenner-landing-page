@@ -1,4 +1,4 @@
-/* TENNER. — Dashboard de gestão (seguidores, visitas, aprovações, entregas, projetos e jogos)
+/* TENNER. — Dashboard de gestão (seguidores, visitas, clientes/pedidos, estado dos projetos e jogos)
  *
  * Onde ficam os dados:
  *   Tudo o que se edita aqui é guardado em ficheiros JSON na pasta "painel-dados/" do repositório
@@ -87,8 +87,6 @@
   /* ---------------- estado ---------------- */
   var DEFAULTS = {
     instagram: { conta: 'tenner10_', seguidores: null, atualizado_em: null, fonte: 'manual', historico: [] },
-    aprovacoes: { items: [] },
-    entregas: { items: [] },
     projetos: { items: [] },
     jogos: { items: [] }
   };
@@ -100,9 +98,6 @@
     { v: 'briefing', l: 'Briefing' }, { v: 'producao', l: 'Em produção' }, { v: 'revisao', l: 'Em revisão' },
     { v: 'aprovacao', l: 'A aguardar aprovação' }, { v: 'concluido', l: 'Concluído' }
   ];
-  var APR = [{ v: 'pendente', l: 'A aguardar aprovação' }, { v: 'aprovado', l: 'Aprovado' }, { v: 'alteracoes', l: 'Alterações pedidas' }];
-  var ENT = [{ v: 'por_comecar', l: 'Por começar' }, { v: 'producao', l: 'Em produção' }, { v: 'revisao', l: 'Em revisão' }, { v: 'entregue', l: 'Entregue' }];
-  var TIPOS = ['Pre match estático', 'Pre match motion', 'Reels / vídeo', 'Carrossel', 'Fotografia', 'Design', 'Assessoria de imprensa', 'Outro'];
   var label = function (list, v) { var f = list.filter(function (x) { return x.v === v; })[0]; return f ? f.l : v; };
   var opts = function (list, cur) { return list.map(function (x) { return '<option value="' + esc(x.v) + '"' + (x.v === cur ? ' selected' : '') + '>' + esc(x.l) + '</option>'; }).join(''); };
 
@@ -152,29 +147,11 @@
       { k: 'conta', l: 'Conta (sem @)', t: 'text', req: true },
       { k: 'seguidores', l: 'Número de seguidores', t: 'number', req: true, hint: 'Vê o número no perfil do Instagram e escreve-o aqui.' }
     ] },
-    aprovacoes: { title: 'Trabalho para aprovação', fields: [
-      { k: 'projeto', l: 'Projeto / trabalho', t: 'text', req: true },
-      { k: 'cliente', l: 'Cliente', t: 'text', req: true },
-      { k: 'enviado_em', l: 'Data de envio', t: 'date', req: true, def: todayISO },
-      { k: 'link', l: 'Ligação para ver o trabalho', t: 'url', hint: 'Ex.: link do Google Drive, WeTransfer ou Instagram.' },
-      { k: 'estado', l: 'Estado', t: 'select', o: APR, def: function () { return 'pendente'; } },
-      { k: 'notas', l: 'Notas', t: 'textarea' }
-    ] },
-    entregas: { title: 'Entrega', fields: [
-      { k: 'projeto', l: 'Projeto', t: 'text', req: true },
-      { k: 'cliente', l: 'Cliente', t: 'text', req: true },
-      { k: 'tipo', l: 'Tipo de trabalho', t: 'select', o: TIPOS.map(function (x) { return { v: x, l: x }; }) },
-      { k: 'prazo', l: 'Prazo', t: 'date', req: true, def: todayISO },
-      { k: 'estado', l: 'Estado', t: 'select', o: ENT, def: function () { return 'por_comecar'; } }
-    ] },
-    projetos: { title: 'Projeto', fields: [
+    projetos: { title: 'Pedido do cliente', fields: [
+      { k: 'cliente', l: 'Nome do cliente', t: 'text', req: true },
       { k: 'nome', l: 'Nome do projeto', t: 'text', req: true },
-      { k: 'cliente', l: 'Cliente', t: 'text', req: true },
-      { k: 'fase', l: 'Fase', t: 'select', o: FASES, def: function () { return 'briefing'; } },
-      { k: 'tipo', l: 'Tipo de trabalho', t: 'select', o: TIPOS.map(function (x) { return { v: x, l: x }; }) },
-      { k: 'prazo', l: 'Prazo', t: 'date' },
-      { k: 'link', l: 'Ligação (pasta, briefing…)', t: 'url' },
-      { k: 'notas', l: 'Detalhes / notas', t: 'textarea' }
+      { k: 'prazo', l: 'Data de entrega', t: 'date', req: true, def: todayISO },
+      { k: 'fase', l: 'Estado do projeto', t: 'select', o: FASES, req: true, def: function () { return 'briefing'; } }
     ] },
     jogos: { title: 'Jogo', fields: [
       { k: 'casa', l: 'Equipa da casa', t: 'text', req: true },
@@ -234,7 +211,7 @@
       var it = D[name].items.filter(function (x) { return x.id === editing.id; })[0];
       Object.assign(it, vals); msg = 'edita ' + name;
     } else {
-      vals.id = uid(); vals.criado_em = nowLisbonISO(); D[name].items.push(vals); msg = 'adiciona ' + name;
+      vals.id = uid(); vals.criado_em = nowLisbonISO(); D[name].items.push(vals); msg = name === 'projetos' ? 'novo pedido de ' + vals.cliente : 'adiciona ' + name;
     }
     var btn = $('#db-save'); btn.disabled = true;
     persist(name, msg).then(function () { btn.disabled = false; closeForm(); renderAll(); }, function () { btn.disabled = false; D[name] = JSON.parse(before); renderAll(); });
@@ -305,87 +282,64 @@
       '<svg class="db-spark" viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="Evolução das visitas nos últimos 30 dias"><polyline points="0,40 ' + pts + ' 100,40" class="fill"/><polyline points="' + pts + '" class="line"/></svg>';
   }
 
-  /* ---------------- 3. Aprovações ---------------- */
-  var apprFilter = 'pendente';
-  function renderApprovals() {
-    var list = $('#appr-list'), items = (D.aprovacoes && D.aprovacoes.items) || [];
-    var pend = items.filter(function (x) { return x.estado === 'pendente'; });
-    $('#appr-count').textContent = status.aprovacoes === 'ok' ? pend.length + ' pendente' + (pend.length === 1 ? '' : 's') : '';
-    // cartão do topo
-    var k = $('#kpi-appr .db-kpi-body');
-    if (status.aprovacoes !== 'ok') k.innerHTML = status.aprovacoes === 'loading' ? '<div class="db-skel"></div>' : '<p class="db-kpi-note err">Erro ao carregar</p>';
-    else {
-      var old = pend.filter(function (x) { return diffDays(x.enviado_em) <= -3; }).length;
-      k.innerHTML = '<b class="db-kpi-v">' + pend.length + '</b><p class="db-kpi-note">' + (pend.length ? (old ? old + ' à espera há 3+ dias' : 'a aguardar resposta do cliente') : 'Nada pendente') + '</p>';
+  /* ---------------- 3. Clientes (pedidos) + indicadores ---------------- */
+  function projItems() { return (D.projetos && D.projetos.items) || []; }
+  function renderKpis() {
+    var items = projItems(), ok = status.projetos === 'ok';
+    var ka = $('#kpi-appr .db-kpi-body'), kd = $('#kpi-deliv .db-kpi-body');
+    if (!ok) {
+      var h = status.projetos === 'loading' ? '<div class="db-skel"></div>' : '<p class="db-kpi-note err">Erro ao carregar</p>';
+      ka.innerHTML = h; kd.innerHTML = h; return;
     }
-    var st = stateBox('aprovacoes');
-    if (st) { list.innerHTML = st; return; }
-    var show = apprFilter === 'pendente' ? pend : items.slice();
-    show.sort(function (a, b) { return (a.estado === 'pendente' ? 0 : 1) - (b.estado === 'pendente' ? 0 : 1) || (a.enviado_em < b.enviado_em ? -1 : 1); });
-    if (!show.length) {
-      list.innerHTML = '<div class="db-state empty">' + (items.length ? 'Sem aprovações pendentes. Está tudo em dia.' : 'Ainda não há trabalhos para aprovação.') + '<button type="button" class="db-btn ghost sm" data-add="aprovacoes">Adicionar trabalho</button></div>';
-      return;
-    }
-    list.innerHTML = show.map(function (a) {
-      var n = diffDays(a.enviado_em);
-      return '<div class="db-row appr-' + esc(a.estado) + '">' +
-        '<div class="db-row-main"><b>' + esc(a.projeto) + '</b><span>' + esc(a.cliente) + ' · enviado ' + (n === 0 ? 'hoje' : fmtDate(a.enviado_em)) + (a.estado === 'pendente' && n < 0 ? ' <em>(' + (-n) + ' ' + (n === -1 ? 'dia' : 'dias') + ')</em>' : '') + '</span></div>' +
-        '<div class="db-row-side">' +
-          (a.link ? '<a class="db-icon-link" href="' + esc(a.link) + '" target="_blank" rel="noopener" title="Ver trabalho">' + ICON_LINK + '<span>Ver</span></a>' : '') +
-          '<select class="db-status s-' + esc(a.estado) + '" data-set="aprovacoes" data-id="' + esc(a.id) + '" data-key="estado" aria-label="Estado">' + opts(APR, a.estado) + '</select>' +
-          '<button type="button" class="db-icon-btn" data-edit="aprovacoes" data-id="' + esc(a.id) + '" aria-label="Editar">' + ICON_EDIT + '</button>' +
-        '</div></div>';
-    }).join('');
-  }
-
-  /* ---------------- 4. Próximas entregas ---------------- */
-  function renderDeliveries() {
-    var list = $('#deliv-list'), items = (D.entregas && D.entregas.items) || [];
-    var open = items.filter(function (x) { return x.estado !== 'entregue'; });
+    var pend = items.filter(function (x) { return x.fase === 'aprovacao'; });
+    var old = pend.filter(function (x) { return x.prazo && diffDays(x.prazo) <= 0; }).length;
+    ka.innerHTML = '<b class="db-kpi-v">' + pend.length + '</b><p class="db-kpi-note">' + (pend.length ? (old ? '<span class="db-pill late">' + old + ' com entrega hoje ou atrasada</span>' : 'projetos a aguardar resposta do cliente') : 'Nada pendente') + '</p>';
+    var open = items.filter(function (x) { return x.fase !== 'concluido' && x.prazo; });
     var late = open.filter(function (x) { return diffDays(x.prazo) < 0; }), today = open.filter(function (x) { return diffDays(x.prazo) === 0; });
     var week = open.filter(function (x) { var n = diffDays(x.prazo); return n >= 0 && n <= 7; });
-    $('#deliv-count').textContent = status.entregas === 'ok' ? open.length + ' por entregar' : '';
-    var k = $('#kpi-deliv .db-kpi-body');
-    if (status.entregas !== 'ok') k.innerHTML = status.entregas === 'loading' ? '<div class="db-skel"></div>' : '<p class="db-kpi-note err">Erro ao carregar</p>';
-    else k.innerHTML = '<b class="db-kpi-v">' + week.length + '<small> · 7 dias</small></b><p class="db-kpi-note">' +
+    kd.innerHTML = '<b class="db-kpi-v">' + week.length + '<small> · 7 dias</small></b><p class="db-kpi-note">' +
       (late.length ? '<span class="db-pill late">' + late.length + ' atrasada' + (late.length > 1 ? 's' : '') + '</span>' : '') +
       (today.length ? '<span class="db-pill today">' + today.length + ' hoje</span>' : '') + (!late.length && !today.length ? (week.length ? 'nos próximos 7 dias' : 'Sem entregas esta semana') : '') + '</p>';
-    var st = stateBox('entregas');
+  }
+  function renderClients() {
+    var list = $('#cli-list'), items = projItems();
+    var open = items.filter(function (x) { return x.fase !== 'concluido'; });
+    $('#cli-count').textContent = status.projetos === 'ok' ? open.length + ' pedido' + (open.length === 1 ? '' : 's') + ' em curso' : '';
+    var st = stateBox('projetos');
     if (st) { list.innerHTML = st; return; }
-    var showDone = $('#deliv-done').checked;
-    var show = (showDone ? items.slice() : open).sort(function (a, b) { return (a.estado === 'entregue') - (b.estado === 'entregue') || (a.prazo < b.prazo ? -1 : a.prazo > b.prazo ? 1 : 0); });
-    if (!show.length) { list.innerHTML = '<div class="db-state empty">' + (items.length ? 'Tudo entregue. Bom trabalho!' : 'Ainda não há entregas marcadas.') + '<button type="button" class="db-btn ghost sm" data-add="entregas">Adicionar entrega</button></div>'; return; }
-    list.innerHTML = show.map(function (x) {
-      var n = diffDays(x.prazo), p = parts(x.prazo), done = x.estado === 'entregue';
-      var cls = done ? 'done' : n < 0 ? 'late' : n === 0 ? 'today' : n <= 2 ? 'soon' : '';
-      var badge = done ? 'Entregue' : n < 0 ? 'Atrasada · ' + (-n) + (n === -1 ? ' dia' : ' dias') : relDays(n);
+    if (!open.length) { list.innerHTML = '<div class="db-state empty">' + (items.length ? 'Todos os pedidos estão concluídos.' : 'Ainda não há pedidos de clientes.') + '<button type="button" class="db-btn ghost sm" data-add="projetos">Adicionar cliente</button></div>'; return; }
+    list.innerHTML = open.slice().sort(function (a, b) { return (a.prazo || '9') < (b.prazo || '9') ? -1 : 1; }).map(function (x) {
+      var n = x.prazo ? diffDays(x.prazo) : null, p = parts(x.prazo);
+      var cls = n == null ? '' : n < 0 ? 'late' : n === 0 ? 'today' : n <= 2 ? 'soon' : '';
+      var badge = n == null ? 'Sem data' : n < 0 ? 'Atrasado · ' + (-n) + (n === -1 ? ' dia' : ' dias') : relDays(n);
       return '<div class="db-row deliv ' + cls + '">' +
-        '<div class="db-date"><b>' + p.d + '</b><span>' + MES3[p.m - 1] + '</span></div>' +
-        '<div class="db-row-main"><b>' + esc(x.projeto) + '</b><span>' + esc(x.cliente) + (x.tipo ? ' · ' + esc(x.tipo) : '') + '</span><em class="db-due">' + badge + '</em></div>' +
-        '<div class="db-row-side">' +
-          '<select class="db-status s-' + esc(x.estado) + '" data-set="entregas" data-id="' + esc(x.id) + '" data-key="estado" aria-label="Estado">' + opts(ENT, x.estado) + '</select>' +
-          '<button type="button" class="db-icon-btn" data-edit="entregas" data-id="' + esc(x.id) + '" aria-label="Editar">' + ICON_EDIT + '</button>' +
-        '</div></div>';
+        '<div class="db-date">' + (x.prazo ? '<b>' + p.d + '</b><span>' + MES3[p.m - 1] + '</span>' : '<b>–</b>') + '</div>' +
+        '<div class="db-row-main"><b>' + esc(x.cliente) + '</b><span>' + esc(x.nome) + '</span><em class="db-due">Entrega ' + (x.prazo ? fmtDate(x.prazo) + ' · ' : '') + badge + '</em></div>' +
+        '<div class="db-row-side"><button type="button" class="db-icon-btn" data-edit="projetos" data-id="' + esc(x.id) + '" aria-label="Editar">' + ICON_EDIT + '</button></div></div>';
     }).join('');
   }
 
-  /* ---------------- 5. Estado dos projetos ---------------- */
-  function renderProjects() {
-    var board = $('#proj-board'), items = (D.projetos && D.projetos.items) || [];
-    $('#proj-count').textContent = status.projetos === 'ok' ? items.filter(function (p) { return p.fase !== 'concluido'; }).length + ' ativos' : '';
+  /* ---------------- 4. Estado dos projetos ---------------- */
+  var phaseFilter = '';
+  function renderStatus() {
+    var list = $('#st-list'), chips = $('#st-phases'), items = projItems();
+    var active = items.filter(function (x) { return x.fase !== 'concluido'; });
+    $('#st-count').textContent = status.projetos === 'ok' ? active.length + ' ativo' + (active.length === 1 ? '' : 's') : '';
     var st = stateBox('projetos');
-    if (st) { board.innerHTML = st; return; }
-    if (!items.length) { board.innerHTML = '<div class="db-state empty">Ainda não há projetos. Cria o primeiro para acompanhares cada fase.<button type="button" class="db-btn ghost sm" data-add="projetos">Novo projeto</button></div>'; return; }
-    board.innerHTML = FASES.map(function (f) {
-      var col = items.filter(function (p) { return (p.fase || 'briefing') === f.v; }).sort(function (a, b) { return (a.prazo || '9') < (b.prazo || '9') ? -1 : 1; });
-      return '<div class="db-col ph-' + f.v + '"><div class="db-col-h"><span>' + f.l + '</span><b>' + col.length + '</b></div>' +
-        (col.length ? col.map(function (p) {
-          var n = p.prazo ? diffDays(p.prazo) : null;
-          return '<div class="db-pcard" data-open="' + esc(p.id) + '" tabindex="0" role="button" aria-label="Abrir ' + esc(p.nome) + '">' +
-            '<b>' + esc(p.nome) + '</b><span>' + esc(p.cliente) + (p.tipo ? ' · ' + esc(p.tipo) : '') + '</span>' +
-            (p.prazo ? '<em class="' + (p.fase !== 'concluido' && n < 0 ? 'late' : p.fase !== 'concluido' && n === 0 ? 'today' : '') + '">Prazo ' + fmtDate(p.prazo) + '</em>' : '') +
-            '<select class="db-status sm" data-set="projetos" data-id="' + esc(p.id) + '" data-key="fase" aria-label="Mudar fase">' + opts(FASES, p.fase || 'briefing') + '</select></div>';
-        }).join('') : '<div class="db-col-empty">Sem projetos</div>') + '</div>';
+    if (st) { chips.innerHTML = ''; list.innerHTML = st; return; }
+    chips.innerHTML = FASES.map(function (f) {
+      var n = items.filter(function (x) { return (x.fase || 'briefing') === f.v; }).length;
+      return '<button type="button" class="db-phase ph-' + f.v + (phaseFilter === f.v ? ' on' : '') + '" data-phase="' + f.v + '" aria-pressed="' + (phaseFilter === f.v) + '"><span>' + f.l + '</span><b>' + n + '</b></button>';
+    }).join('');
+    var showDone = $('#st-done').checked || phaseFilter === 'concluido';
+    var show = items.filter(function (x) { return (phaseFilter ? (x.fase || 'briefing') === phaseFilter : true) && (showDone || x.fase !== 'concluido'); });
+    var order = {}; FASES.forEach(function (f, i) { order[f.v] = i; });
+    show.sort(function (a, b) { return order[a.fase || 'briefing'] - order[b.fase || 'briefing'] || ((a.prazo || '9') < (b.prazo || '9') ? -1 : 1); });
+    if (!show.length) { list.innerHTML = '<div class="db-state empty">' + (items.length ? 'Nenhum projeto nesta fase.' : 'Os pedidos que adicionares em Clientes aparecem aqui automaticamente.') + '</div>'; return; }
+    list.innerHTML = show.map(function (x) {
+      return '<div class="db-row st-row ph-' + esc(x.fase || 'briefing') + '">' +
+        '<div class="db-row-main"><b>' + esc(x.cliente) + '</b><span>' + esc(x.nome) + '</span></div>' +
+        '<div class="db-row-side"><select class="db-status s-' + esc(x.fase || 'briefing') + '" data-set="projetos" data-id="' + esc(x.id) + '" data-key="fase" aria-label="Estado do projeto">' + opts(FASES, x.fase || 'briefing') + '</select></div></div>';
     }).join('');
   }
 
@@ -433,7 +387,7 @@
   function renderAll() {
     var t = todayISO();
     $('#db-today').textContent = fmtLong(t).charAt(0).toUpperCase() + fmtLong(t).slice(1) + ' · o teu negócio num relance';
-    renderIG(); renderApprovals(); renderDeliveries(); renderProjects(); renderGames();
+    renderIG(); renderKpis(); renderClients(); renderStatus(); renderGames();
   }
 
   // eventos (delegação)
@@ -453,11 +407,7 @@
     }
     if (el.hasAttribute('data-day')) { var dd = el.getAttribute('data-day'); calDay = dd && dd !== calDay ? dd : null; renderGames(); return; }
     if (el.hasAttribute('data-open') && !e.target.closest('select')) { openForm('projetos', el.getAttribute('data-open')); return; }
-    if (el.hasAttribute('aria-pressed') && el.closest('#appr-filter')) {
-      apprFilter = el.getAttribute('data-f');
-      $$('#appr-filter button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === el)); });
-      renderApprovals();
-    }
+    if (el.hasAttribute('data-phase')) { var ph = el.getAttribute('data-phase'); phaseFilter = phaseFilter === ph ? '' : ph; renderStatus(); }
   });
   dash.addEventListener('keydown', function (e) {
     var c = e.target.closest && e.target.closest('.db-pcard');
@@ -465,10 +415,10 @@
   });
   dash.addEventListener('change', function (e) {
     var s = e.target;
-    if (s.id === 'deliv-done') { renderDeliveries(); return; }
+    if (s.id === 'st-done') { renderStatus(); return; }
     if (s.hasAttribute('data-set')) {
       var name = s.getAttribute('data-set'), key = s.getAttribute('data-key');
-      quickSet(name, s.getAttribute('data-id'), key, s.value, (name === 'projetos' ? 'muda fase do projeto' : 'muda estado em ' + name));
+      quickSet(name, s.getAttribute('data-id'), key, s.value, 'muda estado do projeto');
     }
   });
 

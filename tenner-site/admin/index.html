@@ -97,37 +97,29 @@
           <div class="tn-stat-h"><span>Visitas ao site</span><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span></div>
           <div class="db-kpi-body"><div class="db-skel"></div></div>
         </div>
-        <a class="tn-card db-kpi" id="kpi-appr" href="#db-approvals">
+        <a class="tn-card db-kpi" id="kpi-appr" href="#db-status">
           <div class="tn-stat-h"><span>Aprovações pendentes</span><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span></div>
           <div class="db-kpi-body"><div class="db-skel"></div></div>
         </a>
-        <a class="tn-card db-kpi" id="kpi-deliv" href="#db-deliveries">
+        <a class="tn-card db-kpi" id="kpi-deliv" href="#db-clients">
           <div class="tn-stat-h"><span>Entregas próximas</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span></div>
           <div class="db-kpi-body"><div class="db-skel"></div></div>
         </a>
       </div>
 
-      <!-- centro: aprovações e entregas -->
+      <!-- centro: clientes (pedidos) e estado dos projetos -->
       <div class="db-two">
-        <div class="tn-card db-panel" id="db-approvals">
-          <div class="db-panel-h"><div><h2>Aprovações</h2><span class="db-count" id="appr-count"></span></div>
-            <div class="db-actions"><div class="db-seg" id="appr-filter"><button type="button" data-f="pendente" aria-pressed="true">Pendentes</button><button type="button" data-f="todas" aria-pressed="false">Todas</button></div>
-            <button type="button" class="db-add" data-add="aprovacoes"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar</button></div></div>
-          <div class="db-list" id="appr-list"></div>
+        <div class="tn-card db-panel" id="db-clients">
+          <div class="db-panel-h"><div><h2>Clientes</h2><span class="db-count" id="cli-count"></span></div>
+            <div class="db-actions"><button type="button" class="db-add" data-add="projetos"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar</button></div></div>
+          <div class="db-list" id="cli-list"></div>
         </div>
-        <div class="tn-card db-panel" id="db-deliveries">
-          <div class="db-panel-h"><div><h2>Próximas entregas</h2><span class="db-count" id="deliv-count"></span></div>
-            <div class="db-actions"><label class="db-check"><input type="checkbox" id="deliv-done"> Mostrar entregues</label>
-            <button type="button" class="db-add" data-add="entregas"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar</button></div></div>
-          <div class="db-list" id="deliv-list"></div>
+        <div class="tn-card db-panel" id="db-status">
+          <div class="db-panel-h"><div><h2>Estado dos projetos</h2><span class="db-count" id="st-count"></span></div>
+            <div class="db-actions"><label class="db-check"><input type="checkbox" id="st-done"> Mostrar concluídos</label></div></div>
+          <div class="db-phases" id="st-phases"></div>
+          <div class="db-list" id="st-list"></div>
         </div>
-      </div>
-
-      <!-- estado dos projetos -->
-      <div class="tn-card db-panel" id="db-projects">
-        <div class="db-panel-h"><div><h2>Estado dos projetos</h2><span class="db-count" id="proj-count"></span></div>
-          <div class="db-actions"><button type="button" class="db-add" data-add="projetos"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo projeto</button></div></div>
-        <div class="db-board" id="proj-board"></div>
       </div>
 
       <!-- calendário dos jogos -->
@@ -140,27 +132,6 @@
         </div>
       </div>
 
-      <!-- site: conteúdos e acessos rápidos -->
-      <h2 class="tn-sub">Site</h2>
-      <div class="tn-wide">
-        <div class="tn-card tn-prog">
-          <div class="tn-prog-h"><span>WhatsApp dos planos</span><a href="#/collections/definicoes/entries/geral">Ver <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-          <div class="tn-prog-v"><b data-k="wa">–</b><span data-k="wa-msgs"></span></div>
-        </div>
-        <div class="tn-card tn-prog">
-          <div class="tn-prog-h"><span>Arquivo</span><a href="#/collections/arquivo">Ver <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-          <div class="tn-prog-v"><b data-k="arq">–</b><span data-k="arq-rows"></span></div>
-        </div>
-      </div>
-      <div class="tn-quick">
-        <a class="tn-card tn-q" href="#/collections/planos"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><span><b>Plano</b><small data-k="q-planos">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/arquivo/entries/estatico"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>Pre Match Estático</b><small data-k="q-fotos">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/arquivo/entries/motion"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg></span><span><b>Motion Videos</b><small data-k="q-videos">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/arquivo/entries/social"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M3 7v10M21 7v10"/></svg></span><span><b>Social Media</b><small data-k="q-car">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/servicos"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span><span><b>Serviços</b><small data-k="q-serv">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/definicoes/entries/geral"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12z"/></svg></span><span><b>Definições e WhatsApp</b><small>Início, sobre nós, contacto</small></span></a>
-      </div>
-      <p class="tn-foot-note">Os números do site mostram a última versão publicada.</p>
     </section>
 
     <div class="db-modal" id="db-modal" role="dialog" aria-modal="true" aria-labelledby="db-modal-t" hidden>

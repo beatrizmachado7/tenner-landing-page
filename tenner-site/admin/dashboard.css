@@ -116,6 +116,28 @@ a.db-kpi:hover{transform:translateY(-2px)}
 .db-btn.danger{background:transparent;border-color:#4d2626;color:#fca5a5}
 .db-btn.danger:hover{background:#2a1515}
 
+/* ---------- estado dos projetos (lista) ---------- */
+.db-phases{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.db-phase{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px;border-radius:10px;border:1px solid var(--s-line);border-bottom-width:2px;background:#0d0d0d;color:var(--s-muted);font:600 11.5px/1.2 var(--t-body);text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.db-phase b{font:700 20px/1 var(--t-body);color:var(--s-ink)}
+.db-phase:hover{background:#151515}
+.db-phase.on{background:#1b1a14;border-color:var(--s-y)}
+.db-phase.ph-briefing{border-bottom-color:#6b675c}
+.db-phase.ph-producao{border-bottom-color:#5b7bb0}
+.db-phase.ph-revisao{border-bottom-color:#8b6fc7}
+.db-phase.ph-aprovacao{border-bottom-color:#e8b86b}
+.db-phase.ph-concluido{border-bottom-color:#2f9e76}
+.st-row{border-left-width:3px}
+.st-row.ph-briefing{border-left-color:#6b675c}
+.st-row.ph-producao{border-left-color:#5b7bb0}
+.st-row.ph-revisao{border-left-color:#8b6fc7}
+.st-row.ph-aprovacao{border-left-color:#e8b86b}
+.st-row.ph-concluido{border-left-color:#2f9e76;opacity:.65}
+.db-status.s-briefing{color:var(--s-soft)}
+.db-status.s-aprovacao{color:#f5d27a;border-color:rgba(245,210,122,.35);background-color:rgba(245,210,122,.08)}
+.db-status.s-concluido{color:#34d399;border-color:rgba(52,211,153,.35);background-color:rgba(52,211,153,.08)}
+.db-status.s-revisao{color:#c4b5fd;border-color:rgba(196,181,253,.3);background-color:rgba(196,181,253,.07)}
+
 /* ---------- estado dos projetos ---------- */
 .db-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
 .db-board>.db-state{grid-column:1/-1}
@@ -200,6 +222,12 @@ body.db-saving{cursor:progress}
   .db-cal{max-width:420px}
 }
 @media (max-width:640px){
+  .db-phases{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .st-row .db-row-side,.deliv .db-row-side{width:auto}
+  .deliv{flex-wrap:nowrap}
+  .deliv .db-row-main{flex-basis:auto}
+  .st-row{flex-wrap:nowrap}
+  .st-row .db-row-main{flex-basis:auto}
   .db-kpis{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
   .db-kpi{padding:16px;min-height:150px}
   .db-kpi .tn-stat-h .tn-chip{width:32px;height:32px}
