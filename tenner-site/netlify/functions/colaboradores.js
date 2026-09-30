@@ -1,8 +1,10 @@
 // Colaboradores do painel (Netlify Identity).
-// Listar, convidar por email, aprovar pedidos de acesso, remover e mudar o papel (administrador / colaborador).
+// Listar, convidar por email, aprovar pedidos de acesso (vindos do link /convite), remover e mudar o papel.
+// Pedidos do link /convite ficam no Netlify Blobs (acessos/<id>); aprovar = enviar convite do Netlify Identity.
 // Papéis: "admin" (gere colaboradores) e "editor" (usa o painel). Sem papel = pedido de acesso pendente.
 // Só administradores podem alterar; colaboradores aprovados veem a lista.
 const { verificar, listar, papeis, isAdmin, PAPEIS } = require('../lib/acesso');
+const { getStore, connectLambda } = require('../lib/netlify-blobs.cjs');
 
 const json = (status, body) => ({
   statusCode: status,
@@ -43,14 +45,28 @@ exports.handler = async (event, context) => {
   if (!gt) return json(500, { erro: 'Netlify Identity indisponível' });
   const eu = context.clientContext.user.sub;
 
+  connectLambda(event);
+  const store = getStore('painel');
+  const lerPedidos = async () => {
+    const { blobs } = await store.list({ prefix: 'acessos/' });
+    const lista = await Promise.all(blobs.map((b) => store.get(b.key, { type: 'json' }).catch(() => null)));
+    return lista.filter((p) => p && p.estado === 'pendente');
+  };
+  const verPedido = (p) => ({ id: 'pedido:' + p.id, email: p.email, nome: '', admin: false, papel: '', estado: 'aprovacao', tipo: 'pedido', convidado: p.criado, ultimo: null });
+  const marcar = async (p, estado) => store.setJSON('acessos/' + p.id, Object.assign({}, p, { estado, decidido: new Date().toISOString() }));
+
   try {
     let users = await listar(gt);
-    const resposta = (msg) => json(200, {
-      eu, admin: !!v.admin, promovido: !!v.promovido, msg: msg || '',
-      pessoas: users.map(view).sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || (b.admin - a.admin) || a.email.localeCompare(b.email))
-    });
+    const resposta = async (msg) => {
+      const pedidos = (await lerPedidos()).filter((p) => !users.some((u) => (u.email || '').toLowerCase() === p.email && papeis(u).length));
+      return json(200, {
+        eu, admin: !!v.admin, promovido: !!v.promovido, msg: msg || '',
+        pessoas: users.map(view).concat(pedidos.map(verPedido))
+          .sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || (b.admin - a.admin) || a.email.localeCompare(b.email))
+      });
+    };
 
-    if (event.httpMethod === 'GET') return resposta();
+    if (event.httpMethod === 'GET') return await resposta();
     if (!v.admin) return json(403, { erro: 'Só administradores podem gerir colaboradores' });
 
     let body = {};
@@ -69,7 +85,29 @@ exports.handler = async (event, context) => {
       users = await listar(gt);
       const nu = users.find((u) => (u.email || '').toLowerCase() === email);
       if (nu) { await gt('/admin/users/' + nu.id, 'PUT', { app_metadata: comPapel(nu, papel) }); users = await listar(gt); }
-      return resposta((existe ? 'Convite reenviado para ' : 'Convite enviado para ') + email);
+      return await resposta((existe ? 'Convite reenviado para ' : 'Convite enviado para ') + email);
+    }
+
+    // pedidos vindos do link /convite
+    if (String(body.id || '').indexOf('pedido:') === 0) {
+      const key = 'acessos/' + String(body.id).slice(7);
+      const p = await store.get(key, { type: 'json' });
+      if (!p || p.estado !== 'pendente') return json(404, { erro: 'Este convite já foi tratado' });
+      if (event.httpMethod === 'DELETE') { await marcar(p, 'recusado'); return await resposta('Convite de ' + p.email + ' recusado'); }
+      if (event.httpMethod !== 'PUT') return json(405, { erro: 'Método não suportado' });
+      const papel = body.papel === 'admin' ? 'admin' : 'editor';
+      let u = users.find((x) => (x.email || '').toLowerCase() === p.email);
+      if (!u) {
+        await gt('/invite', 'POST', { email: p.email });   // o Netlify envia o email para criar a palavra-passe
+        users = await listar(gt);
+        u = users.find((x) => (x.email || '').toLowerCase() === p.email);
+      }
+      if (u && !papeis(u).some((r) => PAPEIS.includes(r))) {
+        await gt('/admin/users/' + u.id, 'PUT', { app_metadata: comPapel(u, papel) });
+        users = await listar(gt);
+      }
+      await marcar(p, 'aprovado');
+      return await resposta('Convite de ' + p.email + ' aprovado — vai receber um email para criar a palavra-passe');
     }
 
     const alvo = users.find((u) => u.id === body.id);
@@ -81,14 +119,14 @@ exports.handler = async (event, context) => {
       const antes = view(alvo);
       await gt('/admin/users/' + alvo.id, 'PUT', { app_metadata: comPapel(alvo, papel) });
       users = await listar(gt);
-      if (antes.estado === 'aprovacao') return resposta('Convite de ' + alvo.email + ' aprovado');
-      return resposta(papel === 'admin' ? alvo.email + ' é agora administrador' : alvo.email + ' é agora colaborador');
+      if (antes.estado === 'aprovacao') return await resposta('Convite de ' + alvo.email + ' aprovado');
+      return await resposta(papel === 'admin' ? alvo.email + ' é agora administrador' : alvo.email + ' é agora colaborador');
     }
     if (event.httpMethod === 'DELETE') { // remover acesso / recusar pedido
       const antes = view(alvo);
       await gt('/admin/users/' + alvo.id, 'DELETE');
       users = await listar(gt);
-      return resposta(antes.estado === 'aprovacao' ? 'Convite de ' + alvo.email + ' recusado' : 'Acesso de ' + alvo.email + ' removido');
+      return await resposta(antes.estado === 'aprovacao' ? 'Convite de ' + alvo.email + ' recusado' : 'Acesso de ' + alvo.email + ' removido');
     }
     return json(405, { erro: 'Método não suportado' });
   } catch (e) {

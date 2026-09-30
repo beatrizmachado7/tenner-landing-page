@@ -59,18 +59,18 @@
       busy(f, true); msg(f, 'A entrar…');
       g.login(v.email, v.password, true).then(entrou).catch(function (err) { busy(f, false); msg(f, traduz(err), 'err'); });
     });
-    // pedir acesso pelo link de convite (email + palavra-passe)
+    // pedir acesso pelo link de convite (só email)
     $('#tl-pedir').addEventListener('submit', function (e) {
-      e.preventDefault(); var f = e.target, v = vals(f), g = gotrue();
+      e.preventDefault(); var f = e.target, v = vals(f);
       if (!EMAIL.test(v.email)) return msg(f, 'Escreve um email válido.', 'err');
-      if (v.password.length < 8) return msg(f, 'A palavra-passe precisa de ter pelo menos 8 caracteres.', 'err');
-      if (!g) return semLigacao(f);
       busy(f, true); msg(f, 'A enviar…');
-      g.signup(v.email, v.password, {}).then(function (u) {
+      var enviar = window.TN_PREVIEW ? Promise.resolve({ ok: true }) :
+        fetch('/.netlify/functions/pedir-acesso', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(v) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.erro || 'Não foi possível enviar.'); return d; }); });
+      enviar.then(function () {
         busy(f, false); f.reset(); pedidoEnviado = true;
-        var confirmar = !(u && u.confirmed_at);
-        show('aviso', { t: 'Pedido enviado', p: (confirmar ? 'Enviámos um email para ' + v.email + ' — carrega no link para confirmar o teu email. ' : '') + 'A TENNER vai analisar o teu pedido. Quando for aprovado, entras em ' + (/tenner/i.test(location.host) ? location.host : 'tenner10.netlify.app') + '/admin com este email e palavra-passe.' });
-      }).catch(function (err) { busy(f, false); msg(f, traduz(err), 'err'); });
+        show('aviso', { t: 'Pedido enviado', p: 'Obrigado! A TENNER vai analisar o teu pedido. Se for aprovado, recebes um email em ' + v.email + ' para criares a tua palavra-passe e entrares no painel.' });
+      }).catch(function (err) { busy(f, false); msg(f, err.message || 'Não foi possível enviar. Tenta de novo.', 'err'); });
     });
     // recuperar
     $('#tl-recuperar').addEventListener('submit', function (e) {

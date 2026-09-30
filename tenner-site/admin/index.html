@@ -42,9 +42,9 @@
 
       <form class="tl-form" id="tl-pedir" novalidate hidden>
         <h2 class="tl-h">Pedir acesso ao painel</h2>
-        <p class="tl-p">Escreve o teu email e cria uma palavra-passe. O teu pedido fica à espera de aprovação da TENNER.</p>
+        <p class="tl-p">Escreve o teu email. Quando a TENNER aprovar o pedido, recebes um email para criares a tua palavra-passe e entrares no painel.</p>
         <label class="tl-f"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
-        <label class="tl-f"><span>Palavra-passe <em>(mínimo 8 caracteres)</em></span><span class="tl-pw"><input name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="tl-eye" aria-label="Mostrar palavra-passe"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <label class="tl-hp" aria-hidden="true">Não preencher<input name="empresa_site" tabindex="-1" autocomplete="off"></label>
         <button type="submit" class="tl-btn">Enviar pedido</button>
         <p class="tl-msg" role="status" aria-live="polite"></p>
       </form>
@@ -226,7 +226,7 @@
           <div class="tn-card-h">
             <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>O teu link de convite</span>
           </div>
-          <p class="tn-inv-help">Envia este link a quem deve ter acesso ao painel. A pessoa escreve o email e cria uma palavra-passe, e o convite aparece aqui em baixo. Só entra depois de carregares em «Aprovar».</p>
+          <p class="tn-inv-help">Envia este link a quem deve ter acesso ao painel. A pessoa só escreve o email e o pedido aparece aqui em baixo. Quando carregas em «Aprovar», ela recebe um email para criar a palavra-passe e entrar.</p>
           <div class="tn-share-row">
             <input type="text" id="tn-acc-link" readonly aria-label="Link de convite">
             <button type="button" class="tn-btn solid" id="tn-acc-copy">Copiar link</button>

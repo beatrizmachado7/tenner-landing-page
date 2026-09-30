@@ -54,8 +54,8 @@
     list.innerHTML = ped.map(function (p) {
       return '<div class="tn-row tn-row-pedido">' +
         '<span class="tn-ava">' + esc(ini(p)) + '</span>' +
-        '<span class="tn-row-t"><b>' + esc(p.nome || p.email) + '</b><small>' + esc((p.nome ? p.email + ' · ' : '') + 'Recebido a ' + data(p.convidado)) + '</small></span>' +
-        '<span class="tn-badge ' + (p.emailConfirmado ? 'ativo' : 'pendente') + '">' + (p.emailConfirmado ? 'Email confirmado' : 'Email por confirmar') + '</span>' +
+        '<span class="tn-row-t"><b>' + esc(p.nome || p.email) + '</b><small>' + esc((p.nome ? p.email + ' · ' : '') + 'Pedido recebido a ' + data(p.convidado)) + '</small></span>' +
+        '<span class="tn-badge aprovacao">Por aprovar</span>' +
         (st.admin ? '<span class="tn-row-a on tn-acc-a">' +
           '<button type="button" class="tn-btn solid sm" data-c="aprovar" data-id="' + esc(p.id) + '">Aprovar</button>' +
           '<button type="button" class="tn-btn sm" data-c="recusar" data-id="' + esc(p.id) + '">Recusar</button></span>' : '') +
@@ -129,7 +129,7 @@
     else if (c === 'aprovar') {
       run('PUT', { id: p.id, papel: 'editor' }, 'A aprovar…');
     } else if (c === 'recusar') {
-      window.TNDash.confirm('Recusar convite?', '<b>' + esc(p.email) + '</b> não fica com acesso ao painel e a conta criada é apagada.', 'Recusar convite', function () {
+      window.TNDash.confirm('Recusar convite?', '<b>' + esc(p.email) + '</b> não fica com acesso ao painel.', 'Recusar convite', function () {
         run('DELETE', { id: p.id }, 'A recusar…');
       });
     } else if (c === 'remover') {

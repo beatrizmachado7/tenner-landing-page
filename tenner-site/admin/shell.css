@@ -369,3 +369,5 @@ body.tn-guest #tl,body.tn-pending #tl-wait{display:flex}
   .tn-acc-a .tn-btn{flex:1}
   .tn-share-row .tn-btn{width:100%}
 }
+
+.tl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
