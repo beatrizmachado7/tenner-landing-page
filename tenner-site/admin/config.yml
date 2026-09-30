@@ -27,68 +27,68 @@ collections:
   # ---------------- ARQUIVO ----------------
   - name: arquivo
     label: Arquivo
-    description: "O Arquivo tem 3 secções: Pre Match Estático (fotos), Motion Videos (vídeos) e Social Media (carrosséis)."
+    description: "O Arquivo tem 3 colunas lado a lado: Pre Match Estático (fotos), Pre Match Motion Videos (vídeos) e Conteúdos Social Media (carrosséis)."
     editor: { preview: false }
     files:
       - name: estatico
-        label: "Pre Match Estático"
+        label: "1. Pre Match Estático (fotos)"
         file: tenner-site/content/galeria/estatico.json
         fields:
-          - { label: Nome, name: title, widget: string, default: "Pre Match Estático" }
+          - { label: Título da coluna, name: title, widget: string, default: "Pre Match Estático" }
           - label: Fotos
             name: items
             widget: list
             label_singular: foto
             add_to_top: true
             collapsed: false
-            summary: "Foto"
+            summary: "{{fields.title}}"
+            hint: "As fotos aparecem inteiras, no formato original, sem cortes. Arrasta para mudar a ordem; o X apaga."
             fields:
               - { label: Foto, name: image, widget: image, choose_url: false }
-              - { label: Descrição, name: title, widget: hidden, required: false }
-              - { label: "Mostrar no site", name: ativo, widget: boolean, default: true }
+              - { label: "Descrição (opcional)", name: title, widget: string, required: false, hint: "Não aparece por cima da foto; só serve para identificar e para acessibilidade." }
       - name: motion
-        label: "Motion Videos"
+        label: "2. Pre Match Motion Videos (vídeos)"
         file: tenner-site/content/galeria/motion.json
         fields:
-          - { label: Nome, name: title, widget: string, default: "Pre Match Motion Videos" }
+          - { label: Título da coluna, name: title, widget: string, default: "Pre Match Motion Videos" }
           - label: Vídeos
             name: items
             widget: list
             label_singular: vídeo
             add_to_top: true
             collapsed: false
-            summary: "Vídeo"
+            summary: "{{fields.title}}"
+            hint: "Os vídeos tocam sozinhos quando se abre o site (sem som e em loop). Usa ficheiros .mp4, de preferência com menos de 20 MB."
             fields:
               - { label: "Vídeo (.mp4)", name: video, widget: file, choose_url: false }
-              - { label: Descrição, name: title, widget: hidden, required: false }
-              - { label: "Mostrar no site", name: ativo, widget: boolean, default: true }
+              - { label: "Descrição (opcional)", name: title, widget: string, required: false, hint: "Só serve para identificar o vídeo no painel." }
       - name: social
-        label: "Social Media"
+        label: "3. Conteúdos Social Media (carrosséis)"
         file: tenner-site/content/galeria/carrosseis.json
         fields:
-          - { label: Nome, name: title, widget: string, default: "Conteúdos Social Media" }
-          - label: Carrosséis
+          - { label: Título da coluna, name: title, widget: string, default: "Conteúdos Social Media" }
+          - label: Carrosséis Instagram
             name: items
             widget: list
             label_singular: carrossel
             add_to_top: true
-            collapsed: false
-            summary: "Carrossel"
+            collapsed: true
+            summary: "{{fields.title}}"
+            hint: "Cada carrossel mostra as suas fotos com setas para andar para a frente e para trás. Usa fotos todas do mesmo formato (ex.: 4:5)."
             fields:
-              - { label: Nome do carrossel, name: title, widget: hidden, required: false }
-              - label: Fotos
+              - { label: "Nome do carrossel", name: title, widget: string, required: false, hint: "Ex.: Apresentação reforço. Só aparece no painel e para acessibilidade." }
+              - label: Fotos do carrossel (pela ordem em que aparecem)
                 name: images
                 widget: list
                 label_singular: foto
                 collapsed: false
                 field: { label: Foto, name: image, widget: image, choose_url: false }
-              - { label: "Mostrar no site", name: ativo, widget: boolean, default: true }
 
   # ---------------- PLANOS ----------------
   - name: planos
-    label: Plano
+    label: Planos e preços
     label_singular: plano
-    description: "Os planos que aparecem no site. Carrega num plano para o editar."
+    description: "Cada plano é uma entrada: nome e o que inclui."
     folder: tenner-site/content/planos
     extension: json
     format: json
@@ -98,11 +98,11 @@ collections:
     slug: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}-{{slug}}"
     summary: "{{name}} {{suffix}}"
     editor: { preview: false }
-    sortable_fields: [name]
+    sortable_fields: [ordem, name]
     fields:
-      - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER, TENNER+ ou TENNER PRO" }
-      - { label: Sufixo, name: suffix, widget: hidden, required: false }
-      - { label: "O mais pedido", name: featured, widget: boolean, default: false, hint: "Mostra no site a etiqueta “O mais pedido” neste plano, para o cliente ver que é o que mais clientes escolhem." }
+      - { label: Nome, name: name, widget: string, hint: "Ex.: TENNER ou TENNER+" }
+      - { label: Sufixo em itálico, name: suffix, widget: string, required: false, hint: "Ex.: PRO (deixa vazio nos outros)" }
+      - { label: "Destacar como “Mais completo”", name: featured, widget: boolean, default: false }
       - { label: "Mensagem do WhatsApp (botão “Quero”)", name: whatsapp_message, widget: string, required: false, hint: "Texto que já aparece escrito no WhatsApp quando o cliente carrega no botão deste plano. Se deixares vazio, usa a mensagem padrão das Definições gerais. O número/link do WhatsApp está em Definições gerais → WhatsApp." }
       - label: O que inclui
         name: features
@@ -113,14 +113,13 @@ collections:
           - { label: Texto, name: text, widget: string, required: false }
           - { label: "Oferta (aparece a amarelo com “+ OFERTA”)", name: offer, widget: string, required: false }
           - { label: Detalhe (texto pequeno por baixo), name: detail, widget: string, required: false }
-      - { label: Ordem, name: ordem, widget: hidden, default: 100 }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100, hint: "Números mais baixos aparecem primeiro (10, 20, 30…)." }
       - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
 
   # ---------------- O QUE FAZEMOS ----------------
   - name: servicos
     label: O que fazemos
     label_singular: serviço
-    description: "Os serviços que aparecem na secção “O que fazemos” do site. Carrega num serviço para o editar."
     folder: tenner-site/content/servicos
     extension: json
     format: json
@@ -130,18 +129,17 @@ collections:
     slug: "{{year}}{{month}}{{day}}-{{slug}}"
     summary: "{{title}}"
     editor: { preview: false }
-    sortable_fields: [title]
+    sortable_fields: [ordem, title]
     fields:
-      - { label: Nome, name: title, widget: string }
+      - { label: Título, name: title, widget: string }
       - { label: Descrição, name: text, widget: text }
-      - { label: Ordem, name: ordem, widget: hidden, default: 100 }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100 }
       - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
 
   # ---------------- SERVIÇOS EXTRA ----------------
   - name: extras
     label: Serviços extra
     label_singular: serviço extra
-    description: "Os serviços extra que aparecem no site. Carrega num serviço para o editar."
     folder: tenner-site/content/extras
     extension: json
     format: json
@@ -151,13 +149,13 @@ collections:
     slug: "{{year}}{{month}}{{day}}-{{slug}}"
     summary: "{{title}}"
     editor: { preview: false }
-    sortable_fields: [title]
+    sortable_fields: [ordem, title]
     fields:
-      - { label: Nome, name: title, widget: string }
-      - { label: Descrição, name: text, widget: text, required: false }
-      - { label: Subtítulo, name: subtitle, widget: hidden, required: false }
-      - { label: Destacar a amarelo, name: highlight, widget: hidden, default: false }
-      - { label: Ordem, name: ordem, widget: hidden, default: 100 }
+      - { label: Título, name: title, widget: string }
+      - { label: Subtítulo, name: subtitle, widget: string }
+      - { label: Texto ao abrir, name: text, widget: text, required: false }
+      - { label: Destacar a amarelo, name: highlight, widget: boolean, default: false }
+      - { label: Ordem, name: ordem, widget: number, value_type: int, default: 100 }
       - { label: Mostrar no site, name: visivel, widget: boolean, default: true }
 
   # ---------------- DEFINIÇÕES ----------------
