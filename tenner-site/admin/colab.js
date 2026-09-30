@@ -93,8 +93,8 @@
         : p.estado === 'convite' ? '<span class="tn-badge pendente">Convite pendente</span>'
         : '<span class="tn-badge ativo">Ativo</span>';
       return '<div class="tn-row">' +
-        '<span class="tn-ava">' + esc(ini(p)) + '</span>' +
-        '<span class="tn-row-t"><b>' + esc(p.nome || p.email) + '</b><small>' + esc((p.nome ? p.email + ' · ' : '') + sub) + '</small></span>' +
+        '<span class="tn-ava">' + (p.avatar ? '<img src="' + esc(p.avatar) + '" alt="">' : esc(ini(p))) + '</span>' +
+        '<span class="tn-row-t"><b>' + esc(p.nome || p.email) + '</b><small>' + esc((p.bio ? p.bio + ' · ' : '') + (p.nome ? p.email + ' · ' : '') + sub) + '</small></span>' +
         badge +
         '<span class="tn-role' + (p.admin ? ' admin' : '') + '">' + (p.admin ? 'Administrador' : 'Colaborador') + '</span>' +
         acoes + '</div>';

@@ -34,10 +34,7 @@
       return;
     }
     var mail = user.email || '';
-    var name = (user.user_metadata && user.user_metadata.full_name) || mail.split('@')[0] || 'TENNER.';
-    $('#tn-user-name').textContent = name;
-    $('#tn-user-mail').textContent = mail;
-    $('#tn-avatar').textContent = name.charAt(0).toUpperCase();
+    if (window.TNPerfil) window.TNPerfil.aplicar(user);
     $('#tl-wait-mail').textContent = 'Sessão iniciada como ' + mail;
     sessao(user).then(function (d) {
       if (d.aprovado) { setModo('auth'); onRoute(); if (window.TNColab) window.TNColab.contar(); }
@@ -72,10 +69,22 @@
     if (h.indexOf('#/pedir-acesso') === 0 && body.classList.contains('tn-auth')) { location.replace('#/dashboard'); return; }
     var colab = h.indexOf('#/colaboradores') === 0;
     var acessos = h.indexOf('#/pedidos-acesso') === 0;
+    var planos = h === '#/planos' || h.indexOf('#/planos?') === 0;
+    var arquivo = h === '#/arquivo' || h.indexOf('#/arquivo?') === 0;
+    var servicos = h === '#/servicos', extras = h === '#/extras';
     body.classList.toggle('tn-on-dash', dash);
     body.classList.toggle('tn-on-colab', colab);
     body.classList.toggle('tn-on-acessos', acessos);
-    if ((colab || acessos) && body.classList.contains('tn-auth') && window.TNColab) window.TNColab.start();
+    body.classList.toggle('tn-on-planos', planos);
+    body.classList.toggle('tn-on-arquivo', arquivo);
+    body.classList.toggle('tn-on-servicos', servicos);
+    body.classList.toggle('tn-on-extras', extras);
+    var auth = body.classList.contains('tn-auth');
+    if ((colab || acessos) && auth && window.TNColab) window.TNColab.start();
+    if (planos && auth && window.TNConteudo) window.TNConteudo.planos();
+    if (arquivo && auth && window.TNConteudo) window.TNConteudo.arquivo();
+    if (servicos && auth && window.TNConteudo) window.TNConteudo.col('servicos');
+    if (extras && auth && window.TNConteudo) window.TNConteudo.col('extras');
     $$('.tn-link[data-match]').forEach(function (a) {
       a.classList.toggle('on', new RegExp(a.getAttribute('data-match')).test(h));
     });
@@ -93,13 +102,6 @@
   });
   $('#tn-burger').addEventListener('click', function () { body.classList.toggle('tn-menu-open'); });
   $('#tn-scrim').addEventListener('click', function () { body.classList.remove('tn-menu-open'); });
-
-  // "Imagens e vídeos" abre a biblioteca de media do Decap (o botão original fica escondido no topo do Decap)
-  $('#tn-media').addEventListener('click', function () {
-    var btn = $$('#nc-root header button').filter(function (b) { return /m[eé]dia|multim/i.test(b.textContent); })[0];
-    if (btn) btn.click();
-    body.classList.remove('tn-menu-open');
-  });
 
   /* ---------- pesquisa ---------- */
   $('#tn-search').addEventListener('submit', function (e) {
@@ -122,7 +124,7 @@
     if (cur) setUser(cur);
     var esperou = setTimeout(function () { if (!modo) setUser(id.currentUser && id.currentUser()); }, 2500);
     id.on('init', function (u) { clearTimeout(esperou); setUser(u); });
-    id.on('login', function (u) { setUser(u); if (!/^#\/(collections|search|dashboard|colaboradores|pedidos-acesso)/.test(location.hash)) location.hash = '#/dashboard'; });
+    id.on('login', function (u) { setUser(u); if (!/^#\/(collections|search|dashboard|colaboradores|pedidos-acesso|planos|arquivo|servicos|extras)/.test(location.hash)) location.hash = '#/dashboard'; });
     id.on('logout', function () { location.replace('/admin/'); });
   } else {
     setUser(null);

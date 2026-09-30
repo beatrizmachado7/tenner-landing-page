@@ -27,6 +27,8 @@ function view(u) {
     id: u.id,
     email: u.email,
     nome: (u.user_metadata && u.user_metadata.full_name) || '',
+    avatar: (u.user_metadata && typeof u.user_metadata.avatar === 'string' && u.user_metadata.avatar.indexOf('data:image/') === 0) ? u.user_metadata.avatar : '',
+    bio: (u.user_metadata && u.user_metadata.bio) || '',
     admin: papel === 'admin',
     papel,
     estado,
