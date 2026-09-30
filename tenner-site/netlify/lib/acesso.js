@@ -22,7 +22,7 @@ function identityApi(context) {
     return data;
   };
 }
-const listar = async (gt) => ((await gt('/admin/users?per_page=1000')) || {}).users || [];
+const listar = async (gt) => ((await gt('/admin/users?per_page=500')) || {}).users || [];
 
 // devolve { ok, status, admin, promovido, user, gt }
 async function verificar(context) {

@@ -19,7 +19,13 @@
     if (window.TN_PREVIEW) return Promise.resolve(window.TN_PREVIEW_SESSAO || { aprovado: true });
     return user.jwt().then(function (t) {
       return fetch('/.netlify/functions/sessao', { headers: { Authorization: 'Bearer ' + t } });
-    }).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.erro || 'Erro'); return d; }); });
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var d = {}; try { d = JSON.parse(t); } catch (e) { d = { erro: 'Resposta inesperada do servidor (' + r.status + ')' }; }
+        if (!r.ok) throw new Error(d.erro || ('Erro ' + r.status));
+        return d;
+      });
+    });
   }
   function setUser(user) {
     if (!user || (window.TNLogin && window.TNLogin.temToken())) {
@@ -40,9 +46,9 @@
         $('#tl-wait-p').textContent = 'A tua conta está à espera de aprovação de um administrador da TENNER. Assim que for aprovada, consegues entrar no painel.';
         setModo('pending');
       }
-    }).catch(function () {
+    }).catch(function (err) {
       $('#tl-wait-t').textContent = 'Não foi possível verificar o acesso';
-      $('#tl-wait-p').textContent = 'Verifica a ligação à internet e tenta de novo.';
+      $('#tl-wait-p').textContent = 'Tenta de novo daqui a pouco. Detalhe: ' + ((err && err.message) || 'sem ligação');
       setModo('pending');
     });
   }
