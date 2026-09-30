@@ -405,11 +405,12 @@
       { k: 'servicos_intro', l: 'Introdução de «Serviços»', t: 'area' },
       { k: 'extras_intro', l: 'Introdução de «Serviços extra»', t: 'area' }
     ] },
-    { id: 'contacto', titulo: 'Contacto', desc: 'O fundo da página.', campos: [
+    { id: 'contacto', titulo: 'Contacto e WhatsApp', desc: 'O fundo da página e o número de WhatsApp dos planos.', campos: [
       { k: 'contact.title', l: 'Título' },
       { k: 'contact.subtitle', l: 'Subtítulo' },
       { k: 'contact.email', l: 'Email', tipo: 'email' },
-      { k: 'contact.instagram', l: 'Instagram', help: 'Só o nome da conta, sem @.' }
+      { k: 'contact.instagram', l: 'Instagram', help: 'Só o nome da conta, sem @.' },
+      { k: 'whatsapp.link', l: 'Número de WhatsApp', tipo: 'tel', help: 'Ex.: 912 345 678 (ou com indicativo, +351 912 345 678). É o número que abre quando carregam em «Quero o …» nos planos. Sem número, esses botões levam à secção de contacto.' }
     ] }
   ];
   var eVideo = function (v) { return /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(String(v || '')) || /^data:video|^blob:.*#v$/.test(String(v || '')); };

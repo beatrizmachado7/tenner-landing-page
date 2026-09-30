@@ -551,3 +551,7 @@ body:not(.tn-on-planos):not(.tn-on-arquivo):not(.tn-on-servicos):not(.tn-on-extr
 .tn-ord.nova svg{color:var(--s-y)}
 .tn-ord.nova.off{opacity:.65}
 .tn-ord .tn-icon-btn[disabled]{opacity:.25;cursor:default}
+
+/* renovação dos planos (cartão único) */
+.tn-ren-solo{max-height:480px}
+.tn-planos .tn-card-t em{font-style:normal;font-size:13px;font-weight:600;min-width:26px;height:24px;padding:0 8px;display:inline-grid;place-items:center;border-radius:99px;background:var(--s-y-soft);color:var(--s-y)}

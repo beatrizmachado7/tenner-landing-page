@@ -178,7 +178,11 @@
   /* ---------- Planos: orçamentos e renovações ---------- */
   function renderPlanos() {
     var h = hoje();
-    // pedidos
+    // pedidos de orçamento (só se a área existir no painel)
+    if ($('#tn-ped-list')) renderPedidos(h);
+    renderRenovacoes(h);
+  }
+  function renderPedidos(h) {
     var pend = state.pedidos.filter(function (p) { return p.estado === 'pendente'; });
     var feitos = state.pedidos.filter(function (p) { return p.estado !== 'pendente'; });
     $('[data-k="ped-n"]').textContent = pend.length;
@@ -210,7 +214,8 @@
       }).join('') : '<div class="tn-empty sm"><b>Sem pedidos pendentes</b><span>Os pedidos do formulário do site aparecem aqui.</span></div>';
     }
 
-    // renovações
+  }
+  function renderRenovacoes(h) {
     var ativas = state.assinaturas.filter(function (a) { return !terminada(a, h); });
     var ordem = { 'por-confirmar': 0, hoje: 1, amanha: 2, termina: 3, ativo: 4 };
     ativas.sort(function (a, b) { return (ordem[fase(a, h)] - ordem[fase(b, h)]) || a.proxima.localeCompare(b.proxima); });
@@ -234,7 +239,7 @@
       return;
     }
     if (!ativas.length) {
-      lr.innerHTML = '<div class="tn-empty sm"><b>Sem planos ativos</b><span>Quando aceitares um pedido, o plano aparece aqui.' + (fim.length ? ' Os terminados estão no histórico.' : '') + '</span></div>';
+      lr.innerHTML = '<div class="tn-empty sm"><b>Sem planos ativos</b><span>Carrega em «Ativar plano» quando um cliente começar um plano.' + (fim.length ? ' Os terminados estão no histórico.' : '') + '</span></div>';
       return;
     }
     lr.innerHTML = ativas.map(function (a) {
@@ -307,6 +312,37 @@
       state.assinaturas.push(a);
       var dec = { id: p.id, estado: 'aceite', cliente: c.id, assinatura: a.id, decidido: hoje() };
       decisoes[p.id] = dec; Object.assign(p, dec);
+      render(); persist();
+    });
+  }
+  // ativar um plano manualmente (cliente que falou connosco pelo WhatsApp, por exemplo)
+  function ativarPlano() {
+    var opts = [{ v: '__novo', t: 'Novo cliente' }].concat(state.clientes.slice().sort(byNome).map(function (c) {
+      return { v: c.id, t: c.nome + (c.whatsapp ? ' · ' + c.whatsapp : '') };
+    }));
+    openDialog('Ativar plano', [
+      'O plano fica ativo a partir da data de início e a primeira renovação é um mês depois. Se o cliente já tiver um plano ativo, é substituído por este.',
+      { name: 'ficha', label: 'Cliente', type: 'select', required: true, options: opts },
+      { name: 'nome', label: 'Nome (só para novo cliente)' },
+      { name: 'whatsapp', label: 'Telemóvel (WhatsApp)', type: 'tel', half: true },
+      { name: 'plano', label: 'Plano', type: 'select', required: true, options: planos, half: true },
+      { name: 'inicio', label: 'Data de início', type: 'date', required: true }
+    ], { ficha: state.clientes.length ? '' : '__novo', plano: planos[0], inicio: hoje() }, 'Ativar plano', function (v) {
+      var c = v.ficha !== '__novo' ? find(state.clientes, v.ficha) : null;
+      if (!c && !v.nome) { status('Escreve o nome do novo cliente', 'err'); return; }
+      if (!v.plano || !/^\d{4}-\d{2}-\d{2}$/.test(v.inicio)) { status('Falta o plano ou a data de início', 'err'); return; }
+      if (!c) { c = { id: uid(), nome: v.nome, clube: '', plano: v.plano, whatsapp: v.whatsapp, contacto: '', desde: v.inicio }; state.clientes.push(c); }
+      else {
+        if (!c.whatsapp && v.whatsapp) c.whatsapp = v.whatsapp;
+        if (!c.desde) c.desde = v.inicio;
+        c.plano = v.plano;
+        var velha = ativaDe(c.id);
+        if (velha) { velha.estado = 'terminado'; velha.termina = D.somaDias(v.inicio, -1) < velha.inicio ? velha.inicio : D.somaDias(v.inicio, -1); hist(velha, 'substituido', 'Substituído pelo plano ' + v.plano); }
+      }
+      var dia = D.diaDe(v.inicio);
+      var a = { id: uid(), cliente: c.id, plano: v.plano, inicio: v.inicio, dia: dia, proxima: D.mesSeguinte(v.inicio, dia), estado: 'ativo', resposta: '', mensagem: '', termina: '', pedido: '', historico: [] };
+      hist(a, 'inicio', 'Plano ' + v.plano + ' ativado', v.inicio);
+      state.assinaturas.push(a);
       render(); persist();
     });
   }
@@ -525,7 +561,8 @@
 
     $('#tn-cli-add').addEventListener('click', addCliente);
     $('#tn-tr-add').addEventListener('click', addTrabalho);
-    $('#tn-ped-hist').addEventListener('click', function () { state.histPed = !state.histPed; renderPlanos(); });
+    if ($('#tn-ped-hist')) $('#tn-ped-hist').addEventListener('click', function () { state.histPed = !state.histPed; renderPlanos(); });
+    $('#tn-ren-add').addEventListener('click', ativarPlano);
     $('#tn-ren-hist').addEventListener('click', function () { state.histRen = !state.histRen; renderPlanos(); });
     $('#tn-f-cli').addEventListener('change', function (e) { state.filtroCliente = e.target.value; renderTrabalhos(); });
     $('#tn-est-pills').addEventListener('click', function (e) {

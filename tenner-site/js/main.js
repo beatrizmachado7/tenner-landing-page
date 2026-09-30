@@ -69,7 +69,11 @@
   function waHref(msg) {
     var link = String(waCfg.link || '').trim();
     if (!link) return '';
-    if (/^[+\d\s()-]+$/.test(link)) link = 'https://wa.me/' + link.replace(/\D/g, '');
+    if (/^[+\d\s().-]+$/.test(link)) {
+      var num = link.replace(/\D/g, '').replace(/^00/, '');
+      if (num.length === 9) num = '351' + num; // número português sem indicativo
+      link = 'https://wa.me/' + num;
+    }
     else if (!/^https?:\/\//i.test(link)) link = 'https://' + link;
     link = link.replace(/([?&])text=[^&#]*&?/i, '$1').replace(/[?&]$/, '');
     return link + (link.indexOf('?') > -1 ? '&' : '?') + 'text=' + encodeURIComponent(msg);
@@ -92,7 +96,11 @@
         (p.featured ? '<div class="badge disp">Mais pedido</div>' : '') +
         '<div class="disp plan-name">' + esc(p.name) + (p.suffix ? '<span class="ital">' + esc(p.suffix) + '</span>' : '') + '</div>' +
         '<ul class="feats">' + feats + '</ul>' +
-        '<a class="btn ' + (p.featured ? 'btn-y' : 'btn-o') + '" href="#orcamento" data-plan="' + esc(full) + '">Quero o ' + esc(full) + '</a>' +
+        (function () { // o botão abre o WhatsApp (número em Página inicial → Contacto e WhatsApp); sem número, vai para o contacto
+          var href = waHref(planMsg(p, full));
+          return '<a class="btn ' + (p.featured ? 'btn-y' : 'btn-o') + '" href="' + esc(href || '#contacto') + '"' +
+            (href ? ' target="_blank" rel="noopener"' : '') + ' data-plan="' + esc(full) + '">Quero o ' + esc(full) + '</a>';
+        })() +
         '</article>';
     }).join('');
     // lista de planos do formulário de orçamento

@@ -157,26 +157,21 @@
     <section class="tn-dash" id="tn-dash" aria-label="Dashboard">
       <div class="tn-dash-h">
         <span class="tn-chip lg"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
-        <div><h1>Dashboard TENNER<span>.</span></h1><p>Planos, clientes e trabalhos num relance</p></div>
+        <div><h1>Dashboard TENNER<span>.</span></h1><p>Renovações, clientes e trabalhos num relance</p></div>
         <span class="tn-save" id="tn-save" role="status" aria-live="polite"></span>
       </div>
 
       <div class="tn-grid">
-        <!-- Planos: orçamentos e renovações -->
+        <!-- Renovação dos planos -->
         <div class="tn-card tn-panel tn-planos" id="tn-planos">
           <div class="tn-card-h">
-            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>Planos: orçamentos e renovações</span>
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>Renovação dos planos <em data-k="ren-n">0</em></span>
+            <div class="tn-card-tools">
+              <button type="button" class="tn-mini-link" id="tn-ren-hist" hidden></button>
+              <button type="button" class="tn-btn" id="tn-ren-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ativar plano</button>
+            </div>
           </div>
-          <div class="tn-split">
-            <section class="tn-area" aria-labelledby="tn-ped-t">
-              <div class="tn-area-h"><h3 id="tn-ped-t">Pedidos de orçamento <em data-k="ped-n">0</em></h3><button type="button" class="tn-mini-link" id="tn-ped-hist" hidden></button></div>
-              <div class="tn-items" id="tn-ped-list"></div>
-            </section>
-            <section class="tn-area" aria-labelledby="tn-ren-t">
-              <div class="tn-area-h"><h3 id="tn-ren-t">Renovação dos planos <em data-k="ren-n">0</em></h3><button type="button" class="tn-mini-link" id="tn-ren-hist" hidden></button></div>
-              <div class="tn-items" id="tn-ren-list"></div>
-            </section>
-          </div>
+          <div class="tn-items tn-ren-solo" id="tn-ren-list"></div>
         </div>
 
         <!-- Clientes -->
@@ -413,7 +408,7 @@
           <label class="tn-f"><span>Descrição</span><textarea name="descricao" rows="7" placeholder="Uma linha por ponto do plano"></textarea>
             <small class="tn-f-help">Cada linha é um ponto no site. Para um texto pequeno por baixo, usa « — » (ex.: <i>Comunicação — MVP / Equipa da semana</i>). Para destacar uma oferta, começa com «OFERTA».</small></label>
           <label class="tn-switch"><input type="checkbox" name="featured"><span class="tn-switch-ui"></span><span><b>Mais pedido</b><small>Mostra o destaque «Mais pedido» neste plano</small></span></label>
-          <label class="tn-f"><span>Mensagem do WhatsApp</span><textarea name="whatsapp" rows="3" maxlength="400" placeholder="Olá! Tenho interesse no plano …"></textarea></label>
+          <label class="tn-f"><span>Mensagem do WhatsApp</span><textarea name="whatsapp" rows="3" maxlength="400" placeholder="Olá! Tenho interesse no plano …"></textarea><small class="tn-f-help">É a mensagem que aparece já escrita quando carregam em «Quero o …» deste plano. O número de WhatsApp define-se em Página inicial → Contacto e WhatsApp.</small></label>
           <label class="tn-switch"><input type="checkbox" name="visivel"><span class="tn-switch-ui"></span><span><b>Mostrar no site</b><small>Se desligares, o plano fica escondido no site</small></span></label>
           <p class="tn-pf-msg err" id="tn-pl-msg" role="alert"></p>
         </div>
