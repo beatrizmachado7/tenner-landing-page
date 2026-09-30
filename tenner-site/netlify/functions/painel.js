@@ -2,7 +2,7 @@
 // Ficam no Netlify Blobs: guardar aqui NÃO cria uma nova publicação do site
 // e os dados nunca ficam visíveis no site público.
 // Só responde a colaboradores aprovados (papel admin/editor no Netlify Identity).
-const { getStore, connectLambda } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('../lib/netlify-blobs.cjs');
 const { verificar } = require('../lib/acesso');
 
 const KEY = 'dados';

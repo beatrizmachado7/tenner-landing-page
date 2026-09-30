@@ -3,7 +3,7 @@
 // como uma entrada própria (pedidos/<id>) — não cria nenhuma publicação do site.
 // O painel lê estes pedidos no cartão «Planos: orçamentos e renovações».
 const crypto = require('crypto');
-const { getStore, connectLambda } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('../lib/netlify-blobs.cjs');
 
 const json = (status, body) => ({
   statusCode: status,
