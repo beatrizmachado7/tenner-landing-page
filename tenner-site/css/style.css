@@ -198,3 +198,30 @@ footer a{text-decoration:none;display:inline-flex;align-items:center;gap:8px;min
   .arch-list::-webkit-scrollbar{display:none}
   .arch-list>*{flex:0 0 78%;scroll-snap-align:start}
 }
+
+/* ---------- pedido de orçamento ---------- */
+.quote{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;margin-top:64px;padding:44px;background:linear-gradient(180deg,#171717,#0e0e0e);border:1px solid var(--line);scroll-margin-top:120px}
+.quote-h{display:flex;flex-direction:column;gap:16px}
+.quote-t{margin:0;font-size:clamp(38px,4.4vw,58px)}
+.quote-t .ital{text-transform:none}
+.quote-p{margin:0;font-size:17px;line-height:1.6;color:var(--muted)}
+.quote-f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px}
+.qf{display:flex;flex-direction:column;gap:8px;min-width:0}
+.qf-full{grid-column:1/-1}
+.qf span{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.qf em{font-style:normal;text-transform:none;letter-spacing:0;color:var(--dim)}
+.qf input,.qf select,.qf textarea{width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:1px solid #333;border-radius:0;background:#0b0b0b;color:var(--ink);font:500 16px var(--body);color-scheme:dark;transition:border-color .2s}
+.qf textarea{resize:vertical;min-height:96px;line-height:1.5}
+.qf input:focus,.qf select:focus,.qf textarea:focus{outline:0;border-color:var(--y)}
+.qf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.quote-a{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:6px}
+.quote-a .btn[disabled]{opacity:.6;cursor:wait}
+.quote-msg{margin:0;font-size:15px;color:var(--muted)}
+.quote-msg.ok{color:var(--y)}
+.quote-note{flex-basis:100%;margin:0;font-size:13px;color:var(--dim)}
+.quote-msg.err{color:#f19a8e}
+@media (max-width:900px){
+  .quote{grid-template-columns:minmax(0,1fr);gap:28px;padding:28px 20px;margin-top:44px}
+  .quote-f{grid-template-columns:minmax(0,1fr)}
+  .quote-a .btn{width:100%}
+}

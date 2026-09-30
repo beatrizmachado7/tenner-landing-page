@@ -84,14 +84,54 @@
         (p.featured ? '<div class="badge disp">Mais completo</div>' : '') +
         '<div class="disp plan-name">' + esc(p.name) + (p.suffix ? '<span class="ital">' + esc(p.suffix) + '</span>' : '') + '</div>' +
         '<ul class="feats">' + feats + '</ul>' +
-        (function () {
-          var href = waHref(planMsg(p, full));
-          return '<a class="btn ' + (p.featured ? 'btn-y' : 'btn-o') + '" href="' + esc(href || '#contacto') + '"' +
-            (href ? ' target="_blank" rel="noopener"' : '') + ' data-plan="' + esc(full) + '">Quero o ' + esc(full) + '</a>';
-        })() +
+        '<a class="btn ' + (p.featured ? 'btn-y' : 'btn-o') + '" href="#orcamento" data-plan="' + esc(full) + '">Quero o ' + esc(full) + '</a>' +
         '</article>';
     }).join('');
+    // lista de planos do formulário de orçamento
+    var sel = $('#quote-plano');
+    if (sel) {
+      var cur = sel.value;
+      sel.innerHTML = '<option value="">Escolhe um plano</option>' + (d.plans || []).map(function (p) {
+        var full = p.name + (p.suffix ? ' ' + p.suffix : '');
+        return '<option value="' + esc(full) + '"' + (full === cur ? ' selected' : '') + '>' + esc(full) + '</option>';
+      }).join('');
+    }
   }
+
+  /* ---------- pedido de orçamento ---------- */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-plan][href="#orcamento"]');
+    if (!a) return;
+    e.preventDefault();
+    var sel = $('#quote-plano'); if (sel) sel.value = a.getAttribute('data-plan');
+    var f = $('#orcamento'); if (!f) return;
+    f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () { var n = f.querySelector('[name=nome]'); if (n) n.focus({ preventScroll: true }); }, 500);
+  });
+  (function () {
+    var f = $('#orcamento'); if (!f) return;
+    var msg = $('#quote-msg'), btn = $('#quote-btn');
+    var say = function (t, cls) { msg.textContent = t; msg.className = 'quote-msg ' + (cls || ''); };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = {};
+      Array.prototype.forEach.call(f.elements, function (el) { if (el.name) v[el.name] = el.value.trim(); });
+      if (v.nome.length < 2) { say('Indica o teu nome.', 'err'); f.nome.focus(); return; }
+      var dig = v.telefone.replace(/\D/g, '');
+      if (dig.length < 9 || dig.length > 15) { say('Indica um número de telemóvel válido.', 'err'); f.telefone.focus(); return; }
+      if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) { say('O email não parece válido.', 'err'); f.email.focus(); return; }
+      if (!v.plano) { say('Escolhe um plano.', 'err'); f.plano.focus(); return; }
+      btn.disabled = true; say('A enviar…');
+      fetch('/.netlify/functions/pedido', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(v) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.erro || 'Não foi possível enviar.'); }); })
+        .then(function () {
+          f.reset();
+          say('Pedido enviado! Obrigado, ' + v.nome.split(' ')[0] + ' — vamos entrar em contacto em breve.', 'ok');
+        })
+        .catch(function (err) { say(err.message || 'Não foi possível enviar. Tenta de novo.', 'err'); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
 
   /* ---------- extras.json ---------- */
   function renderExtras(data) {

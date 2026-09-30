@@ -13,12 +13,90 @@
   <link rel="stylesheet" href="/admin/admin.css">
   <link rel="stylesheet" href="/admin/shell.css">
   <script>
+    // Links dos emails (convite, confirmação, recuperação): guarda o token antes do Netlify Identity o apanhar
+    (function () {
+      var h = location.hash, m = h.match(/(invite_token|recovery_token|confirmation_token|email_change_token)=([^&]+)/);
+      if (m) window.TN_TOKEN = { tipo: m[1], token: decodeURIComponent(m[2]) };
+      else if (/error_description=/.test(h)) window.TN_TOKEN = { tipo: 'erro' };
+      if (window.TN_TOKEN) history.replaceState(null, '', location.pathname + '#/dashboard');
+    })();
     // Abre o painel sempre no Dashboard
     if (!location.hash || location.hash === '#/' || location.hash === '#') location.hash = '#/dashboard';
   </script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <!-- Entrar / pedir acesso (sem sessão) -->
+  <div class="tl" id="tl" role="main">
+    <div class="tl-card">
+      <div class="tl-brand"><span class="tn-logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="4"><path d="M16 12v20M22 9v26M28 12v20" stroke-linecap="round"/></svg></span><div><b>TENNER<span>.</span></b><small>Painel de administração</small></div></div>
+
+
+      <form class="tl-form" id="tl-entrar" novalidate>
+        <label class="tl-f"><span>Email</span><input name="email" type="email" autocomplete="username" required></label>
+        <label class="tl-f"><span>Palavra-passe</span><span class="tl-pw"><input name="password" type="password" autocomplete="current-password" required><button type="button" class="tl-eye" aria-label="Mostrar palavra-passe"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <button type="submit" class="tl-btn">Entrar</button>
+        <a href="#" class="tl-link" data-tl="recuperar">Esqueci-me da palavra-passe</a>
+        <p class="tl-msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <form class="tl-form" id="tl-pedir" novalidate hidden>
+        <h2 class="tl-h">Pedir acesso ao painel</h2>
+        <p class="tl-p">Escreve o teu email e cria uma palavra-passe. O teu pedido fica à espera de aprovação da TENNER.</p>
+        <label class="tl-f"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+        <label class="tl-f"><span>Palavra-passe <em>(mínimo 8 caracteres)</em></span><span class="tl-pw"><input name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="tl-eye" aria-label="Mostrar palavra-passe"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <button type="submit" class="tl-btn">Enviar pedido</button>
+        <p class="tl-msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <form class="tl-form" id="tl-recuperar" novalidate hidden>
+        <h2 class="tl-h">Recuperar palavra-passe</h2>
+        <p class="tl-p">Escreve o teu email e enviamos-te um link para criares uma nova palavra-passe.</p>
+        <label class="tl-f"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+        <button type="submit" class="tl-btn">Enviar link</button>
+        <a href="#" class="tl-link" data-tl="entrar">Voltar a entrar</a>
+        <p class="tl-msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <form class="tl-form" id="tl-convite" novalidate hidden>
+        <h2 class="tl-h">Bem-vindo à TENNER.</h2>
+        <p class="tl-p">Foste convidado para o painel. Cria a tua palavra-passe para entrares.</p>
+        <label class="tl-f"><span>Nome <em>(opcional)</em></span><input name="nome" autocomplete="name" maxlength="80"></label>
+        <label class="tl-f"><span>Palavra-passe <em>(mínimo 8 caracteres)</em></span><span class="tl-pw"><input name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="tl-eye" aria-label="Mostrar palavra-passe"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <button type="submit" class="tl-btn">Criar conta e entrar</button>
+        <p class="tl-msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <form class="tl-form" id="tl-nova" novalidate hidden>
+        <h2 class="tl-h">Nova palavra-passe</h2>
+        <label class="tl-f"><span>Palavra-passe <em>(mínimo 8 caracteres)</em></span><span class="tl-pw"><input name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="tl-eye" aria-label="Mostrar palavra-passe"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <button type="submit" class="tl-btn">Guardar e entrar</button>
+        <p class="tl-msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="tl-form" id="tl-aviso" hidden>
+        <h2 class="tl-h" id="tl-aviso-t"></h2>
+        <p class="tl-p" id="tl-aviso-p"></p>
+        <a href="#" class="tl-link" data-tl="entrar" id="tl-aviso-back">Voltar a entrar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conta à espera de aprovação -->
+  <div class="tl tl-wait" id="tl-wait" role="main">
+    <div class="tl-card">
+      <div class="tl-brand"><span class="tn-logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="4"><path d="M16 12v20M22 9v26M28 12v20" stroke-linecap="round"/></svg></span><div><b>TENNER<span>.</span></b><small>Painel de administração</small></div></div>
+      <div class="tl-form">
+        <span class="tl-clock" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <h2 class="tl-h" id="tl-wait-t">Pedido de acesso enviado</h2>
+        <p class="tl-p" id="tl-wait-p">A tua conta está à espera de aprovação de um administrador da TENNER. Assim que for aprovada, consegues entrar no painel.</p>
+        <p class="tl-p tl-small" id="tl-wait-mail"></p>
+        <button type="button" class="tl-btn" id="tl-wait-check">Verificar de novo</button>
+        <a href="#" class="tl-link" id="tl-wait-out">Terminar sessão</a>
+      </div>
+    </div>
+  </div>
+
   <aside class="tn-side" id="tn-side" aria-label="Menu do painel">
     <a class="tn-brand" href="#/dashboard">
       <span class="tn-logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="4"><path d="M16 12v20M22 9v26M28 12v20" stroke-linecap="round"/></svg></span>
@@ -51,6 +129,8 @@
         <button type="button" class="tn-group-h">Definições<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <div class="tn-group-b">
           <a class="tn-link" href="#/collections/definicoes/entries/geral" data-match="^#/collections/definicoes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Definições gerais</a>
+          <a class="tn-link" href="#/pedidos-acesso" data-match="^#/pedidos-acesso"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Convites<span class="tn-count" id="tn-acc-badge" hidden>0</span></a>
+          <a class="tn-link" href="#/colaboradores" data-match="^#/colaboradores"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>Colaboradores</a>
           <button type="button" class="tn-link" id="tn-media"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Imagens e vídeos</button>
         </div>
       </div>
@@ -84,46 +164,134 @@
     <section class="tn-dash" id="tn-dash" aria-label="Dashboard">
       <div class="tn-dash-h">
         <span class="tn-chip lg"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
-        <div><h1>Dashboard TENNER<span>.</span></h1><p>O teu site num relance</p></div>
+        <div><h1>Dashboard TENNER<span>.</span></h1><p>Planos, clientes e trabalhos num relance</p></div>
+        <span class="tn-save" id="tn-save" role="status" aria-live="polite"></span>
       </div>
 
-      <div class="tn-stats">
-        <a class="tn-card tn-stat" href="#/collections/planos"><div class="tn-stat-h"><span>Planos</span><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span></div><b data-k="planos">–</b></a>
-        <a class="tn-card tn-stat" href="#/collections/arquivo/entries/estatico"><div class="tn-stat-h"><span>Fotos</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span></div><b data-k="fotos">–</b></a>
-        <a class="tn-card tn-stat" href="#/collections/arquivo/entries/motion"><div class="tn-stat-h"><span>Vídeos</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg></span></div><b data-k="videos">–</b></a>
-        <a class="tn-card tn-stat" href="#/collections/arquivo/entries/social"><div class="tn-stat-h"><span>Carrosséis</span><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M3 7v10M21 7v10"/></svg></span></div><b data-k="carrosseis">–</b></a>
-      </div>
-
-      <div class="tn-wide">
-        <div class="tn-card tn-prog">
-          <div class="tn-prog-h"><span>WhatsApp dos planos</span><a href="#/collections/definicoes/entries/geral">Ver <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-          <div class="tn-prog-v"><b data-k="wa">–</b><span data-k="wa-msgs"></span></div>
-          <div class="tn-bar"><i data-k="wa-bar"></i></div>
-          <small data-k="wa-note"></small>
+      <div class="tn-grid">
+        <!-- Planos: orçamentos e renovações -->
+        <div class="tn-card tn-panel tn-planos" id="tn-planos">
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>Planos: orçamentos e renovações</span>
+          </div>
+          <div class="tn-split">
+            <section class="tn-area" aria-labelledby="tn-ped-t">
+              <div class="tn-area-h"><h3 id="tn-ped-t">Pedidos de orçamento <em data-k="ped-n">0</em></h3><button type="button" class="tn-mini-link" id="tn-ped-hist" hidden></button></div>
+              <div class="tn-items" id="tn-ped-list"></div>
+            </section>
+            <section class="tn-area" aria-labelledby="tn-ren-t">
+              <div class="tn-area-h"><h3 id="tn-ren-t">Renovação dos planos <em data-k="ren-n">0</em></h3><button type="button" class="tn-mini-link" id="tn-ren-hist" hidden></button></div>
+              <div class="tn-items" id="tn-ren-list"></div>
+            </section>
+          </div>
         </div>
-        <div class="tn-card tn-prog">
-          <div class="tn-prog-h"><span>Arquivo</span><a href="#/collections/arquivo">Ver <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-          <div class="tn-prog-v"><b data-k="arq">–</b><span data-k="arq-rows"></span></div>
-          <div class="tn-bar"><i data-k="arq-bar"></i></div>
-          <small data-k="arq-note"></small>
+
+        <!-- Clientes -->
+        <div class="tn-card tn-panel tn-cli">
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>Clientes <em data-k="cli-n">0</em></span>
+            <button type="button" class="tn-btn" id="tn-cli-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar cliente</button>
+          </div>
+          <div class="tn-list" id="tn-cli-list"></div>
+        </div>
+
+        <!-- Estado dos trabalhos -->
+        <div class="tn-card tn-panel tn-trab" id="tn-trab">
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Estado dos trabalhos</span>
+            <div class="tn-card-tools">
+              <label class="tn-sel"><select id="tn-f-cli" aria-label="Filtrar por cliente"></select><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></label>
+              <button type="button" class="tn-btn" id="tn-tr-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo trabalho</button>
+            </div>
+          </div>
+          <div class="tn-tr-sum">
+            <div class="tn-pills" id="tn-est-pills"></div>
+            <div class="tn-tr-prog"><span data-k="tr-pct"></span><div class="tn-bar"><i data-k="tr-bar"></i></div></div>
+          </div>
+          <div class="tn-list" id="tn-tr-list"></div>
         </div>
       </div>
+      <p class="tn-foot-note">Pedidos, planos, clientes e trabalhos são privados e guardam-se na hora — não criam uma nova publicação do site.</p>
 
-      <h2 class="tn-sub">Acesso rápido</h2>
-      <div class="tn-quick">
-        <a class="tn-card tn-q" href="#/collections/planos"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><span><b>Planos e preços</b><small data-k="q-planos">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/arquivo/entries/estatico"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>Pre Match Estático</b><small data-k="q-fotos">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/arquivo/entries/motion"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg></span><span><b>Motion Videos</b><small data-k="q-videos">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/arquivo/entries/social"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M3 7v10M21 7v10"/></svg></span><span><b>Carrosséis Instagram</b><small data-k="q-car">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/servicos"><span class="tn-chip"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span><span><b>Serviços</b><small data-k="q-serv">–</small></span></a>
-        <a class="tn-card tn-q" href="#/collections/definicoes/entries/geral"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12z"/></svg></span><span><b>Definições e WhatsApp</b><small>Início, sobre nós, contacto</small></span></a>
-      </div>
-      <p class="tn-foot-note">Os números mostram a última versão publicada do site.</p>
     </section>
 
+    <section class="tn-dash tn-page tn-acessos" id="tn-acessos" aria-label="Convites">
+      <div class="tn-dash-h">
+        <span class="tn-chip lg"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg></span>
+        <div><h1>Convites</h1><p>Pedidos de acesso recebidos através do teu link</p></div>
+        <span class="tn-save" id="tn-acc-st" role="status" aria-live="polite"></span>
+      </div>
+      <div class="tn-grid">
+        <div class="tn-card tn-panel tn-share">
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>O teu link de convite</span>
+          </div>
+          <p class="tn-inv-help">Envia este link a quem deve ter acesso ao painel. A pessoa escreve o email e cria uma palavra-passe, e o convite aparece aqui em baixo. Só entra depois de carregares em «Aprovar».</p>
+          <div class="tn-share-row">
+            <input type="text" id="tn-acc-link" readonly aria-label="Link de convite">
+            <button type="button" class="tn-btn solid" id="tn-acc-copy">Copiar link</button>
+          </div>
+        </div>
+        <div class="tn-card tn-panel">
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Convites recebidos <em data-k="acc-n">0</em></span>
+          </div>
+          <p class="tn-inv-lock" id="tn-acc-lock" hidden>Só administradores podem aprovar ou recusar convites.</p>
+          <div class="tn-list" id="tn-acc-list"></div>
+        </div>
+      </div>
+      <p class="tn-foot-note">Quem aprovas fica como colaborador. Se quiseres que também possa aprovar convites, torna-o administrador em Colaboradores.</p>
+    </section>
+
+    <section class="tn-dash tn-page tn-colab" id="tn-colab" aria-label="Colaboradores">
+      <div class="tn-dash-h">
+        <span class="tn-chip lg"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
+        <div><h1>Colaboradores</h1><p>Quem tem acesso a este painel</p></div>
+        <span class="tn-save" id="tn-colab-st" role="status" aria-live="polite"></span>
+      </div>
+
+      <div class="tn-grid">
+        <form class="tn-card tn-panel tn-invite" id="tn-invite" novalidate>
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></span>Convidar colaborador</span>
+          </div>
+          <div class="tn-invite-row">
+            <label class="tn-f"><span>Email</span><input type="email" id="tn-inv-email" placeholder="nome@email.com" autocomplete="off" required></label>
+            <label class="tn-check"><input type="checkbox" id="tn-inv-admin"><span><b>Administrador</b><small>Pode convidar e remover colaboradores</small></span></label>
+            <button type="submit" class="tn-btn solid" id="tn-inv-btn"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Enviar convite</button>
+          </div>
+          <p class="tn-inv-help">A pessoa recebe um email para criar a palavra-passe e fica logo com acesso ao painel. Não precisa de conta no GitHub nem no Netlify.</p>
+          <p class="tn-inv-lock" id="tn-inv-lock" hidden>Só administradores podem convidar ou remover colaboradores.</p>
+        </form>
+
+        <div class="tn-card tn-panel">
+          <div class="tn-card-h">
+            <span class="tn-card-t"><span class="tn-chip"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>Pessoas <em data-k="col-n">0</em></span>
+            <a class="tn-badge aprovacao tn-badge-link" id="tn-col-pedidos" href="#/pedidos-acesso" hidden></a>
+          </div>
+          <div class="tn-list" id="tn-col-list"></div>
+        </div>
+      </div>
+      <p class="tn-foot-note">Todos os colaboradores veem e editam o painel. Gravar conteúdo do site (planos, fotos, textos) cria uma publicação no Netlify.</p>
+    </section>
+
+    <dialog class="tn-dlg" id="tn-dlg" aria-labelledby="tn-dlg-t">
+      <form id="tn-dlg-form" method="dialog">
+        <h3 id="tn-dlg-t"></h3>
+        <div class="tn-dlg-body" id="tn-dlg-body"></div>
+        <div class="tn-dlg-a">
+          <button type="button" class="tn-btn ghost" id="tn-dlg-cancel">Cancelar</button>
+          <button type="submit" class="tn-btn solid" id="tn-dlg-ok">Guardar</button>
+        </div>
+      </form>
+    </dialog>
     <div id="nc-root"></div>
   </main>
 
+  <script src="/admin/datas.js"></script>
+  <script src="/admin/dash.js"></script>
+  <script src="/admin/login.js"></script>
+  <script src="/admin/colab.js"></script>
   <script src="/admin/shell.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.1.0/dist/decap-cms.js"></script>
 </body>
