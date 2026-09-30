@@ -27,8 +27,10 @@
     media: [],         // [{ caminho, ficheiro }]
     urls: {},          // caminho do site → URL local (ficheiros ainda por publicar)
     cols: {},          // servicos / extras: [{ ficheiro, data }]
+    site: null,        // content/site.json (página inicial)
+    secs: null,        // content/seccoes/*.json (secções criadas no painel)
     apagar: {},        // caminho → true (ficheiros a apagar)
-    carregado: { planos: false, arquivo: false, servicos: false, extras: false },
+    carregado: { planos: false, arquivo: false, servicos: false, extras: false, inicio: false, seccoes: false },
     publicando: false
   };
   var SEC = {
@@ -379,6 +381,270 @@
     });
   }
 
+  /* ---------- PÁGINA INICIAL (content/site.json) ---------- */
+  var SITE_F = 'content/site.json';
+  var BLOCOS = [
+    { id: 'topo', titulo: 'Topo da página', desc: 'O que aparece logo ao abrir o site, com 3 imagens ou vídeos.', campos: [
+      { k: 'hero.eyebrow', l: 'Frase de cima' },
+      { k: 'hero.tagline', l: 'Slogan' },
+      { k: 'hero.intro', l: 'Texto de apresentação', t: 'area' },
+      { k: 'hero.image1', l: 'Imagem ou vídeo 1 (o maior, com moldura amarela)', t: 'img' },
+      { k: 'hero.image2', l: 'Imagem ou vídeo 2 (vertical, à direita)', t: 'img' },
+      { k: 'hero.image3', l: 'Imagem ou vídeo 3 (quadrado, em baixo)', t: 'img' }
+    ] },
+    { id: 'faixa', titulo: 'Fita a rodar', desc: 'A fita amarela que passa a rodar no site (Pre match, Match highlight…).', campos: [
+      { k: 'marquee', l: 'Palavras da fita', t: 'linhas', help: 'Uma palavra ou expressão por linha, pela ordem em que passam.' }
+    ] },
+    { id: 'sobre', titulo: 'Sobre nós', desc: 'O título «Cada percurso tem uma história para contar», o texto e as etiquetas.', campos: [
+      { k: 'about.title', l: 'Título' },
+      { k: 'about.paragraph1', l: 'Texto — 1.º parágrafo', t: 'area' },
+      { k: 'about.paragraph2', l: 'Texto — 2.º parágrafo', t: 'area' },
+      { k: 'about.audience', l: 'Etiquetas', t: 'linhas', help: 'Uma por linha (Atletas, Treinadores, Clubes, Marcas, Empresas).' }
+    ] },
+    { id: 'textos', titulo: 'Textos das secções', desc: 'As frases de introdução de «Serviços» e «Serviços extra».', campos: [
+      { k: 'servicos_intro', l: 'Introdução de «Serviços»', t: 'area' },
+      { k: 'extras_intro', l: 'Introdução de «Serviços extra»', t: 'area' }
+    ] },
+    { id: 'contacto', titulo: 'Contacto', desc: 'O fundo da página.', campos: [
+      { k: 'contact.title', l: 'Título' },
+      { k: 'contact.subtitle', l: 'Subtítulo' },
+      { k: 'contact.email', l: 'Email', tipo: 'email' },
+      { k: 'contact.instagram', l: 'Instagram', help: 'Só o nome da conta, sem @.' }
+    ] }
+  ];
+  var eVideo = function (v) { return /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(String(v || '')) || /^data:video|^blob:.*#v$/.test(String(v || '')); };
+  function mediaTag(v, id, extra) {
+    if (!v) return '<img' + (id ? ' id="' + id + '"' : '') + ' alt="" hidden>';
+    return eVideo(v) ? '<video' + (id ? ' id="' + id + '"' : '') + ' src="' + esc(src(v)) + '" muted loop autoplay playsinline' + (extra || '') + '></video>'
+      : '<img' + (id ? ' id="' + id + '"' : '') + ' src="' + esc(src(v)) + '" alt=""' + (extra || '') + '>';
+  }
+  var getP = function (o, k) { return k.split('.').reduce(function (a, x) { return a == null ? undefined : a[x]; }, o); };
+  var setP = function (o, k, v) { var ks = k.split('.'), last = ks.pop(); ks.forEach(function (x) { if (!o[x] || typeof o[x] !== 'object') o[x] = {}; o = o[x]; }); o[last] = v; };
+  function carregarInicio() {
+    status('A carregar…', 'busy');
+    return G().lerJSON(SITE_F).then(function (d) { st.site = d; st.carregado.inicio = true; renderInicio(); status('Atualizado', 'ok'); })
+      .catch(function (e) { $('#tn-in-grid').innerHTML = '<div class="tn-empty"><b>Não foi possível carregar</b><span>' + esc(e.message) + '</span></div>'; status('Erro ao carregar', 'err'); });
+  }
+  function resumo(v, t) {
+    if (t === 'linhas') return (v || []).length + ((v || []).length === 1 ? ' item' : ' itens');
+    var s = String(v || '').trim(); return s ? (s.length > 42 ? s.slice(0, 40) + '…' : s) : '—';
+  }
+  function renderInicio() {
+    if (!st.site) return;
+    var sujo = st.sujos[SITE_F];
+    $('#tn-in-grid').innerHTML = BLOCOS.map(function (b, i) {
+      var imgs = b.campos.filter(function (c) { return c.t === 'img'; });
+      var rows = b.campos.filter(function (c) { return c.t !== 'img'; }).map(function (c) {
+        return '<span class="tn-pc-row"><i></i>' + esc(c.l) + '<b>' + esc(resumo(getP(st.site, c.k), c.t)) + '</b></span>';
+      }).join('');
+      return '<button type="button" class="tn-pc tn-in" data-bloco="' + i + '">' +
+        '<span class="tn-pc-logo sm"><b>' + esc(b.titulo) + '</b></span>' +
+        (imgs.length ? '<span class="tn-in-imgs">' + imgs.map(function (c) { var v = getP(st.site, c.k); return v ? mediaTag(v) : '<span></span>'; }).join('') + '</span>' : '') +
+        '<span class="tn-pc-desc sm">' + esc(b.desc) + '</span>' +
+        '<span class="tn-pc-rows">' + rows + '</span>' +
+        '<span class="tn-pc-foot">' + (sujo ? '<em>Por publicar</em>' : 'Editar') + ICON.arrow + '</span></button>';
+    }).join('');
+  }
+  var blocoAtual = null, imgNovas = {};
+  function abrirBloco(i) {
+    var b = BLOCOS[i]; blocoAtual = i; imgNovas = {};
+    $('#tn-in-t').textContent = b.titulo;
+    $('#tn-in-body').innerHTML = b.campos.map(function (c, j) {
+      var v = getP(st.site, c.k), id = 'tn-in-f' + j;
+      if (c.t === 'img') return '<div class="tn-f"><span>' + esc(c.l) + '</span><div class="tn-in-img">' +
+        '<span class="tn-in-prev" id="' + id + '-p">' + mediaTag(v) + '</span>' +
+        '<span class="tn-in-imgb"><label class="tn-btn sm"><input type="file" accept="image/*,video/*" hidden data-img="' + esc(c.k) + '" data-prev="' + id + '-p">' + ICON.up + 'Trocar imagem ou vídeo</label>' +
+        '<small class="tn-f-help">Foto (JPG, PNG) ou vídeo (MP4, até 40 MB). O vídeo passa em loop, sem som.</small></span></div></div>';
+      var val = c.t === 'linhas' ? (v || []).join('\n') : (v || '');
+      var inp = c.t === 'area' || c.t === 'linhas'
+        ? '<textarea id="' + id + '" data-k="' + esc(c.k) + '" data-t="' + (c.t || '') + '" rows="' + (c.t === 'linhas' ? 5 : 4) + '">' + esc(val) + '</textarea>'
+        : '<input id="' + id + '" data-k="' + esc(c.k) + '" type="' + (c.tipo || 'text') + '" value="' + esc(val) + '" maxlength="300">';
+      return '<label class="tn-f" for="' + id + '"><span>' + esc(c.l) + '</span>' + inp + (c.help ? '<small class="tn-f-help">' + esc(c.help) + '</small>' : '') + '</label>';
+    }).join('');
+    abrir($('#tn-in-dlg'));
+    var f = $('#tn-in-body input:not([type=file]), #tn-in-body textarea'); if (f) setTimeout(function () { f.focus(); }, 30);
+  }
+  function guardarBloco(e) {
+    e.preventDefault();
+    $$('#tn-in-body [data-k]').forEach(function (el) {
+      var v = el.value.trim();
+      if (el.getAttribute('data-t') === 'linhas') v = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+      if (el.getAttribute('data-k') === 'contact.instagram') v = v.replace(/^@/, '');
+      setP(st.site, el.getAttribute('data-k'), v);
+    });
+    Object.keys(imgNovas).forEach(function (k) { setP(st.site, k, juntarMedia(imgNovas[k], 'inicio-' + k.split('.').pop())); });
+    imgNovas = {};
+    marcar(SITE_F); fechar($('#tn-in-dlg')); renderInicio();
+    status('Guardado — falta publicar no site', 'busy');
+  }
+
+  /* ---------- NOVAS SECÇÕES (content/seccoes/*.json) ---------- */
+  var SEC_P = 'content/seccoes';
+  var POS = [
+    { v: 'antes-sobre', t: 'Antes de «Sobre nós» (logo a seguir ao topo)' },
+    { v: 'apos-sobre', t: 'Depois de «Sobre nós»' },
+    { v: 'apos-servicos', t: 'Depois de «Serviços»' },
+    { v: 'apos-planos', t: 'Depois de «Planos»' },
+    { v: 'apos-extras', t: 'Depois de «Serviços extra»' },
+    { v: 'apos-arquivo', t: 'Depois de «Arquivo» (antes do contacto)' }
+  ];
+  var posNome = function (v) { return (POS.filter(function (p) { return p.v === v; })[0] || POS[POS.length - 1]).t; };
+  function carregarSecs() {
+    status('A carregar…', 'busy');
+    return G().listar(SEC_P).catch(function () { return []; }).then(function (fs) {
+      fs = fs.filter(function (f) { return /\.json$/.test(f); }).sort();
+      return Promise.all(fs.map(function (f) { return G().lerJSON(SEC_P + '/' + f).then(function (d) { return { ficheiro: f, data: d }; }); }));
+    }).then(function (lista) {
+      st.secs = lista.sort(function (a, b) { return (Number(a.data.ordem) || 0) - (Number(b.data.ordem) || 0); });
+      st.carregado.seccoes = true; renderSecs(); status('Atualizado', 'ok');
+    }).catch(function (e) {
+      $('#tn-sc-grid').innerHTML = '<div class="tn-empty"><b>Não foi possível carregar</b><span>' + esc(e.message) + '</span></div>';
+      status('Erro ao carregar', 'err');
+    });
+  }
+  // ordem no site: secções fixas do site com as novas secções pelo meio
+  var FIXAS = [
+    { nome: 'Topo da página', depois: 'antes-sobre' },
+    { nome: 'Sobre nós', depois: 'apos-sobre' },
+    { nome: 'Serviços', depois: 'apos-servicos' },
+    { nome: 'Planos', depois: 'apos-planos' },
+    { nome: 'Serviços extra', depois: 'apos-extras' },
+    { nome: 'Arquivo', depois: 'apos-arquivo' },
+    { nome: 'Contacto', depois: null }
+  ];
+  function listaOrdem() {
+    var out = [];
+    FIXAS.forEach(function (f) {
+      out.push({ fixa: true, nome: f.nome });
+      if (!f.depois) return;
+      st.secs.map(function (it, i) { return { it: it, i: i }; })
+        .filter(function (x) { return (x.it.data.posicao || 'apos-arquivo') === f.depois; })
+        .sort(function (a, b) { return (Number(a.it.data.ordem) || 0) - (Number(b.it.data.ordem) || 0); })
+        .forEach(function (x) { out.push({ fixa: false, it: x.it, i: x.i }); });
+    });
+    return out;
+  }
+  function aplicarOrdem(lista) {
+    var slot = null, n = 0;
+    lista.forEach(function (x) {
+      if (x.fixa) { var f = FIXAS.filter(function (y) { return y.nome === x.nome; })[0]; slot = f.depois; return; }
+      n += 10;
+      var d = x.it.data, mudou = d.posicao !== slot || Number(d.ordem) !== n;
+      d.posicao = slot || 'apos-arquivo'; d.ordem = n;
+      if (mudou) marcar(SEC_P + '/' + x.it.ficheiro);
+    });
+  }
+  function moverSec(i, dir) {
+    var lista = listaOrdem(), k = -1;
+    lista.forEach(function (x, j) { if (!x.fixa && x.i === i) k = j; });
+    var alvo = k + dir;
+    if (k < 0 || alvo < 1 || alvo > lista.length - 2) return; // não passa acima do topo nem abaixo do contacto
+    var t = lista[alvo]; lista[alvo] = lista[k]; lista[k] = t;
+    aplicarOrdem(lista); renderSecs();
+    status('Ordem alterada — falta publicar no site', 'busy');
+    var b = document.querySelector('[data-mv="' + i + ':' + dir + '"]'); if (b && !b.disabled) b.focus();
+  }
+  function renderOrdem() {
+    var box = $('#tn-sc-ordem'); if (!box) return;
+    if (!st.secs.length) { box.innerHTML = '<p class="tn-f-help">Quando criares uma secção, aparece aqui e podes escolher onde fica no site.</p>'; return; }
+    var lista = listaOrdem();
+    box.innerHTML = lista.map(function (x, j) {
+      if (x.fixa) return '<li class="tn-ord fixa"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>' + esc(x.nome) + '</span><small>fixa</small></li>';
+      var d = x.it.data;
+      return '<li class="tn-ord nova' + (d.visivel === false ? ' off' : '') + '"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg><span>' + esc(d.titulo || 'Sem título') + '</span>' +
+        (d.visivel === false ? '<small>escondida</small>' : '') +
+        '<button type="button" class="tn-icon-btn sm" data-mv="' + x.i + ':-1" aria-label="Subir ' + esc(d.titulo) + '" title="Subir"' + (j <= 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg></button>' +
+        '<button type="button" class="tn-icon-btn sm" data-mv="' + x.i + ':1" aria-label="Descer ' + esc(d.titulo) + '" title="Descer"' + (j >= lista.length - 2 ? ' disabled' : '') + '><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></li>';
+    }).join('');
+  }
+  function renderSecs() {
+    if (!st.secs) return;
+    renderOrdem();
+    $('#tn-sc-grid').innerHTML = st.secs.map(function (it, i) {
+      var d = it.data, n = (d.cartoes || []).length, visivel = d.visivel !== false;
+      var capa = (d.cartoes || []).filter(function (c) { return c.imagem; }).slice(0, 3);
+      var sujo = st.sujos[SEC_P + '/' + it.ficheiro];
+      return '<button type="button" class="tn-pc tn-in' + (visivel ? '' : ' off') + '" data-sec="' + i + '">' +
+        '<span class="tn-pc-logo sm"><b>' + esc(d.titulo || 'Sem título') + '</b></span>' +
+        (capa.length ? '<span class="tn-in-imgs">' + capa.map(function (c) { return '<img src="' + esc(src(c.imagem)) + '" alt="">'; }).join('') + '</span>' : '') +
+        '<span class="tn-pc-desc sm">' + (d.subtitulo ? esc(d.subtitulo) : '<em>Sem subtítulo</em>') + '</span>' +
+        '<span class="tn-pc-rows">' +
+          '<span class="tn-pc-row"><i></i>Posição<b>' + esc(posNome(d.posicao).replace(/ \(.*\)$/, '')) + '</b></span>' +
+          '<span class="tn-pc-row"><i></i>Cartões<b>' + n + '</b></span>' +
+          '<span class="tn-pc-row"><i></i>No site<b class="' + (visivel ? 'g' : 'r') + '">' + (visivel ? 'Visível' : 'Escondida') + '</b></span>' +
+        '</span>' +
+        '<span class="tn-pc-foot">' + (sujo ? '<em>Por publicar</em>' : 'Editar secção') + ICON.arrow + '</span></button>';
+    }).join('') + '<button type="button" class="tn-pc tn-pc-new" id="tn-sc-new"><span>' + ICON.plus + '</span>Criar nova secção</button>';
+  }
+  var secAtual = null, secCards = [];
+  function abrirSec(i) {
+    var it = i > -1 ? st.secs[i] : null, d = it ? it.data : { titulo: '', subtitulo: '', etiqueta: '', posicao: 'apos-arquivo', cartoes: [], visivel: true };
+    secAtual = i;
+    secCards = (d.cartoes || []).map(function (c) { return { imagem: c.imagem || '', titulo: c.titulo || '', texto: c.texto || '', file: null, url: c.imagem ? src(c.imagem) : '' }; });
+    var f = $('#tn-sc-form');
+    $('#tn-sc-t').textContent = it ? 'Editar secção' : 'Criar nova secção';
+    f.titulo.value = d.titulo || ''; f.subtitulo.value = d.subtitulo || ''; f.etiqueta.value = d.etiqueta || '';
+    f.posicao.innerHTML = POS.map(function (p) { return '<option value="' + p.v + '"' + (p.v === (d.posicao || 'apos-arquivo') ? ' selected' : '') + '>' + p.t + '</option>'; }).join('');
+    f.visivel.checked = d.visivel !== false;
+    $('#tn-sc-del').hidden = !it;
+    $('#tn-sc-msg').textContent = '';
+    renderSecCards();
+    abrir($('#tn-sc-dlg'));
+    setTimeout(function () { f.titulo.focus(); }, 30);
+  }
+  function renderSecCards() {
+    var box = $('#tn-sc-cards');
+    box.innerHTML = secCards.length ? secCards.map(function (c, j) {
+      return '<div class="tn-scc" data-j="' + j + '">' +
+        '<div class="tn-scc-img">' + (c.url ? '<img src="' + esc(c.url) + '" alt="">' : '<span>Sem imagem</span>') + '</div>' +
+        '<div class="tn-scc-f">' +
+          '<input type="text" data-c="titulo" value="' + esc(c.titulo) + '" placeholder="Título do cartão (opcional)" maxlength="120" aria-label="Título do cartão ' + (j + 1) + '">' +
+          '<textarea data-c="texto" rows="2" placeholder="Texto (opcional)" maxlength="800" aria-label="Texto do cartão ' + (j + 1) + '">' + esc(c.texto) + '</textarea>' +
+          '<div class="tn-scc-a">' +
+            '<label class="tn-mini-link"><input type="file" accept="image/*" hidden data-c="img">' + (c.url ? 'Trocar imagem' : 'Adicionar imagem') + '</label>' +
+            (c.url ? '<button type="button" class="tn-mini-link" data-a="semimg">Tirar imagem</button>' : '') +
+            '<span class="tn-scc-sp"></span>' +
+            '<button type="button" class="tn-icon-btn sm" data-a="up" aria-label="Subir" title="Subir"' + (j ? '' : ' disabled') + '>' + ICON.prev.replace('M15 18l-6-6 6-6', 'M18 15l-6-6-6 6') + '</button>' +
+            '<button type="button" class="tn-icon-btn sm" data-a="down" aria-label="Descer" title="Descer"' + (j < secCards.length - 1 ? '' : ' disabled') + '>' + ICON.prev.replace('M15 18l-6-6 6-6', 'M6 9l6 6 6-6') + '</button>' +
+            '<button type="button" class="tn-icon-btn sm" data-a="rm" aria-label="Apagar cartão" title="Apagar cartão">' + ICON.del + '</button>' +
+          '</div></div></div>';
+    }).join('') : '<p class="tn-f-help">Ainda sem cartões. Uma secção pode ter só título e subtítulo, ou cartões com imagem, título e texto.</p>';
+  }
+  function guardarSec(e) {
+    e.preventDefault();
+    var f = e.target, titulo = f.titulo.value.trim();
+    if (!titulo) { $('#tn-sc-msg').textContent = 'Escreve o título da secção.'; f.titulo.focus(); return; }
+    var lista = st.secs, it;
+    if (secAtual > -1) it = lista[secAtual];
+    else {
+      var ordem = lista.reduce(function (m, x) { return Math.max(m, Number(x.data.ordem) || 0); }, 0) + 10;
+      it = { ficheiro: String(lista.length + 1).padStart(2, '0') + '-' + G().slug(titulo) + '-' + Date.now().toString(36).slice(-4) + '.json', data: { ordem: ordem } };
+      lista.push(it);
+    }
+    var d = it.data;
+    d.id = G().slug(titulo);
+    d.titulo = titulo; d.subtitulo = f.subtitulo.value.trim(); d.etiqueta = f.etiqueta.value.trim();
+    if (d.posicao !== f.posicao.value) d.ordem = 100000 + Date.now() % 100000; // vai para o fim do sítio escolhido
+    d.posicao = f.posicao.value; d.visivel = f.visivel.checked;
+    d.cartoes = secCards.map(function (c) {
+      var img = c.imagem;
+      if (c.file) { img = juntarMedia(c.file, titulo + '-cartao'); }
+      return { imagem: img || '', titulo: c.titulo.trim(), texto: c.texto.trim() };
+    }).filter(function (c) { return c.imagem || c.titulo || c.texto; });
+    marcar(SEC_P + '/' + it.ficheiro);
+    aplicarOrdem(listaOrdem());
+    fechar($('#tn-sc-dlg')); renderSecs();
+    status('Guardado — falta publicar no site', 'busy');
+  }
+  function apagarSec() {
+    var it = st.secs[secAtual]; if (!it) return;
+    fechar($('#tn-sc-dlg'));
+    window.TNDash.confirm('Apagar secção?', 'A secção <b>' + esc(it.data.titulo) + '</b> sai do site quando publicares as alterações.', 'Apagar', function () {
+      var c = SEC_P + '/' + it.ficheiro;
+      st.secs.splice(secAtual, 1); delete st.sujos[c]; st.apagar[c] = true; barra(); renderSecs();
+    });
+  }
+
   /* ---------- publicar ---------- */
   function publicar() {
     if (st.publicando || !nPendentes()) return;
@@ -391,11 +657,15 @@
       st.planos.forEach(function (p) { if ('content/planos/' + p.ficheiro === c) dados = p.data; });
       Object.keys(SEC).forEach(function (k) { if (SEC[k].ficheiro === c && st.arquivo) dados = st.arquivo[k]; });
       Object.keys(COL).forEach(function (k) { (st.cols[k] || []).forEach(function (it) { if (COL[k].pasta + '/' + it.ficheiro === c) dados = it.data; }); });
+      if (c === SITE_F && st.site) dados = st.site;
+      (st.secs || []).forEach(function (it) { if (SEC_P + '/' + it.ficheiro === c) dados = it.data; });
       if (dados) alt.push({ caminho: c, texto: JSON.stringify(dados, null, 2) + '\n' });
     });
     Object.keys(st.apagar).forEach(function (c) { alt.push({ caminho: c, apagar: true }); });
     var partes = [];
     var todos = Object.keys(st.sujos).concat(Object.keys(st.apagar));
+    if (todos.indexOf(SITE_F) > -1) partes.unshift('página inicial');
+    if (todos.some(function (c) { return c.indexOf(SEC_P + '/') === 0; })) partes.push('secções');
     if (todos.some(function (c) { return c.indexOf('content/servicos/') === 0; })) partes.push('o que fazemos');
     if (todos.some(function (c) { return c.indexOf('content/extras/') === 0; })) partes.push('serviços extra');
     if (Object.keys(st.sujos).some(function (c) { return c.indexOf('content/planos/') === 0; })) partes.push('planos');
@@ -403,7 +673,7 @@
     G().publicar(alt, 'Painel: atualiza ' + (partes.join(' e ') || 'conteúdo')).then(function () {
       st.sujos = {}; st.media = []; st.apagar = {};
       status('Publicado! O site atualiza em 1–2 minutos.', 'ok');
-      renderPlanos(); renderArquivo(); Object.keys(COL).forEach(function (k) { if (st.cols[k]) renderCol(k); });
+      renderPlanos(); renderArquivo(); renderInicio(); renderSecs(); Object.keys(COL).forEach(function (k) { if (st.cols[k]) renderCol(k); });
     }).catch(function (e) {
       status('Não foi possível publicar: ' + e.message, 'err');
     }).then(function () {
@@ -412,10 +682,12 @@
   }
   function descartar() {
     window.TNDash.confirm('Descartar alterações?', 'As alterações que ainda não publicaste perdem-se.', 'Descartar', function () {
-      st.sujos = {}; st.media = []; st.apagar = {}; st.carregado = { planos: false, arquivo: false, servicos: false, extras: false };
+      st.sujos = {}; st.media = []; st.apagar = {}; st.carregado = { planos: false, arquivo: false, servicos: false, extras: false, inicio: false, seccoes: false };
       barra();
       if (document.body.classList.contains('tn-on-planos')) carregarPlanos();
       if (document.body.classList.contains('tn-on-arquivo')) carregarArquivo();
+      if (document.body.classList.contains('tn-on-inicio')) carregarInicio();
+      if (document.body.classList.contains('tn-on-seccoes')) carregarSecs();
       if (document.body.classList.contains('tn-on-servicos')) carregarCol('servicos');
       if (document.body.classList.contains('tn-on-extras')) carregarCol('extras');
     });
@@ -452,6 +724,51 @@
       });
     });
     $('#tn-sv-form').addEventListener('submit', guardarCol);
+    $('#tn-in-grid').addEventListener('click', function (e) { var b = e.target.closest('[data-bloco]'); if (b) abrirBloco(+b.getAttribute('data-bloco')); });
+    $('#tn-in-form').addEventListener('submit', guardarBloco);
+    $('#tn-sc-grid').addEventListener('click', function (e) {
+      if (e.target.closest('#tn-sc-new')) { abrirSec(-1); return; }
+      var b = e.target.closest('[data-sec]'); if (b) abrirSec(+b.getAttribute('data-sec'));
+    });
+    $('#tn-sc-form').addEventListener('submit', guardarSec);
+    $('#tn-sc-ordem').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-mv]'); if (!b || b.disabled) return;
+      var p = b.getAttribute('data-mv').split(':'); moverSec(+p[0], +p[1]);
+    });
+    $('#tn-sc-del').addEventListener('click', apagarSec);
+    $('#tn-sc-add').addEventListener('click', function () { secCards.push({ imagem: '', titulo: '', texto: '', file: null, url: '' }); renderSecCards(); var l = $$('#tn-sc-cards .tn-scc input[data-c=titulo]'); if (l.length) l[l.length - 1].focus(); });
+    var cardBox = $('#tn-sc-cards');
+    cardBox.addEventListener('input', function (e) {
+      var el = e.target, row = el.closest('[data-j]'); if (!row || !el.getAttribute('data-c') || el.type === 'file') return;
+      secCards[+row.getAttribute('data-j')][el.getAttribute('data-c')] = el.value;
+    });
+    cardBox.addEventListener('change', function (e) {
+      var el = e.target; if (el.type !== 'file') return;
+      var row = el.closest('[data-j]'), file = el.files && el.files[0]; el.value = ''; if (!file || !row) return;
+      if (file.size > 15e6) { $('#tn-sc-msg').textContent = 'A imagem tem mais de 15 MB.'; return; }
+      prepararFoto(file).then(function (f) { var c = secCards[+row.getAttribute('data-j')]; c.file = f; c.url = URL.createObjectURL(f); renderSecCards(); });
+    });
+    cardBox.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-a]'); if (!b) return;
+      var j = +b.closest('[data-j]').getAttribute('data-j'), a = b.getAttribute('data-a'), t;
+      if (a === 'rm') secCards.splice(j, 1);
+      else if (a === 'semimg') { secCards[j].imagem = ''; secCards[j].file = null; secCards[j].url = ''; }
+      else if (a === 'up' && j > 0) { t = secCards[j - 1]; secCards[j - 1] = secCards[j]; secCards[j] = t; }
+      else if (a === 'down' && j < secCards.length - 1) { t = secCards[j + 1]; secCards[j + 1] = secCards[j]; secCards[j] = t; }
+      renderSecCards();
+    });
+    $('#tn-in-body').addEventListener('change', function (e) {
+      var inp = e.target; if (!inp.hasAttribute('data-img')) return;
+      var file = inp.files && inp.files[0]; inp.value = ''; if (!file) return;
+      var video = /^video\//.test(file.type);
+      var box = document.getElementById(inp.getAttribute('data-prev'));
+      if (file.size > (video ? 40 : 15) * 1e6) { box.innerHTML = '<em class="tn-in-err">Ficheiro demasiado grande (máx. ' + (video ? 40 : 15) + ' MB).</em>'; return; }
+      (video ? Promise.resolve(file) : prepararFoto(file)).then(function (f) {
+        imgNovas[inp.getAttribute('data-img')] = f;
+        var url = URL.createObjectURL(f);
+        box.innerHTML = video ? '<video src="' + url + '" muted loop autoplay playsinline></video>' : '<img src="' + url + '" alt="">';
+      });
+    });
     $('#tn-sv-del').addEventListener('click', apagarCol);
     $('#tn-pub-go').addEventListener('click', publicar);
     $('#tn-pub-x').addEventListener('click', descartar);
@@ -464,6 +781,8 @@
     planos: function () { prep(); if (!st.carregado.planos) carregarPlanos(); else renderPlanos(); },
     arquivo: function () { prep(); if (!st.carregado.arquivo) carregarArquivo(); else renderArquivo(); },
     col: function (k) { prep(); if (!st.carregado[k]) carregarCol(k); else renderCol(k); },
+    inicio: function () { prep(); if (!st.carregado.inicio) carregarInicio(); else renderInicio(); },
+    seccoes: function () { prep(); if (!st.carregado.seccoes) carregarSecs(); else renderSecs(); },
     _texto: { pontosParaTexto: pontosParaTexto, textoParaPontos: textoParaPontos }
   };
 })();

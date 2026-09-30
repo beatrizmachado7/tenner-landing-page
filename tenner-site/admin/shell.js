@@ -71,18 +71,22 @@
     var acessos = h.indexOf('#/pedidos-acesso') === 0;
     var planos = h === '#/planos' || h.indexOf('#/planos?') === 0;
     var arquivo = h === '#/arquivo' || h.indexOf('#/arquivo?') === 0;
-    var servicos = h === '#/servicos', extras = h === '#/extras';
+    var servicos = h === '#/servicos', extras = h === '#/extras', inicio = h === '#/inicio', seccoes = h === '#/seccoes';
     body.classList.toggle('tn-on-dash', dash);
     body.classList.toggle('tn-on-colab', colab);
     body.classList.toggle('tn-on-acessos', acessos);
     body.classList.toggle('tn-on-planos', planos);
     body.classList.toggle('tn-on-arquivo', arquivo);
     body.classList.toggle('tn-on-servicos', servicos);
+    body.classList.toggle('tn-on-inicio', inicio);
+    body.classList.toggle('tn-on-seccoes', seccoes);
     body.classList.toggle('tn-on-extras', extras);
     var auth = body.classList.contains('tn-auth');
     if ((colab || acessos) && auth && window.TNColab) window.TNColab.start();
     if (planos && auth && window.TNConteudo) window.TNConteudo.planos();
     if (arquivo && auth && window.TNConteudo) window.TNConteudo.arquivo();
+    if (inicio && auth && window.TNConteudo) window.TNConteudo.inicio();
+    if (seccoes && auth && window.TNConteudo) window.TNConteudo.seccoes();
     if (servicos && auth && window.TNConteudo) window.TNConteudo.col('servicos');
     if (extras && auth && window.TNConteudo) window.TNConteudo.col('extras');
     $$('.tn-link[data-match]').forEach(function (a) {
@@ -124,7 +128,7 @@
     if (cur) setUser(cur);
     var esperou = setTimeout(function () { if (!modo) setUser(id.currentUser && id.currentUser()); }, 2500);
     id.on('init', function (u) { clearTimeout(esperou); setUser(u); });
-    id.on('login', function (u) { setUser(u); if (!/^#\/(collections|search|dashboard|colaboradores|pedidos-acesso|planos|arquivo|servicos|extras)/.test(location.hash)) location.hash = '#/dashboard'; });
+    id.on('login', function (u) { setUser(u); if (!/^#\/(collections|search|dashboard|colaboradores|pedidos-acesso|planos|arquivo|servicos|extras|inicio|seccoes)/.test(location.hash)) location.hash = '#/dashboard'; });
     id.on('logout', function () { location.replace('/admin/'); });
   } else {
     setUser(null);

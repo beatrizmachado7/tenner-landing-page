@@ -27,7 +27,15 @@
     });
     $$('[data-src]').forEach(function (el) {
       var v = get(site, el.getAttribute('data-src'));
-      if (v) el.src = v;
+      if (!v) return;
+      if (/\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(v)) { // vídeo no lugar da imagem
+        var vid = document.createElement('video');
+        vid.src = v; vid.muted = true; vid.loop = true; vid.autoplay = true; vid.playsInline = true;
+        vid.setAttribute('playsinline', ''); vid.setAttribute('muted', ''); vid.setAttribute('preload', 'metadata');
+        vid.setAttribute('data-src', el.getAttribute('data-src'));
+        el.replaceWith(vid);
+        var p = vid.play(); if (p && p.catch) p.catch(function () {});
+      } else el.src = v;
     });
     var words = (site.marquee || []);
     var loop = words.concat(words, words, words);
@@ -243,6 +251,37 @@
     window.addEventListener('resize', fit);
     go(0);
   }
+
+  /* ---------- secções criadas no painel (content/seccoes.json) ---------- */
+  function renderCustom(data) {
+    var porSlot = {};
+    (data.items || []).forEach(function (sec) { var k = sec.posicao || 'apos-arquivo'; (porSlot[k] = porSlot[k] || []).push(sec); });
+    $$('.cs-slot').forEach(function (slot) {
+      var lista = porSlot[slot.getAttribute('data-slot')] || [];
+      slot.innerHTML = lista.map(function (sec, si) {
+        var cards = (sec.cartoes || []).filter(function (c) { return c && (c.imagem || c.titulo || c.texto); });
+        return '<section class="wrap sec cs-sec" id="' + esc(sec.id || '') + '">' +
+          '<div class="sec-head reveal in"><div class="stack">' +
+            (sec.etiqueta ? '<div class="kicker">' + esc(sec.etiqueta) + '</div>' : '') +
+            '<h2 class="disp h2">' + esc(sec.titulo) + '</h2></div>' +
+            (sec.subtitulo ? '<p class="lead">' + esc(sec.subtitulo) + '</p>' : '') + '</div>' +
+          (cards.length ? '<div class="cs-grid">' + cards.map(function (c, ci) {
+            return '<article class="cs-card reveal in' + (c.imagem ? ' has-img' : '') + '">' +
+              (c.imagem ? '<button type="button" class="cs-img" data-cs="' + si + ':' + ci + '" aria-label="Ver imagem"><img src="' + esc(c.imagem) + '" alt="' + esc(c.titulo || sec.titulo) + '" loading="lazy"></button>' : '') +
+              ((c.titulo || c.texto) ? '<div class="cs-body">' + (c.titulo ? '<h3 class="disp">' + esc(c.titulo) + '</h3>' : '') + (c.texto ? '<p>' + esc(c.texto) + '</p>' : '') + '</div>' : '') +
+            '</article>';
+          }).join('') + '</div>' : '') +
+        '</section>';
+      }).join('');
+      $$('.cs-img', slot).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var p = b.getAttribute('data-cs').split(':'), c = lista[+p[0]].cartoes[+p[1]];
+          openLb({ image: c.imagem, title: c.titulo || '' });
+        });
+      });
+    });
+  }
+  load('seccoes').then(renderCustom).catch(function () {});
 
   /* ---------- lightbox ---------- */
   var lb = $('#lb'), lbIn = $('#lb-in'), lastFocus = null;

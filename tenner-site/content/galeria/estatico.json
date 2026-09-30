@@ -1,33 +1,8 @@
 {
   "title": "Pre Match Estático",
   "items": [
-    {
-      "title": "Wesley Timoteo - Matchday",
-      "image": "/images/uploads/wesley-timoteo-matchday-muofombfl6z.jpg"
-    },
-    {
-      "title": "Wesley Timoteo - Matchday",
-      "image": "/images/uploads/wesley-timoteo-matchday-muofo54qhv4.jpg"
-    },
-    {
-      "title": "Miguel Martins - Matchday",
-      "image": "/images/uploads/miguel-martins-matchday-muofnoiw4jb.jpg"
-    },
-    {
-      "title": "Miguel Les - Matchday",
-      "image": "/images/uploads/miguel-les-matchday-muofn2c75k1.jpg"
-    },
-    {
-      "title": "Miguel Les - Matchday",
-      "image": "/images/uploads/miguel-les-matchday-muofmtb01no.jpg"
-    },
-    {
-      "title": "Sana Gomes - Matchday",
-      "image": "/images/uploads/sana-gomes-matchday-muofm21dhgd.jpg"
-    },
-    {
-      "title": "Sana Gomes - Matchday",
-      "image": "/images/uploads/sana-gomes-matchday-muofmaxbh0v.jpg"
-    }
+    { "image": "/images/prematch.jpg", "title": "" },
+    { "image": "/images/estadio.jpg", "title": "" },
+    { "image": "/images/adeptos.jpg", "title": "" }
   ]
 }

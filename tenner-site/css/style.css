@@ -45,7 +45,7 @@ a{color:var(--y)}a:hover{color:var(--y2)}
 .actions{display:flex;flex-wrap:wrap;gap:16px}
 .art{position:relative;height:680px}
 .art .ph{position:absolute;overflow:hidden;box-shadow:0 40px 80px -20px #000;border:1px solid #333;background:#000}
-.art .ph img{width:100%;height:100%;object-fit:cover}
+.art .ph img,.art .ph video{width:100%;height:100%;object-fit:cover;display:block}
 .art .a{left:0;top:70px;width:46%;aspect-ratio:598/990;border:3px solid var(--y);animation:floatA 7s ease-in-out infinite}
 .art .b{right:2%;top:0;width:44%;aspect-ratio:9/16;animation:floatB 8s ease-in-out infinite}
 .art .c{right:18%;bottom:0;width:40%;aspect-ratio:1/1;animation:floatC 6s ease-in-out infinite}
@@ -225,3 +225,16 @@ footer a{text-decoration:none;display:inline-flex;align-items:center;gap:8px;min
   .quote-f{grid-template-columns:minmax(0,1fr)}
   .quote-a .btn{width:100%}
 }
+
+/* ---------- secções criadas no painel ---------- */
+.cs-slot:empty{display:none}
+.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;align-items:start}
+.cs-card{display:flex;flex-direction:column;background:var(--panel);border-top:3px solid var(--y);transition:transform .3s,background .3s}
+.cs-card:hover{transform:translateY(-6px);background:#171717}
+.cs-img{display:block;padding:0;border:0;background:#050505;cursor:zoom-in;aspect-ratio:4/5;overflow:hidden}
+.cs-img img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .4s}
+.cs-card:hover .cs-img img{transform:scale(1.03)}
+.cs-body{display:flex;flex-direction:column;gap:12px;padding:26px 24px 28px}
+.cs-body h3{margin:0;font-size:26px}
+.cs-body p{margin:0;font-size:16px;line-height:1.6;color:var(--muted);white-space:pre-line}
+@media (max-width:640px){.cs-grid{grid-template-columns:minmax(0,1fr)}}
