@@ -19,20 +19,28 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Condensed:ital,wght@1,500;1,600&display=swap">
 <link rel="stylesheet" href="/css/style.css">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  // Links dos emails de conta (convite, confirmação, recuperação) → abrem no painel
+  (function () { var h = location.hash; if (/(invite_token|recovery_token|confirmation_token|email_change_token|error_description)=/.test(h)) location.replace('/admin/' + h); })();
+</script>
 </head>
 <body>
 <div class="page" id="topo">
 
 <header class="top wrap">
-  <a class="brand" href="#topo" aria-label="TENNER. início">
-    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="#efe3a0" stroke-width="2.5" aria-hidden="true"><circle cx="22" cy="22" r="19"/><path d="M16 14v16M22 12v20M28 14v16" stroke-linecap="round"/></svg>
+  <a class="brand" href="#topo" aria-label="TENNER.">
+    <svg class="mark" width="44" height="44" viewBox="0 0 480 480" aria-hidden="true"><circle cx="240" cy="240" r="222" fill="none" stroke="currentColor" stroke-width="36"/><g fill="currentColor"><rect x="114" y="140" width="31" height="91"/><rect x="188" y="140" width="31" height="246"/><rect x="261" y="140" width="31" height="246"/><rect x="335" y="140" width="31" height="91"/></g></svg>
     <span class="disp">TENNER<span class="y">.</span></span>
   </a>
   <nav class="nav" aria-label="Principal">
-    <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#planos">Planos</a><a href="#arquivo">Arquivo</a>
+    <a href="#sobre" data-i18n="nav.sobre">Sobre</a><a href="#servicos" data-i18n="nav.servicos">Serviços</a><a href="#planos" data-i18n="nav.planos">Planos</a><a href="#arquivo" data-i18n="nav.arquivo">Arquivo</a>
   </nav>
-  <a class="btn btn-y btn-sm" href="#contacto">Contacto</a>
+  <div class="top-r">
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="pt" aria-pressed="true" lang="pt" title="Português">PT</button><span aria-hidden="true">/</span><button type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button>
+    </div>
+    <a class="btn btn-y btn-sm" href="#contacto" data-i18n="btn.contacto">Contacto</a>
+  </div>
 </header>
 
 <main>
@@ -43,23 +51,24 @@
     <div class="tagline r2" data-bind="hero.tagline">Your image — Your story — Your game</div>
     <p class="intro r3" data-bind="hero.intro">Transformamos momentos em histórias e histórias em marcas. Conteúdo pronto a publicar para atletas, treinadores, clubes e marcas do desporto.</p>
     <div class="actions r3">
-      <a class="btn btn-y" href="#planos">Ver planos</a>
-      <a class="btn btn-o" href="#arquivo">Ver arquivo</a>
+      <a class="btn btn-y" href="#planos" data-i18n="hero.planos">Ver planos</a>
+      <a class="btn btn-o" href="#arquivo" data-i18n="hero.arquivo">Ver arquivo</a>
     </div>
   </div>
   <div class="art" aria-hidden="true">
     <div class="ph a"><img data-src="hero.image1" alt=""></div>
     <div class="ph b"><img data-src="hero.image2" alt=""></div>
     <div class="ph c"><img data-src="hero.image3" alt=""></div>
-    <svg class="seal" width="150" height="150" viewBox="0 0 150 150"><defs><path id="c" d="M75,75 m-58,0 a58,58 0 1,1 116,0 a58,58 0 1,1 -116,0"/></defs><circle cx="75" cy="75" r="72" fill="#0a0a0a" stroke="#efe3a0" stroke-width="1.5"/><text fill="#efe3a0" font-family="Anton" font-size="14" letter-spacing="4.2"><textPath href="#c">YOUR IMAGE · YOUR STORY · YOUR GAME ·</textPath></text><path d="M68 62v26M75 58v34M82 62v26" stroke="#efe3a0" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg class="seal" width="150" height="150" viewBox="0 0 150 150"><defs><path id="c" d="M75,75 m-58,0 a58,58 0 1,1 116,0 a58,58 0 1,1 -116,0"/></defs><circle cx="75" cy="75" r="72" fill="#0a0a0a" stroke="#efe3a0" stroke-width="1.5"/><text fill="#efe3a0" font-family="Anton" font-size="14" letter-spacing="4.2"><textPath href="#c">YOUR IMAGE · YOUR STORY · YOUR GAME ·</textPath></text><g fill="#efe3a0" transform="translate(43.8 40.8) scale(.13)"><rect x="114" y="140" width="31" height="91"/><rect x="188" y="140" width="31" height="246"/><rect x="261" y="140" width="31" height="246"/><rect x="335" y="140" width="31" height="91"/></g></svg>
   </div>
 </section>
 
 <div class="band" aria-hidden="true"><div class="marq disp" id="marquee"></div></div>
 
+<div class="cs-slot" data-slot="antes-sobre"></div>
 <section id="sobre" class="wrap sec split" style="padding-top:160px">
   <div class="stack reveal">
-    <div class="kicker">01 — Sobre nós</div>
+    <div class="kicker" data-i18n="k.sobre">01 — Sobre nós</div>
     <h2 class="disp h2 y" data-bind="about.title">Cada percurso tem uma história para contar</h2>
   </div>
   <div class="about-copy reveal">
@@ -69,33 +78,37 @@
   </div>
 </section>
 
+<div class="cs-slot" data-slot="apos-sobre"></div>
 <section id="servicos" class="wrap sec">
   <div class="sec-head reveal">
-    <div class="stack"><div class="kicker">02 — O que fazemos</div><h2 class="disp h2">O que fazemos<span class="y">?</span></h2></div>
+    <div class="stack"><div class="kicker" data-i18n="k.fazemos">02 — O que fazemos</div><h2 class="disp h2" data-i18n="h.fazemos">O que fazemos<span class="y">?</span></h2></div>
     <p class="lead" id="servicos-intro"></p>
   </div>
   <div class="grid4" id="servicos-list"></div>
 </section>
 
+<div class="cs-slot" data-slot="apos-servicos"></div>
 <section id="planos" class="wrap sec">
   <div class="sec-head reveal">
-    <div class="stack"><div class="kicker">03 — Serviços</div><h2 class="disp h2">Escolhe o teu plano</h2></div>
+    <div class="stack"><div class="kicker" data-i18n="k.planos">03 — Serviços</div><h2 class="disp h2" data-i18n="h.planos">Escolhe o teu plano</h2></div>
   </div>
   <div class="grid3" id="plans"></div>
 </section>
 
+<div class="cs-slot" data-slot="apos-planos"></div>
 <section class="wrap sec split extras-split">
   <div class="stack sticky reveal">
-    <div class="kicker">04 — Serviços extra</div>
-    <h2 class="disp h2">Serviços <span class="ital y">extra</span></h2>
+    <div class="kicker" data-i18n="k.extras">04 — Serviços extra</div>
+    <h2 class="disp h2" data-i18n="h.extras">Serviços <span class="ital y">extra</span></h2>
     <p class="lead" id="extras-intro"></p>
   </div>
   <div class="extras" id="extras"></div>
 </section>
 
+<div class="cs-slot" data-slot="apos-extras"></div>
 <section id="arquivo" class="wrap sec">
   <div class="sec-head reveal">
-    <div class="stack"><div class="kicker">05 — Arquivo</div><h2 class="disp h2">Arquivo</h2></div>
+    <div class="stack"><div class="kicker" data-i18n="k.arquivo">05 — Arquivo</div><h2 class="disp h2" data-i18n="h.arquivo">Arquivo</h2></div>
   </div>
   <div class="arch-rows">
     <div class="arch-row reveal"><h3 class="disp arch-h" id="col-estatico-t">Pre Match Estático</h3><div class="arch-list" id="col-estatico"></div></div>
@@ -103,6 +116,7 @@
     <div class="arch-row reveal"><h3 class="disp arch-h" id="col-social-t">Conteúdos Social Media</h3><div class="arch-list" id="col-social"></div></div>
   </div>
 </section>
+<div class="cs-slot" data-slot="apos-arquivo"></div>
 </main>
 
 <section id="contacto" class="contact">
@@ -121,7 +135,7 @@
 
 <footer class="wrap">
   <span>TENNER. — Your image · Your story · Your game</span>
-  <a href="#topo">Voltar ao topo <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 9l5-5 5 5"/></svg></a>
+  <a href="#topo"><span data-i18n="f.topo">Voltar ao topo</span> <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 9l5-5 5 5"/></svg></a>
 </footer>
 </div>
 
@@ -131,12 +145,5 @@
 </div>
 
 <script src="/js/main.js"></script>
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", function (user) {
-      if (!user) window.netlifyIdentity.on("login", function () { document.location.href = "/admin/"; });
-    });
-  }
-</script>
 </body>
 </html>

@@ -22,12 +22,13 @@ function folder(name) {
 
 const site = read(path.join(dir, 'site.json'));
 const out = {
-  'servicos.json': { intro: site.servicos_intro || '', items: folder('servicos') },
-  'extras.json': { intro: site.extras_intro || '', items: folder('extras') },
+  'servicos.json': { intro: site.servicos_intro || '', intro_en: (site.en && site.en.servicos_intro) || '', items: folder('servicos') },
+  'extras.json': { intro: site.extras_intro || '', intro_en: (site.en && site.en.extras_intro) || '', items: folder('extras') },
   'planos.json': {
     plans: folder('planos').map(({ price, price_note, season_discount, ...p }) => ({ ...p, features: p.features || [] }))
   },
-  'arquivo.json': galeria()
+  'arquivo.json': galeria(),
+  'seccoes.json': { items: folder('seccoes').map((x) => ({ ...x, cartoes: (x.cartoes || []).filter((c) => c && (c.imagem || c.titulo || c.texto)) })) }
 };
 
 // Arquivo: 3 colunas (content/galeria/estatico.json, motion.json, carrosseis.json).
@@ -38,7 +39,7 @@ function galeria() {
     if (fs.existsSync(f)) {
       try { data = read(f); } catch (e) { console.warn('[build] ignorado (JSON inválido): galeria/' + name); }
     }
-    return { title: data.title || fallback, items: (data.items || []).filter((i) => i && i.ativo !== false && keep(i)).map(({ ativo, ...i }) => i) };
+    return { title: data.title || fallback, title_en: data.title_en || '', items: (data.items || []).filter((i) => i && keep(i)) };
   };
   const social = col('carrosseis', 'Conteúdos Social Media', (i) => Array.isArray(i.images));
   social.items = social.items
