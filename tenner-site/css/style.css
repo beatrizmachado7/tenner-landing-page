@@ -238,3 +238,19 @@ footer a{text-decoration:none;display:inline-flex;align-items:center;gap:8px;min
 .cs-body h3{margin:0;font-size:26px}
 .cs-body p{margin:0;font-size:16px;line-height:1.6;color:var(--muted);white-space:pre-line}
 @media (max-width:640px){.cs-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* idioma PT / EN */
+.brand .mark{color:var(--ink);flex:0 0 auto}
+.top-r{display:flex;align-items:center;gap:18px}
+.lang{display:flex;align-items:center;gap:2px;font-size:13px;letter-spacing:.14em;color:var(--dim)}
+.lang button{background:none;border:0;color:var(--dim);font:inherit;letter-spacing:inherit;padding:10px 6px;min-width:36px;min-height:44px;cursor:pointer;transition:color .2s}
+.lang button:hover{color:var(--ink)}
+.lang button[aria-pressed="true"]{color:var(--y)}
+.lang button:focus-visible{outline:2px solid var(--y);outline-offset:-4px}
+@media (max-width:640px){
+  .top{gap:10px}.top-r{gap:4px}.brand{gap:10px}.brand .disp{font-size:24px}.brand .mark{width:36px;height:36px}
+  .lang button{min-width:32px;padding:10px 4px}
+  .top .btn-sm{padding:0 16px;font-size:14px;min-height:42px}
+}
+@media (max-width:400px){.brand .disp{display:none}}
+@media (max-width:960px){.nav{display:none}}

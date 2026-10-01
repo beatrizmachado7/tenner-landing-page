@@ -2,5 +2,7 @@
   "title": "Designs e conteúdo para feed",
   "text": "Conteúdos visuais que reforçam identidade e presença digital.",
   "ordem": 20,
-  "visivel": true
+  "visivel": true,
+  "title_en": "Designs and feed content",
+  "text_en": "Visual content that strengthens identity and digital presence."
 }

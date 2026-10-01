@@ -2,5 +2,7 @@
   "title": "Vídeos para Shorts e Stories",
   "text": "Os melhores momentos em vídeos curtos e dinâmicos, adaptados às principais plataformas.",
   "ordem": 10,
-  "visivel": true
+  "visivel": true,
+  "title_en": "Videos for Shorts and Stories",
+  "text_en": "The best moments in short, dynamic videos, tailored to the main platforms."
 }

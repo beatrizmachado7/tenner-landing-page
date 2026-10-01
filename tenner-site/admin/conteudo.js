@@ -97,6 +97,8 @@
       return { text: text, offer: offer, detail: detail };
     });
   }
+  // bloco «Versão em inglês»: abre-se sozinho quando já tem texto
+  function abrirEN(f, temTexto) { var d = f.querySelector('.tn-en'); if (d) d.open = !!String(temTexto || '').trim(); }
   var nomeCompleto = function (d) { return (d.name + (d.suffix ? ' ' + d.suffix : '')).trim(); };
 
   /* ---------- PLANOS ---------- */
@@ -141,6 +143,9 @@
     f.descricao.value = pontosParaTexto(d.features);
     f.featured.checked = !!d.featured;
     f.whatsapp.value = d.whatsapp_message || '';
+    f.descricao_en.value = pontosParaTexto(d.features_en);
+    f.whatsapp_en.value = d.whatsapp_message_en || '';
+    abrirEN(f, f.descricao_en.value || f.whatsapp_en.value);
     f.visivel.checked = d.visivel !== false;
     $('#tn-pl-msg').textContent = '';
     abrir($('#tn-pl-dlg'));
@@ -157,6 +162,8 @@
     p.data.features = textoParaPontos(f.descricao.value);
     p.data.featured = f.featured.checked;
     p.data.whatsapp_message = f.whatsapp.value.trim();
+    p.data.features_en = textoParaPontos(f.descricao_en.value);
+    p.data.whatsapp_message_en = f.whatsapp_en.value.trim();
     p.data.visivel = f.visivel.checked;
     marcar('content/planos/' + p.ficheiro);
     fechar($('#tn-pl-dlg')); renderPlanos();
@@ -303,11 +310,15 @@
     extras: { pasta: 'content/extras', nome: 'serviço extra', grid: '#tn-sv-grid-extras' }
   };
   // extras: 1.ª linha da descrição = frase curta (sempre visível no site); resto = texto que aparece ao abrir
-  function descDe(k, d) { return k === 'extras' ? [d.subtitle || '', d.text || ''].filter(function (x, i) { return x || i === 0; }).join('\n').replace(/\n$/, '') : (d.text || ''); }
-  function aplicarDesc(k, d, txt) {
+  function descDe(k, d, sfx) {
+    sfx = sfx || '';
+    if (sfx) d = { subtitle: d['subtitle' + sfx], text: d['text' + sfx] };
+    return k === 'extras' ? [d.subtitle || '', d.text || ''].filter(function (x, i) { return x || i === 0; }).join('\n').replace(/\n$/, '') : (d.text || ''); }
+  function aplicarDesc(k, d, txt, sfx) {
+    sfx = sfx || '';
     txt = String(txt || '').replace(/\r/g, '').trim();
-    if (k === 'extras') { var i = txt.indexOf('\n'); d.subtitle = (i < 0 ? txt : txt.slice(0, i)).trim(); d.text = i < 0 ? '' : txt.slice(i + 1).trim(); }
-    else d.text = txt;
+    if (k === 'extras') { var i = txt.indexOf('\n'); d['subtitle' + sfx] = (i < 0 ? txt : txt.slice(0, i)).trim(); d['text' + sfx] = i < 0 ? '' : txt.slice(i + 1).trim(); }
+    else d['text' + sfx] = txt;
   }
   function carregarCol(k) {
     status('A carregar…', 'busy');
@@ -343,6 +354,9 @@
     $('#tn-sv-t').textContent = it ? 'Editar ' + (d.title || COL[k].nome) : 'Novo ' + COL[k].nome;
     f.nome.value = d.title || '';
     f.descricao.value = descDe(k, d);
+    f.nome_en.value = d.title_en || '';
+    f.descricao_en.value = descDe(k, d, '_en');
+    abrirEN(f, f.nome_en.value + f.descricao_en.value);
     f.visivel.checked = d.visivel !== false;
     $('#tn-sv-help').textContent = k === 'extras'
       ? 'A primeira linha é a frase curta que aparece sempre no site. As linhas seguintes aparecem quando a pessoa abre o serviço.'
@@ -366,6 +380,8 @@
     }
     it.data.title = nome;
     aplicarDesc(k, it.data, f.descricao.value);
+    it.data.title_en = f.nome_en.value.trim();
+    aplicarDesc(k, it.data, f.descricao_en.value, '_en');
     it.data.visivel = f.visivel.checked;
     marcar(COL[k].pasta + '/' + it.ficheiro);
     fechar($('#tn-sv-dlg')); renderCol(k);
@@ -408,9 +424,9 @@
     { id: 'contacto', titulo: 'Contacto e WhatsApp', desc: 'O fundo da página e o número de WhatsApp dos planos.', campos: [
       { k: 'contact.title', l: 'Título' },
       { k: 'contact.subtitle', l: 'Subtítulo' },
-      { k: 'contact.email', l: 'Email', tipo: 'email' },
-      { k: 'contact.instagram', l: 'Instagram', help: 'Só o nome da conta, sem @.' },
-      { k: 'whatsapp.link', l: 'Número de WhatsApp', tipo: 'tel', help: 'Ex.: 912 345 678 (ou com indicativo, +351 912 345 678). É o número que abre quando carregam em «Quero o …» nos planos. Sem número, esses botões levam à secção de contacto.' }
+      { k: 'contact.email', l: 'Email', tipo: 'email', en: false },
+      { k: 'contact.instagram', l: 'Instagram', help: 'Só o nome da conta, sem @.', en: false },
+      { k: 'whatsapp.link', l: 'Número de WhatsApp', tipo: 'tel', en: false, help: 'Ex.: 912 345 678 (ou com indicativo, +351 912 345 678). É o número que abre quando carregam em «Quero o …» nos planos. Sem número, esses botões levam à secção de contacto.' }
     ] }
   ];
   var eVideo = function (v) { return /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(String(v || '')) || /^data:video|^blob:.*#v$/.test(String(v || '')); };
@@ -447,21 +463,30 @@
     }).join('');
   }
   var blocoAtual = null, imgNovas = {};
+  function campoInput(c, v, id) {
+    var val = c.t === 'linhas' ? (v || []).join('\n') : (v || '');
+    return c.t === 'area' || c.t === 'linhas'
+      ? '<textarea id="' + id + '" data-k="' + esc(c.k) + '" data-t="' + (c.t || '') + '" rows="' + (c.t === 'linhas' ? 5 : 4) + '">' + esc(val) + '</textarea>'
+      : '<input id="' + id + '" data-k="' + esc(c.k) + '" type="' + (c.tipo || 'text') + '" value="' + esc(val) + '" maxlength="300">';
+  }
   function abrirBloco(i) {
     var b = BLOCOS[i]; blocoAtual = i; imgNovas = {};
     $('#tn-in-t').textContent = b.titulo;
+    var trad = b.campos.filter(function (c) { return c.t !== 'img' && c.en !== false; });
+    var temEN = trad.some(function (c) { var v = getP(st.site, 'en.' + c.k); return Array.isArray(v) ? v.length : String(v || '').trim(); });
+    var blocoEN = trad.length ? '<details class="tn-en"' + (temEN ? ' open' : '') + '><summary><span class="tn-en-flag">EN</span><b>Versão em inglês</b><small>Opcional — o que aparece quando o site está em inglês. Se ficar vazio, mostra o português.</small></summary><div class="tn-en-b">' +
+      trad.map(function (c, j) {
+        var id = 'tn-in-e' + j, ce = Object.assign({}, c, { k: 'en.' + c.k });
+        return '<label class="tn-f" for="' + id + '"><span>' + esc(c.l) + ' em inglês</span>' + campoInput(ce, getP(st.site, ce.k), id) + '</label>';
+      }).join('') + '</div></details>' : '';
     $('#tn-in-body').innerHTML = b.campos.map(function (c, j) {
       var v = getP(st.site, c.k), id = 'tn-in-f' + j;
       if (c.t === 'img') return '<div class="tn-f"><span>' + esc(c.l) + '</span><div class="tn-in-img">' +
         '<span class="tn-in-prev" id="' + id + '-p">' + mediaTag(v) + '</span>' +
         '<span class="tn-in-imgb"><label class="tn-btn sm"><input type="file" accept="image/*,video/*" hidden data-img="' + esc(c.k) + '" data-prev="' + id + '-p">' + ICON.up + 'Trocar imagem ou vídeo</label>' +
         '<small class="tn-f-help">Foto (JPG, PNG) ou vídeo (MP4, até 40 MB). O vídeo passa em loop, sem som.</small></span></div></div>';
-      var val = c.t === 'linhas' ? (v || []).join('\n') : (v || '');
-      var inp = c.t === 'area' || c.t === 'linhas'
-        ? '<textarea id="' + id + '" data-k="' + esc(c.k) + '" data-t="' + (c.t || '') + '" rows="' + (c.t === 'linhas' ? 5 : 4) + '">' + esc(val) + '</textarea>'
-        : '<input id="' + id + '" data-k="' + esc(c.k) + '" type="' + (c.tipo || 'text') + '" value="' + esc(val) + '" maxlength="300">';
-      return '<label class="tn-f" for="' + id + '"><span>' + esc(c.l) + '</span>' + inp + (c.help ? '<small class="tn-f-help">' + esc(c.help) + '</small>' : '') + '</label>';
-    }).join('');
+      return '<label class="tn-f" for="' + id + '"><span>' + esc(c.l) + '</span>' + campoInput(c, v, id) + (c.help ? '<small class="tn-f-help">' + esc(c.help) + '</small>' : '') + '</label>';
+    }).join('') + blocoEN;
     abrir($('#tn-in-dlg'));
     var f = $('#tn-in-body input:not([type=file]), #tn-in-body textarea'); if (f) setTimeout(function () { f.focus(); }, 30);
   }
@@ -581,10 +606,12 @@
   function abrirSec(i) {
     var it = i > -1 ? st.secs[i] : null, d = it ? it.data : { titulo: '', subtitulo: '', etiqueta: '', posicao: 'apos-arquivo', cartoes: [], visivel: true };
     secAtual = i;
-    secCards = (d.cartoes || []).map(function (c) { return { imagem: c.imagem || '', titulo: c.titulo || '', texto: c.texto || '', file: null, url: c.imagem ? src(c.imagem) : '' }; });
+    secCards = (d.cartoes || []).map(function (c) { return { imagem: c.imagem || '', titulo: c.titulo || '', texto: c.texto || '', titulo_en: c.titulo_en || '', texto_en: c.texto_en || '', file: null, url: c.imagem ? src(c.imagem) : '' }; });
     var f = $('#tn-sc-form');
     $('#tn-sc-t').textContent = it ? 'Editar secção' : 'Criar nova secção';
     f.titulo.value = d.titulo || ''; f.subtitulo.value = d.subtitulo || ''; f.etiqueta.value = d.etiqueta || '';
+    f.titulo_en.value = d.titulo_en || ''; f.subtitulo_en.value = d.subtitulo_en || ''; f.etiqueta_en.value = d.etiqueta_en || '';
+    abrirEN(f, f.titulo_en.value + f.subtitulo_en.value + f.etiqueta_en.value);
     f.posicao.innerHTML = POS.map(function (p) { return '<option value="' + p.v + '"' + (p.v === (d.posicao || 'apos-arquivo') ? ' selected' : '') + '>' + p.t + '</option>'; }).join('');
     f.visivel.checked = d.visivel !== false;
     $('#tn-sc-del').hidden = !it;
@@ -601,6 +628,9 @@
         '<div class="tn-scc-f">' +
           '<input type="text" data-c="titulo" value="' + esc(c.titulo) + '" placeholder="Título do cartão (opcional)" maxlength="120" aria-label="Título do cartão ' + (j + 1) + '">' +
           '<textarea data-c="texto" rows="2" placeholder="Texto (opcional)" maxlength="800" aria-label="Texto do cartão ' + (j + 1) + '">' + esc(c.texto) + '</textarea>' +
+          '<div class="tn-scc-en"><span class="tn-en-flag">EN</span>' +
+            '<input type="text" data-c="titulo_en" value="' + esc(c.titulo_en || '') + '" placeholder="Título em inglês (opcional)" maxlength="120" aria-label="Título em inglês do cartão ' + (j + 1) + '">' +
+            '<textarea data-c="texto_en" rows="2" placeholder="Texto em inglês (opcional)" maxlength="800" aria-label="Texto em inglês do cartão ' + (j + 1) + '">' + esc(c.texto_en || '') + '</textarea></div>' +
           '<div class="tn-scc-a">' +
             '<label class="tn-mini-link"><input type="file" accept="image/*" hidden data-c="img">' + (c.url ? 'Trocar imagem' : 'Adicionar imagem') + '</label>' +
             (c.url ? '<button type="button" class="tn-mini-link" data-a="semimg">Tirar imagem</button>' : '') +
@@ -625,12 +655,13 @@
     var d = it.data;
     d.id = G().slug(titulo);
     d.titulo = titulo; d.subtitulo = f.subtitulo.value.trim(); d.etiqueta = f.etiqueta.value.trim();
+    d.titulo_en = f.titulo_en.value.trim(); d.subtitulo_en = f.subtitulo_en.value.trim(); d.etiqueta_en = f.etiqueta_en.value.trim();
     if (d.posicao !== f.posicao.value) d.ordem = 100000 + Date.now() % 100000; // vai para o fim do sítio escolhido
     d.posicao = f.posicao.value; d.visivel = f.visivel.checked;
     d.cartoes = secCards.map(function (c) {
       var img = c.imagem;
       if (c.file) { img = juntarMedia(c.file, titulo + '-cartao'); }
-      return { imagem: img || '', titulo: c.titulo.trim(), texto: c.texto.trim() };
+      return { imagem: img || '', titulo: c.titulo.trim(), texto: c.texto.trim(), titulo_en: (c.titulo_en || '').trim(), texto_en: (c.texto_en || '').trim() };
     }).filter(function (c) { return c.imagem || c.titulo || c.texto; });
     marcar(SEC_P + '/' + it.ficheiro);
     aplicarOrdem(listaOrdem());
@@ -737,7 +768,7 @@
       var p = b.getAttribute('data-mv').split(':'); moverSec(+p[0], +p[1]);
     });
     $('#tn-sc-del').addEventListener('click', apagarSec);
-    $('#tn-sc-add').addEventListener('click', function () { secCards.push({ imagem: '', titulo: '', texto: '', file: null, url: '' }); renderSecCards(); var l = $$('#tn-sc-cards .tn-scc input[data-c=titulo]'); if (l.length) l[l.length - 1].focus(); });
+    $('#tn-sc-add').addEventListener('click', function () { secCards.push({ imagem: '', titulo: '', texto: '', titulo_en: '', texto_en: '', file: null, url: '' }); renderSecCards(); var l = $$('#tn-sc-cards .tn-scc input[data-c=titulo]'); if (l.length) l[l.length - 1].focus(); });
     var cardBox = $('#tn-sc-cards');
     cardBox.addEventListener('input', function (e) {
       var el = e.target, row = el.closest('[data-j]'); if (!row || !el.getAttribute('data-c') || el.type === 'file') return;

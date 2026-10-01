@@ -3,6 +3,7 @@
   "suffix": "",
   "featured": false,
   "whatsapp_message": "Olá! Tenho interesse no plano TENNER+ da TENNER. Podem dar-me mais informações?",
+  "whatsapp_message_en": "Hi! I'm interested in TENNER's TENNER+ plan. Could you give me more information?",
   "features": [
     {
       "text": "Pre match semanais (estático)",
@@ -18,6 +19,23 @@
       "text": "Comunicação",
       "offer": "",
       "detail": "MVP / Equipa da semana / Aniversário / Destaques / Mídia press"
+    }
+  ],
+  "features_en": [
+    {
+      "text": "Weekly pre match (static)",
+      "offer": "1 motion",
+      "detail": ""
+    },
+    {
+      "text": "Reels of the week's best moments",
+      "offer": "1 reel of the month's best moments (up to 1 min)",
+      "detail": ""
+    },
+    {
+      "text": "Communication",
+      "offer": "",
+      "detail": "MVP / Team of the week / Birthdays / Highlights / Media press"
     }
   ],
   "ordem": 20,

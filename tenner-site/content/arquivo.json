@@ -1,6 +1,7 @@
 {
   "estatico": {
     "title": "Pre Match Estático",
+    "title_en": "",
     "items": [
       {
         "image": "/images/prematch.jpg",
@@ -18,6 +19,7 @@
   },
   "motion": {
     "title": "Pre Match Motion Videos",
+    "title_en": "",
     "items": [
       {
         "video": "/images/uploads/da-rio-miranda.mp4",
@@ -27,6 +29,7 @@
   },
   "social": {
     "title": "Conteúdos Social Media",
+    "title_en": "",
     "items": [
       {
         "title": "Carrossel 1",

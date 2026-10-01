@@ -555,3 +555,17 @@ body:not(.tn-on-planos):not(.tn-on-arquivo):not(.tn-on-servicos):not(.tn-on-extr
 /* renovação dos planos (cartão único) */
 .tn-ren-solo{max-height:480px}
 .tn-planos .tn-card-t em{font-style:normal;font-size:13px;font-weight:600;min-width:26px;height:24px;padding:0 8px;display:inline-grid;place-items:center;border-radius:99px;background:var(--s-y-soft);color:var(--s-y)}
+
+/* versão em inglês (campos opcionais) */
+.tn-en{border:1px solid var(--s-line2);border-radius:12px;background:#0e0e0e}
+.tn-en>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;column-gap:10px;row-gap:2px;align-items:center;padding:12px 14px;min-height:44px}
+.tn-en>summary::-webkit-details-marker{display:none}
+.tn-en>summary::after{content:'';width:8px;height:8px;border-right:2px solid var(--s-muted);border-bottom:2px solid var(--s-muted);transform:rotate(45deg);grid-row:1;grid-column:3;margin:0 4px 4px}
+.tn-en[open]>summary::after{transform:rotate(-135deg);margin-top:4px}
+.tn-en>summary b{font-size:14px;color:var(--s-ink)}
+.tn-en>summary small{grid-column:1/-1;font-size:12.5px;color:var(--s-muted);line-height:1.4}
+.tn-en>summary:focus-visible{outline:2px solid var(--s-y);outline-offset:2px;border-radius:12px}
+.tn-en-flag{display:inline-flex;align-items:center;justify-content:center;height:20px;padding:0 7px;border-radius:6px;background:var(--s-y);color:#0a0a0a;font:700 11px var(--t-body);letter-spacing:.08em}
+.tn-en-b{display:flex;flex-direction:column;gap:14px;padding:4px 14px 16px}
+.tn-scc-en{display:flex;flex-direction:column;gap:6px;padding-top:6px;border-top:1px dashed var(--s-line2)}
+.tn-scc-en .tn-en-flag{align-self:flex-start}

@@ -343,6 +343,12 @@
         <div class="tn-dlg-body">
           <label class="tn-f"><span>Nome</span><input name="nome" maxlength="80" required></label>
           <label class="tn-f"><span>Descrição</span><textarea name="descricao" rows="5" maxlength="1200"></textarea><small class="tn-f-help" id="tn-sv-help"></small></label>
+          <details class="tn-en"><summary><span class="tn-en-flag">EN</span><b>Versão em inglês</b><small>Opcional — o que aparece quando o site está em inglês. Se ficar vazio, mostra o português.</small></summary>
+            <div class="tn-en-b">
+              <label class="tn-f"><span>Nome em inglês</span><input name="nome_en" maxlength="80"></label>
+              <label class="tn-f"><span>Descrição em inglês</span><textarea name="descricao_en" rows="4" maxlength="1200"></textarea></label>
+            </div>
+          </details>
           <label class="tn-switch"><input type="checkbox" name="visivel"><span class="tn-switch-ui"></span><span><b>Mostrar no site</b><small>Se desligares, fica escondido no site</small></span></label>
           <p class="tn-pf-msg err" id="tn-sv-msg" role="alert"></p>
         </div>
@@ -376,6 +382,14 @@
           <label class="tn-f"><span>Título</span><input name="titulo" maxlength="80" required placeholder="Ex.: Feedback"></label>
           <label class="tn-f"><span>Subtítulo</span><textarea name="subtitulo" rows="2" maxlength="400" placeholder="Ex.: O que dizem os atletas que trabalham connosco"></textarea></label>
           <label class="tn-f"><span>Etiqueta pequena <em>(opcional)</em></span><input name="etiqueta" maxlength="40" placeholder="Ex.: 06 — Feedback"><small class="tn-f-help">O texto pequeno dourado que aparece por cima do título, como nas outras secções.</small></label>
+          <details class="tn-en"><summary><span class="tn-en-flag">EN</span><b>Versão em inglês</b><small>Opcional — o que aparece quando o site está em inglês. Se ficar vazio, mostra o português.</small></summary>
+            <div class="tn-en-b">
+              <label class="tn-f"><span>Título em inglês</span><input name="titulo_en" maxlength="80" placeholder="Ex.: Feedback"></label>
+              <label class="tn-f"><span>Subtítulo em inglês</span><textarea name="subtitulo_en" rows="2" maxlength="400"></textarea></label>
+              <label class="tn-f"><span>Etiqueta pequena em inglês</span><input name="etiqueta_en" maxlength="40" placeholder="Ex.: 06 — Feedback"></label>
+              <small class="tn-f-help">Os textos dos cartões em inglês escrevem-se em cada cartão, mais abaixo.</small>
+            </div>
+          </details>
           <label class="tn-f"><span>Onde aparece no site</span><select name="posicao"></select></label>
           <div class="tn-f"><span>Cartões <em>(opcional)</em></span>
             <div class="tn-scc-list" id="tn-sc-cards"></div>
@@ -409,6 +423,12 @@
             <small class="tn-f-help">Cada linha é um ponto no site. Para um texto pequeno por baixo, usa « — » (ex.: <i>Comunicação — MVP / Equipa da semana</i>). Para destacar uma oferta, começa com «OFERTA».</small></label>
           <label class="tn-switch"><input type="checkbox" name="featured"><span class="tn-switch-ui"></span><span><b>Mais pedido</b><small>Mostra o destaque «Mais pedido» neste plano</small></span></label>
           <label class="tn-f"><span>Mensagem do WhatsApp</span><textarea name="whatsapp" rows="3" maxlength="400" placeholder="Olá! Tenho interesse no plano …"></textarea><small class="tn-f-help">É a mensagem que aparece já escrita quando carregam em «Quero o …» deste plano. O número de WhatsApp define-se em Página inicial → Contacto e WhatsApp.</small></label>
+          <details class="tn-en"><summary><span class="tn-en-flag">EN</span><b>Versão em inglês</b><small>Opcional — o que aparece quando o site está em inglês. Se ficar vazio, mostra o português.</small></summary>
+            <div class="tn-en-b">
+              <label class="tn-f"><span>Descrição em inglês</span><textarea name="descricao_en" rows="6" placeholder="One line per plan point"></textarea><small class="tn-f-help">Igual à descrição em português: uma linha por ponto, « — » para o texto pequeno e «OFERTA» para destacar uma oferta (no site aparece «OFFER»).</small></label>
+              <label class="tn-f"><span>Mensagem do WhatsApp em inglês</span><textarea name="whatsapp_en" rows="3" maxlength="400" placeholder="Hi! I'm interested in the … plan"></textarea></label>
+            </div>
+          </details>
           <label class="tn-switch"><input type="checkbox" name="visivel"><span class="tn-switch-ui"></span><span><b>Mostrar no site</b><small>Se desligares, o plano fica escondido no site</small></span></label>
           <p class="tn-pf-msg err" id="tn-pl-msg" role="alert"></p>
         </div>

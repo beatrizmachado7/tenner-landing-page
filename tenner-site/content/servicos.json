@@ -1,21 +1,30 @@
 {
   "intro": "Centralizamos a produção de conteúdo desportivo numa solução simples e eficiente. Após cada evento, jogo ou competição, identificamos os momentos mais relevantes, produzimos, editamos e entregamos peças prontas a publicar.",
+  "intro_en": "We bring sports content production together in one simple, efficient solution. After every event, game or competition, we pick out the most relevant moments, then produce, edit and deliver pieces ready to publish.",
   "items": [
     {
       "title": "Vídeos para Shorts e Stories",
-      "text": "Os melhores momentos em vídeos curtos e dinâmicos, adaptados às principais plataformas."
+      "text": "Os melhores momentos em vídeos curtos e dinâmicos, adaptados às principais plataformas.",
+      "title_en": "Videos for Shorts and Stories",
+      "text_en": "The best moments in short, dynamic videos, tailored to the main platforms."
     },
     {
       "title": "Designs e conteúdo para feed",
-      "text": "Conteúdos visuais que reforçam identidade e presença digital."
+      "text": "Conteúdos visuais que reforçam identidade e presença digital.",
+      "title_en": "Designs and feed content",
+      "text_en": "Visual content that strengthens identity and digital presence."
     },
     {
       "title": "Fotografia e imagens de eventos",
-      "text": "Os momentos que definem cada competição, transformados em conteúdo com valor."
+      "text": "Os momentos que definem cada competição, transformados em conteúdo com valor.",
+      "title_en": "Photography and event images",
+      "text_en": "The moments that define every competition, turned into content of real value."
     },
     {
       "title": "Storytelling e marca pessoal",
-      "text": "Narrativas que vão além do resultado, construindo identidades que permanecem."
+      "text": "Narrativas que vão além do resultado, construindo identidades que permanecem.",
+      "title_en": "Storytelling and personal brand",
+      "text_en": "Narratives that go beyond the result, building identities that last."
     }
   ]
 }

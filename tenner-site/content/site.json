@@ -38,5 +38,41 @@
     "message": "Olá! Tenho interesse no plano {plano} da TENNER."
   },
   "servicos_intro": "Centralizamos a produção de conteúdo desportivo numa solução simples e eficiente. Após cada evento, jogo ou competição, identificamos os momentos mais relevantes, produzimos, editamos e entregamos peças prontas a publicar.",
-  "extras_intro": "Complementa qualquer plano com presença nos jogos e assessoria de imprensa. Toca num serviço para ver os detalhes."
+  "extras_intro": "Complementa qualquer plano com presença nos jogos e assessoria de imprensa. Toca num serviço para ver os detalhes.",
+  "en": {
+    "hero": {
+      "eyebrow": "Content · Storytelling · Sport",
+      "tagline": "Your image — Your story — Your game",
+      "intro": "We turn moments into stories and stories into brands. Ready-to-publish content for athletes, coaches, clubs and sports brands."
+    },
+    "marquee": [
+      "Pre match",
+      "Match highlight",
+      "Off season",
+      "New club",
+      "Sponsor video",
+      "Press office"
+    ],
+    "about": {
+      "title": "Every journey has a story to tell",
+      "paragraph1": "At TENNER., we turn moments into stories and stories into brands. We are a content, storytelling and communication platform dedicated to the world of sport, created to support athletes, coaches, clubs, brands and companies in building a strong, authentic and relevant digital presence.",
+      "paragraph2": "We combine creativity, technology and narrative to turn performance, personality and unique moments into content that makes an impact and builds connections with communities, fans and partners.",
+      "audience": [
+        "Athletes",
+        "Coaches",
+        "Clubs",
+        "Brands",
+        "Companies"
+      ]
+    },
+    "contact": {
+      "title": "Get in touch",
+      "subtitle": "Elevate your digital performance"
+    },
+    "whatsapp": {
+      "message": "Hi! I'm interested in TENNER's {plano} plan."
+    },
+    "servicos_intro": "We bring sports content production together in one simple, efficient solution. After every event, game or competition, we pick out the most relevant moments, then produce, edit and deliver pieces ready to publish.",
+    "extras_intro": "Add game-day coverage and press office to any plan. Tap a service to see the details."
+  }
 }

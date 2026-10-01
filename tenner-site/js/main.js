@@ -17,14 +17,60 @@
       return r.json();
     });
   };
+  /* ---------- idioma (PT / EN) ---------- */
+  var LANGS = ['pt', 'en'];
+  var LANG = (function () {
+    var q = (location.search.match(/[?&]lang=(pt|en)\b/i) || [])[1];
+    if (q) return q.toLowerCase();
+    try { var s = localStorage.getItem('tenner-lang'); if (LANGS.indexOf(s) > -1) return s; } catch (e) {}
+    return 'pt';
+  })();
+  var EN = LANG === 'en';
+  var UI = {
+    en: {
+      'nav.sobre': 'About', 'nav.servicos': 'Services', 'nav.planos': 'Plans', 'nav.arquivo': 'Archive',
+      'btn.contacto': 'Contact', 'hero.planos': 'See plans', 'hero.arquivo': 'See archive',
+      'k.sobre': '01 — About us', 'k.fazemos': '02 — What we do', 'h.fazemos': 'What we do<span class="y">?</span>',
+      'k.planos': '03 — Services', 'h.planos': 'Choose your plan',
+      'k.extras': '04 — Extra services', 'h.extras': 'Extra <span class="ital y">services</span>',
+      'k.arquivo': '05 — Archive', 'h.arquivo': 'Archive', 'f.topo': 'Back to top',
+      oferta: 'OFFER', maisPedido: 'Most popular', quero: 'I want ', ver: 'View ', imagem: 'image',
+      anterior: 'Previous', seguinte: 'Next', de: ' of ', carrossel: 'Carousel', verImagem: 'View image',
+      preview: 'Preview', fechar: 'Close',
+      arquivo: { estatico: 'Pre Match Static', motion: 'Pre Match Motion Videos', social: 'Social Media Content' },
+      msgPlano: 'Hi! I\'m interested in TENNER\'s {plano} plan. Could you give me more information?',
+      title: 'TENNER10 | TENNER. — Content and storytelling for sport',
+      desc: 'TENNER10 (TENNER.) is a content, storytelling and communication platform for athletes, coaches, clubs and sports brands. Videos, design, photography and press office.'
+    },
+    pt: {
+      oferta: 'OFERTA', maisPedido: 'Mais pedido', quero: 'Quero o ', ver: 'Ver ', imagem: 'imagem',
+      anterior: 'Anterior', seguinte: 'Seguinte', de: ' de ', carrossel: 'Carrossel', verImagem: 'Ver imagem',
+      preview: 'Pré-visualização', fechar: 'Fechar', arquivo: {},
+      msgPlano: 'Olá! Tenho interesse no plano {plano} da TENNER.'
+    }
+  };
+  var t = function (k) { return (UI[LANG] && UI[LANG][k] != null) ? UI[LANG][k] : UI.pt[k]; };
+  var cheio = function (v) { return Array.isArray(v) ? v.length > 0 : (v != null && String(v).trim() !== ''); };
+  // campo traduzido: usa «campo_en» em inglês quando está preenchido; senão fica o português
+  var tr = function (o, k) { return (EN && o && cheio(o[k + '_en'])) ? o[k + '_en'] : (o ? o[k] : undefined); };
+
   var tri = '<svg width="12" height="20" viewBox="0 0 12 20" aria-hidden="true"><path d="M1 1l10 9-10 9z" fill="#efe3a0"/></svg>';
 
   /* ---------- site.json ---------- */
+  var PT_BIND = {};
+  $$('[data-bind]').forEach(function (el) { PT_BIND[el.getAttribute('data-bind')] = el.textContent; });
+  function sget(site, path) { // texto do site no idioma atual (site.en.* em inglês, com o português como reserva)
+    if (EN) { var e = get(site.en || {}, path); if (cheio(e)) return e; }
+    return get(site, path);
+  }
+  var mediaFeita = false;
   function renderSite(site) {
     $$('[data-bind]').forEach(function (el) {
-      var v = get(site, el.getAttribute('data-bind'));
-      if (v != null) el.textContent = v;
+      var k = el.getAttribute('data-bind'), v = sget(site, k);
+      el.textContent = v != null ? v : (PT_BIND[k] || '');
     });
+    if (mediaFeita) return renderSiteRest(site);
+    mediaFeita = true;
     $$('[data-src]').forEach(function (el) {
       var v = get(site, el.getAttribute('data-src'));
       if (!v) return;
@@ -37,12 +83,15 @@
         var p = vid.play(); if (p && p.catch) p.catch(function () {});
       } else el.src = v;
     });
-    var words = (site.marquee || []);
+    renderSiteRest(site);
+  }
+  function renderSiteRest(site) {
+    var words = (sget(site, 'marquee') || []);
     var loop = words.concat(words, words, words);
     $('#marquee').innerHTML = loop.map(function (w) {
       return '<span>' + esc(w) + '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 1l10 8-10 8z" fill="#0a0a0a"/></svg></span>';
     }).join('');
-    $('#audience').innerHTML = ((site.about && site.about.audience) || []).map(function (a) {
+    $('#audience').innerHTML = (sget(site, 'about.audience') || []).map(function (a) {
       return '<span class="chip">' + esc(a) + '</span>';
     }).join('');
     var c = site.contact || {};
@@ -57,10 +106,10 @@
 
   /* ---------- servicos.json ---------- */
   function renderServices(data) {
-    $('#servicos-intro').textContent = data.intro || '';
+    $('#servicos-intro').textContent = tr(data, 'intro') || '';
     $('#servicos-list').innerHTML = (data.items || []).map(function (s, i) {
       return '<article class="svc reveal"><div class="disp n">' + String(i + 1).padStart(2, '0') + '</div>' +
-        '<h3 class="disp">' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p></article>';
+        '<h3 class="disp">' + esc(tr(s, 'title')) + '</h3><p>' + esc(tr(s, 'text')) + '</p></article>';
     }).join('');
   }
 
@@ -79,27 +128,27 @@
     return link + (link.indexOf('?') > -1 ? '&' : '?') + 'text=' + encodeURIComponent(msg);
   }
   function planMsg(p, full) {
-    var tpl = p.whatsapp_message || waCfg.message || 'Olá! Tenho interesse no plano {plano} da TENNER.';
+    var tpl = EN ? (p.whatsapp_message_en || waCfg.message_en || t('msgPlano')) : (p.whatsapp_message || waCfg.message || t('msgPlano'));
     return String(tpl).replace(/\{plano\}/gi, full);
   }
   function renderPlans() {
     var d = plansData; if (!d) return;
     $('#plans').innerHTML = (d.plans || []).map(function (p) {
       var full = p.name + (p.suffix ? ' ' + p.suffix : '');
-      var feats = (p.features || []).map(function (f) {
+      var feats = (tr(p, 'features') || []).map(function (f) {
         var main = esc(f.text || '');
-        if (f.offer) main += (main ? ' + ' : '') + '<b>OFERTA</b> ' + esc(f.offer);
+        if (f.offer) main += (main ? ' + ' : '') + '<b>' + t('oferta') + '</b> ' + esc(f.offer);
         return '<li>' + tri + '<div><div class="feat-m">' + main + '</div>' +
           (f.detail ? '<div class="feat-s">' + esc(f.detail) + '</div>' : '') + '</div></li>';
       }).join('');
       return '<article class="plan reveal in' + (p.featured ? ' featured' : '') + '">' +
-        (p.featured ? '<div class="badge disp">Mais pedido</div>' : '') +
+        (p.featured ? '<div class="badge disp">' + t('maisPedido') + '</div>' : '') +
         '<div class="disp plan-name">' + esc(p.name) + (p.suffix ? '<span class="ital">' + esc(p.suffix) + '</span>' : '') + '</div>' +
         '<ul class="feats">' + feats + '</ul>' +
         (function () { // o botão abre o WhatsApp (número em Página inicial → Contacto e WhatsApp); sem número, vai para o contacto
           var href = waHref(planMsg(p, full));
           return '<a class="btn ' + (p.featured ? 'btn-y' : 'btn-o') + '" href="' + esc(href || '#contacto') + '"' +
-            (href ? ' target="_blank" rel="noopener"' : '') + ' data-plan="' + esc(full) + '">Quero o ' + esc(full) + '</a>';
+            (href ? ' target="_blank" rel="noopener"' : '') + ' data-plan="' + esc(full) + '">' + t('quero') + esc(full) + '</a>';
         })() +
         '</article>';
     }).join('');
@@ -151,13 +200,13 @@
 
   /* ---------- extras.json ---------- */
   function renderExtras(data) {
-    $('#extras-intro').textContent = data.intro || '';
+    $('#extras-intro').textContent = tr(data, 'intro') || '';
     var box = $('#extras');
     box.innerHTML = (data.items || []).map(function (e, i) {
       return '<button type="button" class="extra reveal' + (e.highlight ? ' hot' : '') + '" aria-expanded="false" style="margin-left:' + (i * 4) + '%;width:' + (100 - i * 4) + '%">' +
-        '<span class="tri"></span><span class="body"><span class="row"><span class="disp t">' + esc(e.title) + '</span><span class="disp sign" aria-hidden="true">+</span></span>' +
-        '<span class="sub">' + esc(e.subtitle) + '</span>' +
-        (e.text ? '<span class="more"><span>' + esc(e.text) + '</span></span>' : '') + '</span></button>';
+        '<span class="tri"></span><span class="body"><span class="row"><span class="disp t">' + esc(tr(e, 'title')) + '</span><span class="disp sign" aria-hidden="true">+</span></span>' +
+        '<span class="sub">' + esc(tr(e, 'subtitle')) + '</span>' +
+        (tr(e, 'text') ? '<span class="more"><span>' + esc(tr(e, 'text')) + '</span></span>' : '') + '</span></button>';
     }).join('');
     $$('.extra', box).forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -171,10 +220,17 @@
   /* ---------- arquivo.json (3 colunas) ---------- */
   var chevL = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 3L5 9l6 6"/></svg>';
   var chevR = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 3l6 6-6 6"/></svg>';
-  function colTitle(id, col) { if (col && col.title) $('#' + id + '-t').textContent = col.title; }
+  var PT_COL = {};
+  function colTitle(id, col, k) {
+    var el = $('#' + id + '-t'); if (!(k in PT_COL)) PT_COL[k] = el.textContent;
+    el.textContent = EN ? ((col && col.title_en) || t('arquivo')[k] || (col && col.title) || PT_COL[k]) : ((col && col.title) || PT_COL[k]);
+  }
+  function archiveTitles(data) {
+    colTitle('col-estatico', data.estatico, 'estatico'); colTitle('col-motion', data.motion, 'motion'); colTitle('col-social', data.social, 'social');
+  }
   function renderArchive(data) {
     var est = data.estatico || { items: [] }, mot = data.motion || { items: [] }, soc = data.social || { items: [] };
-    colTitle('col-estatico', est); colTitle('col-motion', mot); colTitle('col-social', soc);
+    archiveTitles(data);
 
     // Pre match estático: fotos inteiras, sem cortes
     var e = $('#col-estatico');
@@ -215,8 +271,8 @@
         '<div class="car-view"><div class="car-track">' + c.images.map(function (src, k) {
           return '<div class="car-slide" aria-label="' + (k + 1) + ' de ' + n + '"><img src="' + esc(src) + '" alt="' + esc((c.title || 'Carrossel') + ' ' + (k + 1)) + '" loading="lazy"></div>';
         }).join('') + '</div>' +
-        (n > 1 ? '<button type="button" class="car-btn prev" aria-label="Anterior">' + chevL + '</button>' +
-          '<button type="button" class="car-btn next" aria-label="Seguinte">' + chevR + '</button>' +
+        (n > 1 ? '<button type="button" class="car-btn prev" aria-label="' + t('anterior') + '">' + chevL + '</button>' +
+          '<button type="button" class="car-btn next" aria-label="' + t('seguinte') + '">' + chevR + '</button>' +
           '<div class="car-count"><span class="cur">1</span> / ' + n + '</div>' : '') +
         '</div>' +
         (n > 1 ? '<div class="car-dots">' + c.images.map(function (_, k) { return '<span' + (k === 0 ? ' class="on"' : '') + '></span>'; }).join('') + '</div>' : '') +
@@ -270,13 +326,14 @@
         var cards = (sec.cartoes || []).filter(function (c) { return c && (c.imagem || c.titulo || c.texto); });
         return '<section class="wrap sec cs-sec" id="' + esc(sec.id || '') + '">' +
           '<div class="sec-head reveal in"><div class="stack">' +
-            (sec.etiqueta ? '<div class="kicker">' + esc(sec.etiqueta) + '</div>' : '') +
-            '<h2 class="disp h2">' + esc(sec.titulo) + '</h2></div>' +
-            (sec.subtitulo ? '<p class="lead">' + esc(sec.subtitulo) + '</p>' : '') + '</div>' +
+            (tr(sec, 'etiqueta') ? '<div class="kicker">' + esc(tr(sec, 'etiqueta')) + '</div>' : '') +
+            '<h2 class="disp h2">' + esc(tr(sec, 'titulo')) + '</h2></div>' +
+            (tr(sec, 'subtitulo') ? '<p class="lead">' + esc(tr(sec, 'subtitulo')) + '</p>' : '') + '</div>' +
           (cards.length ? '<div class="cs-grid">' + cards.map(function (c, ci) {
+            var ct = tr(c, 'titulo'), cx = tr(c, 'texto');
             return '<article class="cs-card reveal in' + (c.imagem ? ' has-img' : '') + '">' +
-              (c.imagem ? '<button type="button" class="cs-img" data-cs="' + si + ':' + ci + '" aria-label="Ver imagem"><img src="' + esc(c.imagem) + '" alt="' + esc(c.titulo || sec.titulo) + '" loading="lazy"></button>' : '') +
-              ((c.titulo || c.texto) ? '<div class="cs-body">' + (c.titulo ? '<h3 class="disp">' + esc(c.titulo) + '</h3>' : '') + (c.texto ? '<p>' + esc(c.texto) + '</p>' : '') + '</div>' : '') +
+              (c.imagem ? '<button type="button" class="cs-img" data-cs="' + si + ':' + ci + '" aria-label="' + t('verImagem') + '"><img src="' + esc(c.imagem) + '" alt="' + esc(ct || tr(sec, 'titulo')) + '" loading="lazy"></button>' : '') +
+              ((ct || cx) ? '<div class="cs-body">' + (ct ? '<h3 class="disp">' + esc(ct) + '</h3>' : '') + (cx ? '<p>' + esc(cx) + '</p>' : '') + '</div>' : '') +
             '</article>';
           }).join('') + '</div>' : '') +
         '</section>';
@@ -284,12 +341,13 @@
       $$('.cs-img', slot).forEach(function (b) {
         b.addEventListener('click', function () {
           var p = b.getAttribute('data-cs').split(':'), c = lista[+p[0]].cartoes[+p[1]];
-          openLb({ image: c.imagem, title: c.titulo || '' });
+          openLb({ image: c.imagem, title: tr(c, 'titulo') || '' });
         });
       });
     });
   }
-  load('seccoes').then(renderCustom).catch(function () {});
+  var DATA = {};
+  load('seccoes').then(function (d) { DATA.seccoes = d; renderCustom(d); }).catch(function () {});
 
   /* ---------- lightbox ---------- */
   var lb = $('#lb'), lbIn = $('#lb-in'), lastFocus = null;
@@ -330,11 +388,56 @@
   Promise.all(['site', 'servicos', 'planos', 'extras', 'arquivo'].map(function (n) {
     return load(n).catch(function (err) { console.error('[TENNER] falha a carregar', err); return null; });
   })).then(function (r) {
-    if (r[0]) { renderSite(r[0]); waCfg = r[0].whatsapp || {}; }
+    DATA.site = r[0]; DATA.servicos = r[1]; DATA.extras = r[3]; DATA.arquivo = r[4];
+    if (r[0]) { renderSite(r[0]); setWa(r[0]); }
     if (r[1]) renderServices(r[1]);
     if (r[2]) { plansData = r[2]; renderPlans(); }
     if (r[3]) renderExtras(r[3]);
     if (r[4]) renderArchive(r[4]);
     observe();
   });
+  function setWa(site) {
+    waCfg = Object.assign({}, site.whatsapp || {});
+    waCfg.message_en = get(site, 'en.whatsapp.message') || '';
+  }
+
+  /* ---------- trocar de idioma ---------- */
+  var PT_UI = {};
+  $$('[data-i18n]').forEach(function (el) { PT_UI[el.getAttribute('data-i18n')] = el.innerHTML; });
+  var META_PT = { title: document.title, desc: ($('meta[name=description]') || {}).content || '' };
+  function aplicarUI() {
+    document.documentElement.lang = LANG;
+    $$('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      el.innerHTML = EN && UI.en[k] != null ? UI.en[k] : PT_UI[k];
+    });
+    $$('.lang [data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === LANG)); });
+    document.title = EN ? UI.en.title : META_PT.title;
+    var md = $('meta[name=description]'); if (md) md.content = EN ? UI.en.desc : META_PT.desc;
+    var og = $('meta[property="og:locale"]'); if (og) og.content = EN ? 'en_GB' : 'pt_PT';
+    lb.setAttribute('aria-label', t('preview'));
+    $('#lb-close').setAttribute('aria-label', t('fechar'));
+  }
+  function setLang(l) {
+    if (LANGS.indexOf(l) < 0 || l === LANG) return;
+    LANG = l; EN = l === 'en';
+    try { localStorage.setItem('tenner-lang', l); } catch (e) {}
+    try {
+      var u = new URL(location.href);
+      if (EN) u.searchParams.set('lang', 'en'); else u.searchParams.delete('lang');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+    aplicarUI();
+    if (DATA.site) renderSite(DATA.site);
+    if (DATA.servicos) renderServices(DATA.servicos);
+    renderPlans();
+    if (DATA.extras) renderExtras(DATA.extras);
+    if (DATA.arquivo) archiveTitles(DATA.arquivo);
+    if (DATA.seccoes) renderCustom(DATA.seccoes);
+    $$('.reveal').forEach(function (el) { el.classList.add('in'); });
+  }
+  $$('.lang [data-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+  });
+  if (EN) aplicarUI();
 })();
